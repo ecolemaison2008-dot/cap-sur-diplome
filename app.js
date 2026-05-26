@@ -523,13 +523,19 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 });
 
 document.getElementById("nextBtn").addEventListener("click", () => {
-  if (!canContinue()) return;
-  if (currentStep < steps.length - 1) {
-    currentStep += 1;
-    render();
-  } else {
-    window.print();
-  }
-});
 
-render();
+    if (!canContinue()) return;
+
+    if (currentStep < steps.length - 1) {
+
+        currentStep += 1;
+        render();
+
+    } else {
+
+        currentStep = 0;
+        render();
+
+    }
+
+});
