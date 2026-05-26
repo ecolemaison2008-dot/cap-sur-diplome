@@ -12,6 +12,7 @@ const state = {
   },
   career: null,
   universityType: null,
+  selectedUniversities: [],
   plar: {
     homeschooling: false,
     projects: false,
@@ -21,6 +22,19 @@ const state = {
   },
   checklist: {}
 };
+
+function resetState() {
+  state.des = null;
+  state.language = null;
+  state.diploma = null;
+  state.traits = [];
+  state.sliders = { motivation: 3, math: 3, english: 3, availability: 3, pace: 3 };
+  state.career = null;
+  state.universityType = null;
+  state.selectedUniversities = [];
+  state.plar = { homeschooling: false, projects: false, work: false, selfLearning: false, portfolios: false };
+  state.checklist = {};
+}
 
 let currentStep = 0;
 
@@ -139,7 +153,7 @@ function render() {
   document.getElementById("screen").innerHTML = "";
   document.getElementById("screen").appendChild(step.render(step));
   document.getElementById("prevBtn").disabled = currentStep === 0;
-  document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "Terminer" : "Continuer";
+  document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "Recommencer" : "Continuer";
   document.getElementById("nextBtn").disabled = !canContinue();
   updateInsight();
 }
@@ -258,21 +272,54 @@ function renderUniversityType(step) {
   return renderChoiceStep(step, "universityType", options.universityType, "Choisissez une catégorie cible. Le simulateur filtre ensuite des options réalistes et garde les avertissements visibles.", warning, "three");
 }
 
+function getCompatibilityInfo(score) {
+  const percent = Math.min(95, 25 + score * 18);
+  if (percent >= 75) return { percent, badge: "Très compatible", badgeClass: "compat-high" };
+  if (percent >= 50) return { percent, badge: "Compatible", badgeClass: "compat-mid" };
+  return { percent, badge: "Possible avec conditions", badgeClass: "compat-low" };
+}
+
 function renderUniversities(step) {
-  const shell = screenShell(step, "Recommandations filtrées selon le profil actuel. Elles ne garantissent ni admission, ni reconnaissance, ni équivalence.", universityWarning());
+  const shell = screenShell(step, "Sélectionnez une ou plusieurs universités compatibles. Les résultats sont filtrés selon votre profil. Aucune garantie d'admission.", universityWarning());
+
+  const selectionInfo = document.createElement("p");
+  selectionInfo.className = "selection-hint";
+  selectionInfo.textContent = state.selectedUniversities.length
+    ? `${state.selectedUniversities.length} université(s) sélectionnée(s)`
+    : "Cliquez sur une carte pour sélectionner.";
+  shell.appendChild(selectionInfo);
+
   const grid = document.createElement("div");
   grid.className = "results-grid";
+
   getRecommendedUniversities().forEach((uni) => {
+    const compat = getCompatibilityInfo(uni.score);
+    const isSelected = state.selectedUniversities.includes(uni.name);
     const card = document.createElement("article");
-    card.className = "university-card";
+    card.className = "university-card" + (isSelected ? " selected" : "");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
     card.innerHTML = `
-      <h3 class="card-title">${uni.name}</h3>
+      <div class="card-header-row">
+        <h3 class="card-title">${uni.name}</h3>
+        <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
+      </div>
+      <div class="compat-bar-wrap">
+        <div class="compat-bar" style="width:${compat.percent}%" data-class="${compat.badgeClass}"></div>
+        <span class="compat-percent">${compat.percent}%</span>
+      </div>
       <p class="card-text">${uni.text}</p>
       <div class="tag-row">
         <span class="tag green">${labelUniversityGroup(uni.group)}</span>
         ${getRiskTags().map((tag) => `<span class="tag ${tag.tone}">${tag.text}</span>`).join("")}
       </div>
+      ${isSelected ? '<div class="selected-check">✓ Sélectionnée</div>' : ''}
     `;
+    card.addEventListener("click", () => {
+      state.selectedUniversities = toggle(state.selectedUniversities, uni.name);
+      render();
+    });
+    card.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); card.click(); } });
     grid.appendChild(card);
   });
   shell.appendChild(grid);
@@ -309,7 +356,7 @@ function renderSchools(step) {
     card.className = "school-card";
     card.innerHTML = `
       <h3 class="card-title">${school.name}</h3>
-      <p class="card-text">Profil idéal: ${school.ideal}</p>
+      <div class="school-ideal">${school.ideal}</div>
       <div class="tag-row">
         <span class="tag green">${school.pacing}</span>
         <span class="tag">${school.support}</span>
@@ -523,19 +570,15 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 });
 
 document.getElementById("nextBtn").addEventListener("click", () => {
-
-    if (!canContinue()) return;
-
-    if (currentStep < steps.length - 1) {
-
-        currentStep++;
-        render();
-
-    } else {
-
-        currentStep = 0;
-        render();
-
-    }
-
+  if (!canContinue()) return;
+  if (currentStep < steps.length - 1) {
+    currentStep++;
+    render();
+  } else {
+    resetState();
+    currentStep = 0;
+    render();
+  }
 });
+
+render();
