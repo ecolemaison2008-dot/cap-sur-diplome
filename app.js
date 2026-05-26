@@ -1,11 +1,4 @@
-fetch("./data/questions.json")
-  .then(response => response.json())
-  .then(data => {
-    console.log("JSON chargé :", data);
-  })
-  .catch(error => {
-    console.error("Erreur JSON :", error);
-  });const state = {
+const state = {
   des: null,
   language: null,
   diploma: null,
@@ -42,7 +35,7 @@ const steps = [
   { title: "ÉCOLES RECOMMANDÉES", eyebrow: "Écoles", render: renderSchools },
   { title: "PLAR / CRÉDITS", eyebrow: "Crédits possibles", render: renderPlar },
   { title: "STRATÉGIE RECOMMANDÉE", eyebrow: "Roadmap", render: renderRoadmap },
- { title: "VOTRE STRATÉGIE", eyebrow: "Résultats", render: renderFinalStrategy }
+  { title: "CHECKLIST OFFICIELLE", eyebrow: "Vérifications", render: renderChecklist }
 ];
 
 const options = {
@@ -424,61 +417,31 @@ function getRoadmap() {
   route.push("Universités contactées");
   return route.slice(0, 6);
 }
-function renderFinalStrategy(step) {
-  const shell = screenShell(
-    step,
-    "Voici votre stratégie éducative personnalisée selon votre profil.",
-    null
-  );
 
-  const container = document.createElement("div");
-  container.className = "results-grid";
-
-  container.innerHTML = `
-    <article class="summary-card">
-      <h3 class="card-title">Universités compatibles</h3>
-      <p class="card-text">
-        ${getRecommendedUniversities()
-          .map(u => u.name)
-          .slice(0, 5)
-          .join(", ")}
-      </p>
-    </article>
-
-    <article class="summary-card">
-      <h3 class="card-title">Écoles recommandées</h3>
-      <p class="card-text">
-        ${getRecommendedSchools()
-          .map(s => s.name)
-          .slice(0, 5)
-          .join(", ")}
-      </p>
-    </article>
-
-    <article class="summary-card">
-      <h3 class="card-title">Démarches à suivre</h3>
-      <ul>
-        ${getRoadmap()
-          .map(step => `<li>${step}</li>`)
-          .join("")}
-      </ul>
-    </article>
-
-    <article class="summary-card">
-      <h3 class="card-title">Points importants</h3>
-      <ul>
-        <li>Vérifier les préalables universitaires</li>
-        <li>Confirmer les équivalences</li>
-        <li>Contacter les admissions</li>
-        <li>Valider NCAA/AP si nécessaire</li>
-      </ul>
-    </article>
-  `;
-
-  shell.appendChild(container);
-
+function renderChecklist(step) {
+  const shell = screenShell(step, "Avant toute décision, confirmez les informations auprès des organismes et institutions. Cette checklist garde le simulateur du bon côté de la prudence.", null);
+  const list = document.createElement("div");
+  list.className = "check-list";
+  [
+    "BSID verified",
+    "Accreditation verified",
+    "University contacted",
+    "Prerequisites verified",
+    "NCAA verified",
+    "Equivalencies confirmed"
+  ].forEach((label) => {
+    const row = document.createElement("label");
+    row.className = "check-card";
+    row.innerHTML = `<input type="checkbox" ${state.checklist[label] ? "checked" : ""} /><strong>${label}</strong>`;
+    row.querySelector("input").addEventListener("change", (event) => {
+      state.checklist[label] = event.target.checked;
+    });
+    list.appendChild(row);
+  });
+  shell.appendChild(list);
   return shell;
 }
+
 function canContinue() {
   const keys = ["des", "language", "diploma", "traits", "career", "universityType"];
   const key = keys[currentStep];
@@ -560,10 +523,13 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 });
 
 document.getElementById("nextBtn").addEventListener("click", () => {
+  if (!canContinue()) return;
   if (currentStep < steps.length - 1) {
-  currentStep += 1;
-  render();
-}
+    currentStep += 1;
+    render();
+  } else {
+    window.print();
+  }
 });
 
 render();
