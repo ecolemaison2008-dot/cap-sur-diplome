@@ -1,0 +1,14 @@
+{
+  "des": [
+    {
+      "value": "oui",
+      "title": "OUI",
+      "body": "Parcours post-DES: universités, préalables et équivalences à valider."
+    },
+    {
+      "value": "non",
+      "title": "NON",
+      "body": "Parcours secondaire complet en ligne: diplôme, crédits, rythme et soutien."
+    }
+  ]
+}
