@@ -204,8 +204,8 @@ const steps = [
 
 const options = {
   des: [
-    ["oui", "OUI", "Tu as déjà ton diplôme — on se concentre sur l'université et les préalables."],
-    ["non", "NON", "On construit ton parcours secondaire complet, à ton rythme, en ligne."]
+    ["oui", "Avec DES", ""],
+    ["non", "Sans DES", ""]
   ],
   language: [
     ["francais", "FRANÇAIS", "Quelques écoles offrent un soutien en français. Options limitées — à vérifier."],
@@ -348,7 +348,7 @@ function choiceCard(title, body, selected, onClick) {
 }
 
 function renderDes(step) {
-  return renderChoiceStep(step, "des", options.des, "Ton point de départ détermine la direction du simulateur.", null);
+  return renderChoiceStep(step, "des", options.des, "Chaque parcours ouvre des possibilités différentes selon les universités, les préalables et les équivalences reconnues.", null);
 }
 
 function renderLanguage(step) {
