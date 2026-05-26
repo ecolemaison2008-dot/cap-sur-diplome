@@ -188,49 +188,49 @@ function resetState() {
 let currentStep = 0;
 
 const steps = [
-  { title: "AS-TU DÉJÀ UN DES ?", eyebrow: "Point de départ", render: renderDes },
-  { title: "LANGUE PRINCIPALE D'ÉTUDES", eyebrow: "Langue", render: renderLanguage },
-  { title: "TYPE DE DIPLÔME", eyebrow: "Diplôme cible", render: renderDiploma },
-  { title: "PROFIL DE L'ÉLÈVE", eyebrow: "Profil", render: renderProfile },
-  { title: "OBJECTIF CARRIÈRE", eyebrow: "Objectif", render: renderCareer },
-  { title: "TYPE D'UNIVERSITÉ", eyebrow: "Sélectivité", render: renderUniversityType },
-  { title: "UNIVERSITÉS COMPATIBLES", eyebrow: "Recommandations", render: renderUniversities },
-  { title: "ÉCOLES RECOMMANDÉES", eyebrow: "Écoles", render: renderSchools },
-  { title: "PLAR / CRÉDITS", eyebrow: "Crédits possibles", render: renderPlar },
-  { title: "STRATÉGIE RECOMMANDÉE", eyebrow: "Roadmap", render: renderRoadmap },
-  { title: "CHECKLIST OFFICIELLE", eyebrow: "Vérifications", render: renderChecklist },
-  { title: "RÉSUMÉ FINAL", eyebrow: "Ton parcours", render: renderSummary }
+  { title: "AS-TU TON DES ?", eyebrow: "Point de départ", render: renderDes },
+  { title: "TA LANGUE D'ÉTUDES", eyebrow: "Langue", render: renderLanguage },
+  { title: "TON DIPLÔME CIBLE", eyebrow: "Diplôme", render: renderDiploma },
+  { title: "TON PROFIL", eyebrow: "Profil", render: renderProfile },
+  { title: "OÙ TU TE VOIS ?", eyebrow: "Objectif", render: renderCareer },
+  { title: "QUEL TYPE D'UNIVERSITÉ ?", eyebrow: "Sélectivité", render: renderUniversityType },
+  { title: "TES UNIVERSITÉS", eyebrow: "Recommandations", render: renderUniversities },
+  { title: "TES ÉCOLES", eyebrow: "Écoles", render: renderSchools },
+  { title: "TES CRÉDITS RECONNUS", eyebrow: "Crédits possibles", render: renderPlar },
+  { title: "TON PLAN D'ACTION", eyebrow: "Roadmap", render: renderRoadmap },
+  { title: "AVANT DE PARTIR", eyebrow: "Vérifications", render: renderChecklist },
+  { title: "TON PARCOURS", eyebrow: "Résumé", render: renderSummary }
 ];
 
 const options = {
   des: [
-    ["oui", "OUI", "Parcours post-DES: universités, préalables et équivalences à valider."],
-    ["non", "NON", "Parcours secondaire complet en ligne: diplôme, crédits, rythme et soutien."]
+    ["oui", "OUI", "Tu as déjà ton diplôme — on se concentre sur l'université et les préalables."],
+    ["non", "NON", "On construit ton parcours secondaire complet, à ton rythme, en ligne."]
   ],
   language: [
-    ["francais", "FRANÇAIS", "Clonlara ou soutien francophone possible. Accès Québec à évaluer au cas par cas."],
-    ["anglais", "ANGLAIS", "OSSD, universités ontariennes, options USA, AP et SAT possibles."]
+    ["francais", "FRANÇAIS", "Quelques écoles offrent un soutien en français. Options limitées — à vérifier."],
+    ["anglais", "ANGLAIS", "La majorité des parcours OSSD et USA se font en anglais."]
   ],
   diploma: [
-    ["ossd", "OSSD", "Diplôme secondaire de l'Ontario, pertinent pour Canada, USA et parcours AP."],
-    ["us", "US Diploma", "Diplôme américain, pertinent pour Common App, NCAA, AP/SAT et universités USA."]
+    ["ossd", "OSSD", "Diplôme ontarien. Reconnu partout au Canada, aux USA et à l'international."],
+    ["us", "US Diploma", "Diplôme américain. Idéal pour Common App, NCAA et universités américaines."]
   ],
   career: [
-    ["stem", "Sciences / Génie / Santé", "Profil compétitif: notes élevées, AP et préalables à planifier."],
-    ["business", "Business / Comptabilité", "Math, anglais académique et dossiers d'admission solides."],
-    ["law", "Juridique / Politique", "Parcours souvent indirect: premier cycle, exigences variables."],
-    ["humanities", "Littéraire / Sciences humaines", "Souplesse possible, lecture-écriture et portfolio académique utiles."],
-    ["arts", "Arts / Créatif", "Portfolio, projets et écoles flexibles peuvent compter fortement."],
-    ["tech", "Informatique / Technologie", "Math, projets, AP CS ou portfolio technique recommandés."]
+    ["stem", "Sciences / Génie / Santé", "Profil compétitif — notes élevées et AP souvent indispensables."],
+    ["business", "Business / Comptabilité", "Math solide et anglais académique font la différence."],
+    ["law", "Juridique / Politique", "Accès souvent indirect — vérifier programme par programme."],
+    ["humanities", "Littéraire / Sciences humaines", "Plus de souplesse. Écriture, analyse et réflexion comptent."],
+    ["arts", "Arts / Créatif", "Portfolio et projets personnels ont souvent autant de poids que les notes."],
+    ["tech", "Informatique / Technologie", "Math, projets perso et AP CS sont de vrais atouts."]
   ],
   universityType: [
-    ["canada-flex", "Canada - Flexible / Open", "Athabasca, Thompson Rivers Open Learning, Royal Roads."],
-    ["canada-standard", "Canada - Standard", "York, TMU, Ottawa, Carleton."],
-    ["canada-competitive", "Canada - Competitive", "Waterloo, UofT, McMaster, UBC, McGill."],
-    ["quebec-fr", "Québec francophone", "UdeM, Laval, Sherbrooke. Conditions variables."],
-    ["usa-flex", "USA - Flexible", "SNHU, ASU Online, Purdue Global."],
-    ["usa-standard", "USA - Standard", "Oregon State, Arizona, Penn State."],
-    ["usa-competitive", "USA - Competitive", "NYU, Georgia Tech, Boston University."],
+    ["canada-flex", "Canada — Flexible", "Athabasca, Thompson Rivers, Royal Roads."],
+    ["canada-standard", "Canada — Standard", "York, TMU, Ottawa, Carleton."],
+    ["canada-competitive", "Canada — Compétitif", "Waterloo, UofT, McMaster, UBC, McGill."],
+    ["quebec-fr", "Québec francophone", "UdeM, Laval, Sherbrooke — conditions à vérifier."],
+    ["usa-flex", "USA — Flexible", "SNHU, ASU Online, Purdue Global."],
+    ["usa-standard", "USA — Standard", "Oregon State, Arizona, Penn State."],
+    ["usa-competitive", "USA — Compétitif", "NYU, Georgia Tech, Boston University."],
     ["usa-top", "Ivy League / Top USA", "Harvard, MIT, Stanford, Yale, Princeton."]
   ],
   traits: [
@@ -247,35 +247,35 @@ const options = {
 };
 
 const universities = [
-  { name: "Athabasca University", group: "canada-flex", fit: ["Autonome", "International"], text: "Option ouverte et flexible. Valider exigences du programme précis.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Thompson Rivers Open Learning", group: "canada-flex", fit: ["Autonome"], text: "Souplesse élevée, utile pour transition ou reprise de préalables.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Royal Roads", group: "canada-flex", fit: ["Créatif"], text: "Approches appliquées selon programme, admission à vérifier.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
-  { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option standard en Ontario. OSSD souvent lisible, préalables variables.", url: "https://futurestudents.yorku.ca/apply", fees: "~30 000–38 000 CAD/an", currency: "CAD" },
-  { name: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués et urbains. Portfolio parfois requis.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
-  { name: "University of Ottawa", group: "canada-standard", fit: ["Littéraire"], text: "Bilinguisme institutionnel possible selon programme, exigences à confirmer.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
-  { name: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Bon alignement politiques publiques, médias, informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
-  { name: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très compétitif en STEM. AP, math avancée et notes élevées recommandées.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
-  { name: "University of Toronto", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
-  { name: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Ne pas simplifier les préalables.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
-  { name: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Profil global solide requis. Exigences et suppléments à vérifier.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
-  { name: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Reconnaissance et équivalences variables pour candidats non traditionnels.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
-  { name: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Conditions variables: DEC, préalables, année préparatoire ou étude individuelle.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
-  { name: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Vérification individuelle requise, surtout pour profils sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
+  { name: "Athabasca University", group: "canada-flex", fit: ["Autonome", "International"], text: "Très flexible. Parfait pour une transition ou un complément de préalables en ligne.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Thompson Rivers Open Learning", group: "canada-flex", fit: ["Autonome"], text: "Grande souplesse. Idéal pour reprendre des crédits à ton rythme.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Royal Roads", group: "canada-flex", fit: ["Créatif"], text: "Approche appliquée et pratique. Programme et admission à confirmer directement.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
+  { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option solide en Ontario. OSSD souvent lisible — préalables variables.", url: "https://futurestudents.yorku.ca/apply", fees: "~30 000–38 000 CAD/an", currency: "CAD" },
+  { name: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués, campus urbain. Portfolio parfois demandé.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
+  { name: "University of Ottawa", group: "canada-standard", fit: ["Littéraire"], text: "Option bilingue selon programme. Exigences à valider directement.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
+  { name: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Fort en politiques publiques, médias et informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
+  { name: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très sélectif en STEM. AP, math avancée et notes élevées sont attendus.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
+  { name: "University of Toronto", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences précises par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
+  { name: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Chaque préalable compte.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
+  { name: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Dossier global solide requis. Suppléments et préalables à bien préparer.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
+  { name: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Équivalences variables pour parcours non traditionnels. À vérifier en admissions.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
+  { name: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Accès variable — DEC, préalables ou année préparatoire selon le programme.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
+  { name: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Dossier évalué au cas par cas, surtout sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
   { name: "Sherbrooke", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer.", url: "https://www.usherbrooke.ca/admission/", fees: "~7 000–21 000 CAD/an", currency: "CAD" },
-  { name: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Flexible et accessible selon programme. Valider reconnaissance externe.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
-  { name: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large offre en ligne. Exigences précises selon programme.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
-  { name: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible. Bien vérifier objectifs professionnels.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
-  { name: "Oregon State", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option USA standard avec parcours en ligne dans certains domaines.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
-  { name: "University of Arizona", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Options variées, dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
-  { name: "Penn State", group: "usa-standard", fit: ["International"], text: "World Campus et options standards. Conditions par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
-  { name: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif, portfolio ou supplément possible selon faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
-  { name: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Très fort en tech/STEM. Math, AP et projets recommandés.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
-  { name: "Boston University", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif, dossier académique et activités importantes.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
-  { name: "Harvard", group: "usa-top", fit: ["International"], text: "Admissions ultra compétitives. Aucun parcours ne garantit l'accès.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Admissions ultra compétitives, niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Admissions ultra compétitives, impact et excellence requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Admissions ultra compétitives, profil global exceptionnel.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Admissions ultra compétitives, exigences académiques très élevées.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
+  { name: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Très accessible en ligne. Vérifier la reconnaissance externe avant de t'inscrire.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
+  { name: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large catalogue en ligne. Exigences précises selon le programme choisi.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
+  { name: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible pour le business. Vérifier l'alignement avec tes objectifs.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
+  { name: "Oregon State", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option solide en STEM. Certains programmes disponibles en ligne.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
+  { name: "University of Arizona", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Bon choix pour business et arts. Dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
+  { name: "Penn State", group: "usa-standard", fit: ["International"], text: "Campus et options en ligne. Conditions spécifiques par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
+  { name: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif. Portfolio ou supplément d'admission selon la faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
+  { name: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Référence en tech et STEM. AP et projets personnels font la différence.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
+  { name: "Boston University", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif. Dossier académique solide et activités parascolaires comptent.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
+  { name: "Harvard", group: "usa-top", fit: ["International"], text: "Ultra-compétitif. Aucun parcours ne garantit l'admission.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Ultra-compétitif. Niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Ultra-compétitif. Excellence, impact et originalité requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Ultra-compétitif. Profil global exceptionnel attendu.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Ultra-compétitif. Exigences académiques parmi les plus élevées au monde.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
 ];
 
 const schools = [
@@ -348,20 +348,20 @@ function choiceCard(title, body, selected, onClick) {
 }
 
 function renderDes(step) {
-  return renderChoiceStep(step, "des", options.des, "Ce choix ajuste le niveau de prudence: avec DES, le simulateur se concentre sur universités et équivalences; sans DES, il construit un parcours secondaire complet.", null);
+  return renderChoiceStep(step, "des", options.des, "Ton point de départ détermine la direction du simulateur.", null);
 }
 
 function renderLanguage(step) {
-  const warning = state.language === "francais" ? "Vérification individuelle requise" : null;
-  return renderChoiceStep(step, "language", options.language, "Choisissez une seule langue principale. Les options francophones au Québec exigent souvent une analyse individuelle, surtout hors DEC.", warning);
+  const warning = state.language === "francais" ? "Options francophones limitées — chaque situation est unique" : null;
+  return renderChoiceStep(step, "language", options.language, "La langue d'études influence les écoles disponibles et les débouchés universitaires.", warning);
 }
 
 function renderDiploma(step) {
-  return renderChoiceStep(step, "diploma", options.diploma, "Le diplôme influence les écoles recommandées, les universités compatibles et la stratégie AP/SAT.", null);
+  return renderChoiceStep(step, "diploma", options.diploma, "Ton diplôme oriente les écoles, les universités et ta stratégie de candidature.", null);
 }
 
 function renderProfile(step) {
-  const shell = screenShell(step, "Sélection multiple: le profil influence le rythme, le niveau d'encadrement, les AP recommandés et les avertissements.", null);
+  const shell = screenShell(step, "Choisis ce qui te ressemble — plusieurs réponses possibles. Ça personnalise tout ce qui suit.", null);
   const grid = document.createElement("div");
   grid.className = "choices multi";
   options.traits.forEach((trait) => {
@@ -396,31 +396,31 @@ function renderProfile(step) {
 
 function profileBody(trait) {
   const map = {
-    "Autonome": "Peut soutenir un parcours flexible.",
-    "Besoin d'encadrement": "Favorise écoles structurées et suivi élevé.",
-    "Créatif": "Portfolio, projets et approche personnalisée.",
-    "Scientifique": "Math, sciences, AP et préalables importants.",
-    "Littéraire": "Lecture, rédaction et sciences humaines.",
-    "Technologique": "Projets, informatique et math appliquée.",
-    "Fast-track": "Rythme accéléré avec risque de surcharge.",
-    "Anxieux face aux examens": "Prévoir rythme doux et évaluations préparées.",
-    "International": "Dossier lisible pour plusieurs systèmes."
+    "Autonome": "Tu gères ton rythme sans suivi rapproché.",
+    "Besoin d'encadrement": "Tu travailles mieux avec structure et soutien.",
+    "Créatif": "Ton portfolio raconte ce que les notes ne montrent pas.",
+    "Scientifique": "AP sciences et math font la différence ici.",
+    "Littéraire": "Écriture, analyse, réflexion — ton terrain naturel.",
+    "Technologique": "Projets, code, math appliquée.",
+    "Fast-track": "Tu veux aller vite — attention à ne pas brûler les étapes.",
+    "Anxieux face aux examens": "On privilégie les évaluations progressives.",
+    "International": "Ton dossier doit être lisible dans plusieurs systèmes."
   };
   return map[trait];
 }
 
 function renderCareer(step) {
-  const warning = state.career === "stem" ? "AP recommandés, notes élevées, préalables variables et admissions compétitives." : null;
-  return renderChoiceStep(step, "career", options.career, "L'objectif de carrière module la compétitivité et les préalables. Les domaines professionnels doivent être validés programme par programme.", warning, "three");
+  const warning = state.career === "stem" ? "Domaine compétitif — AP, notes élevées et préalables solides souvent requis." : null;
+  return renderChoiceStep(step, "career", options.career, "Ton domaine influence les préalables recommandés et le niveau de compétition.", warning, "three");
 }
 
 function renderUniversityType(step) {
   const warning = ["quebec-fr", "usa-top"].includes(state.universityType)
     ? state.universityType === "quebec-fr"
-      ? "Conditions variables — vérification individuelle requise"
-      : "Admissions ultra compétitives"
+      ? "Chaque dossier est évalué individuellement — vérification directe indispensable"
+      : "Niveau ultra-compétitif — dossier exceptionnel requis"
     : null;
-  return renderChoiceStep(step, "universityType", options.universityType, "Choisissez une catégorie cible. Le simulateur filtre ensuite des options réalistes et garde les avertissements visibles.", warning, "three");
+  return renderChoiceStep(step, "universityType", options.universityType, "Choisis la catégorie qui correspond à ton ambition et à ta préparation actuelle.", warning, "three");
 }
 
 function getCompatibilityInfo(score) {
@@ -431,13 +431,13 @@ function getCompatibilityInfo(score) {
 }
 
 function renderUniversities(step) {
-  const shell = screenShell(step, "Sélectionnez une ou plusieurs universités compatibles. Les résultats sont filtrés selon votre profil. Aucune garantie d'admission.", universityWarning());
+  const shell = screenShell(step, "Sélectionne une ou plusieurs universités qui t'intéressent. Aucune garantie d'admission.", universityWarning());
 
   const selectionInfo = document.createElement("p");
   selectionInfo.className = "selection-hint";
   selectionInfo.textContent = state.selectedUniversities.length
     ? `${state.selectedUniversities.length} université(s) sélectionnée(s)`
-    : "Cliquez sur une carte pour sélectionner.";
+    : "Clique sur une carte pour la sélectionner.";
   shell.appendChild(selectionInfo);
 
   const grid = document.createElement("div");
@@ -503,7 +503,7 @@ function compatibleCountry(group) {
 }
 
 function renderSchools(step) {
-  const shell = screenShell(step, "Écoles filtrées par diplôme. Les détails comme AP, NCAA, coûts et accréditation doivent être vérifiés directement.", null);
+  const shell = screenShell(step, "Écoles filtrées selon ton diplôme et ton profil. Vérifie toujours les détails directement sur leur site.", null);
   const grid = document.createElement("div");
   grid.className = "results-grid";
   getRecommendedSchools().forEach((school) => {
@@ -545,7 +545,7 @@ function schoolScore(school) {
 }
 
 function renderPlar(step) {
-  const shell = screenShell(step, "Estimateur éducatif: les crédits réels dépendent de l'école, du dossier et de l'évaluation officielle.", null);
+  const shell = screenShell(step, "Ton expérience passée peut compter pour des crédits — coche ce qui s'applique pour estimer le total.", null);
   const wrap = document.createElement("div");
   wrap.className = "plar-grid";
   const list = document.createElement("div");
@@ -572,10 +572,10 @@ function renderPlar(step) {
   summary.className = "summary-card";
   summary.innerHTML = `
     <h3 class="card-title">${estimate.credits} crédits possibles</h3>
-    <p class="card-text">Économie potentielle: ${estimate.savings}. Réduction de temps: ${estimate.time}.</p>
+    <p class="card-text">Économie estimée : ${estimate.savings}. Gain de temps potentiel : ${estimate.time}.</p>
     <div class="tag-row">
-      <span class="tag red">Estimation non officielle</span>
-      <span class="tag">Évaluation requise</span>
+      <span class="tag red">Estimation — non officielle</span>
+      <span class="tag">Validation requise par l'école</span>
     </div>
   `;
   wrap.appendChild(list);
@@ -594,7 +594,7 @@ function getPlarEstimate() {
 }
 
 function renderRoadmap(step) {
-  const shell = screenShell(step, "Roadmap personnalisée selon vos réponses. Elle doit être relue avec les écoles et universités visées.", roadmapWarning());
+  const shell = screenShell(step, "Ton plan étape par étape, basé sur tes réponses. À valider avec les institutions que tu vises.", roadmapWarning());
   const grid = document.createElement("div");
   grid.className = "roadmap";
   getRoadmap().forEach((item, index) => {
@@ -621,16 +621,16 @@ function getRoadmap() {
 }
 
 function renderChecklist(step) {
-  const shell = screenShell(step, "Avant toute décision, confirmez les informations auprès des organismes et institutions. Cette checklist garde le simulateur du bon côté de la prudence.", null);
+  const shell = screenShell(step, "Coche ce que tu as déjà confirmé directement auprès des institutions. Rien ici n'est officiel — c'est ton aide-mémoire.", null);
   const list = document.createElement("div");
   list.className = "check-list";
   [
-    "BSID verified",
-    "Accreditation verified",
-    "University contacted",
-    "Prerequisites verified",
-    "NCAA verified",
-    "Equivalencies confirmed"
+    "BSID vérifié",
+    "Accréditation confirmée",
+    "Université contactée",
+    "Préalables vérifiés",
+    "NCAA vérifié",
+    "Équivalences confirmées"
   ].forEach((label) => {
     const row = document.createElement("label");
     row.className = "check-card";
@@ -645,7 +645,7 @@ function renderChecklist(step) {
 }
 
 function renderSummary(step) {
-  const shell = screenShell(step, "Voici ton parcours complet généré par le simulateur. Imprime ou note les informations importantes avant de recommencer.", null);
+  const shell = screenShell(step, "Tout ton parcours en un coup d'œil. Imprime, partage ou note ce qui compte avant de recommencer.", null);
 
   const wrap = document.createElement("div");
   wrap.className = "summary-screen";
@@ -655,8 +655,8 @@ function renderSummary(step) {
   banner.innerHTML = `
     <div class="summary-banner-icon">🎓</div>
     <div class="summary-banner-text">
-      <h2>Parcours généré avec succès</h2>
-      <p>Ce résumé est informatif et suggestif uniquement. Toutes les conditions doivent être vérifiées directement auprès des institutions.</p>
+      <h2>Ton parcours est prêt</h2>
+      <p>Ce résumé est éducatif et suggestif. Valide chaque point directement auprès des institutions concernées.</p>
     </div>
   `;
   wrap.appendChild(banner);
