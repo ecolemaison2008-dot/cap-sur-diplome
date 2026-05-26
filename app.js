@@ -528,7 +528,7 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 
     if (currentStep < steps.length - 1) {
 
-        currentStep += 1;
+        currentStep++;
         render();
 
     } else {
