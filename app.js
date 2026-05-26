@@ -624,15 +624,67 @@ function renderSummary(step) {
 
   wrap.appendChild(cols);
 
+  const actionRow = document.createElement("div");
+  actionRow.className = "summary-action-row";
+
   const printBtn = document.createElement("button");
   printBtn.className = "summary-print-btn";
   printBtn.type = "button";
   printBtn.innerHTML = "🖨️ Imprimer ce résumé";
   printBtn.addEventListener("click", () => window.print());
-  wrap.appendChild(printBtn);
+  actionRow.appendChild(printBtn);
+
+  const shareBtn = document.createElement("button");
+  shareBtn.className = "summary-share-btn";
+  shareBtn.type = "button";
+  shareBtn.innerHTML = "🔗 Copier le lien de partage";
+  shareBtn.addEventListener("click", () => {
+    const url = encodeStateToURL();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        shareBtn.innerHTML = "✓ Lien copié !";
+        shareBtn.classList.add("copied");
+        setTimeout(() => {
+          shareBtn.innerHTML = "🔗 Copier le lien de partage";
+          shareBtn.classList.remove("copied");
+        }, 2500);
+      }).catch(() => fallbackCopy(url, shareBtn));
+    } else {
+      fallbackCopy(url, shareBtn);
+    }
+  });
+  actionRow.appendChild(shareBtn);
+
+  const shareNote = document.createElement("p");
+  shareNote.className = "summary-share-note";
+  shareNote.textContent = "Le lien encode toutes tes réponses — ouvre-le sur n'importe quel appareil pour retrouver ton parcours.";
+  actionRow.appendChild(shareNote);
+
+  wrap.appendChild(actionRow);
 
   shell.appendChild(wrap);
   return shell;
+}
+
+function fallbackCopy(text, btn) {
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand("copy");
+    btn.innerHTML = "✓ Lien copié !";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.innerHTML = "🔗 Copier le lien de partage";
+      btn.classList.remove("copied");
+    }, 2500);
+  } catch (e) {
+    btn.innerHTML = "❌ Copie manuelle requise";
+    setTimeout(() => { btn.innerHTML = "🔗 Copier le lien de partage"; }, 2500);
+  }
+  document.body.removeChild(ta);
 }
 
 function canContinue() {
@@ -708,6 +760,51 @@ function toggle(list, item) {
   return list.includes(item) ? list.filter((value) => value !== item) : [...list, item];
 }
 
+function encodeStateToURL() {
+  const snapshot = {
+    des: state.des,
+    language: state.language,
+    diploma: state.diploma,
+    traits: state.traits,
+    sliders: state.sliders,
+    career: state.career,
+    universityType: state.universityType,
+    selectedUniversities: state.selectedUniversities,
+    plar: state.plar,
+    checklist: state.checklist
+  };
+  try {
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot))));
+    const url = window.location.href.split("#")[0] + "#" + encoded;
+    window.history.replaceState(null, "", url);
+    return url;
+  } catch (e) {
+    return window.location.href;
+  }
+}
+
+function decodeStateFromURL() {
+  const hash = window.location.hash.slice(1);
+  if (!hash) return false;
+  try {
+    const snapshot = JSON.parse(decodeURIComponent(escape(atob(hash))));
+    if (snapshot && typeof snapshot === "object") {
+      if (snapshot.des !== undefined) state.des = snapshot.des;
+      if (snapshot.language !== undefined) state.language = snapshot.language;
+      if (snapshot.diploma !== undefined) state.diploma = snapshot.diploma;
+      if (Array.isArray(snapshot.traits)) state.traits = snapshot.traits;
+      if (snapshot.sliders && typeof snapshot.sliders === "object") state.sliders = { ...state.sliders, ...snapshot.sliders };
+      if (snapshot.career !== undefined) state.career = snapshot.career;
+      if (snapshot.universityType !== undefined) state.universityType = snapshot.universityType;
+      if (Array.isArray(snapshot.selectedUniversities)) state.selectedUniversities = snapshot.selectedUniversities;
+      if (snapshot.plar && typeof snapshot.plar === "object") state.plar = { ...state.plar, ...snapshot.plar };
+      if (snapshot.checklist && typeof snapshot.checklist === "object") state.checklist = snapshot.checklist;
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
 document.getElementById("prevBtn").addEventListener("click", () => {
   if (currentStep > 0) {
     currentStep -= 1;
@@ -727,4 +824,8 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   }
 });
 
+const restoredFromURL = decodeStateFromURL();
+if (restoredFromURL) {
+  currentStep = steps.length - 1;
+}
 render();
