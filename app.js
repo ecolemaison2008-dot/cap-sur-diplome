@@ -49,7 +49,8 @@ const steps = [
   { title: "ÉCOLES RECOMMANDÉES", eyebrow: "Écoles", render: renderSchools },
   { title: "PLAR / CRÉDITS", eyebrow: "Crédits possibles", render: renderPlar },
   { title: "STRATÉGIE RECOMMANDÉE", eyebrow: "Roadmap", render: renderRoadmap },
-  { title: "CHECKLIST OFFICIELLE", eyebrow: "Vérifications", render: renderChecklist }
+  { title: "CHECKLIST OFFICIELLE", eyebrow: "Vérifications", render: renderChecklist },
+  { title: "RÉSUMÉ FINAL", eyebrow: "Ton parcours", render: renderSummary }
 ];
 
 const options = {
@@ -486,6 +487,151 @@ function renderChecklist(step) {
     list.appendChild(row);
   });
   shell.appendChild(list);
+  return shell;
+}
+
+function renderSummary(step) {
+  const shell = screenShell(step, "Voici ton parcours complet généré par le simulateur. Imprime ou note les informations importantes avant de recommencer.", null);
+
+  const wrap = document.createElement("div");
+  wrap.className = "summary-screen";
+
+  const banner = document.createElement("div");
+  banner.className = "summary-banner";
+  banner.innerHTML = `
+    <div class="summary-banner-icon">🎓</div>
+    <div class="summary-banner-text">
+      <h2>Parcours généré avec succès</h2>
+      <p>Ce résumé est informatif et suggestif uniquement. Toutes les conditions doivent être vérifiées directement auprès des institutions.</p>
+    </div>
+  `;
+  wrap.appendChild(banner);
+
+  const cols = document.createElement("div");
+  cols.className = "summary-cols";
+
+  const profileBlock = document.createElement("div");
+  profileBlock.className = "summary-block";
+  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "—";
+  const langLabel = state.language === "francais" ? "Français" : state.language === "anglais" ? "Anglais" : "—";
+  const careerLabel = state.career ? (options.career.find(([v]) => v === state.career) || [null, "—"])[1] : "—";
+  const desLabel = state.des === "oui" ? "Oui" : state.des === "non" ? "Non" : "—";
+  const uniTypeLabel = state.universityType ? labelUniversityGroup(state.universityType) : "—";
+  profileBlock.innerHTML = `
+    <p class="summary-block-title">👤 Profil</p>
+    <div class="summary-profile-row">
+      <span class="tag">DES: <strong>${desLabel}</strong></span>
+      <span class="tag green">Diplôme: <strong>${diplomaLabel}</strong></span>
+      <span class="tag">Langue: <strong>${langLabel}</strong></span>
+      <span class="tag gold">Carrière: <strong>${careerLabel}</strong></span>
+      <span class="tag">Université: <strong>${uniTypeLabel}</strong></span>
+      ${state.traits.map(t => `<span class="tag">${t}</span>`).join("")}
+    </div>
+  `;
+  cols.appendChild(profileBlock);
+
+  const plarEstimate = getPlarEstimate();
+  const slidersSummary = Object.entries(state.sliders).map(([k, v]) => {
+    const labels = { motivation: "Motivation", math: "Math", english: "Anglais", availability: "Dispo", pace: "Rythme" };
+    return `<span class="tag">${labels[k]}: ${v}/5</span>`;
+  }).join("");
+  const plarBlock = document.createElement("div");
+  plarBlock.className = "summary-block";
+  plarBlock.innerHTML = `
+    <p class="summary-block-title">📊 Niveaux & PLAR</p>
+    <div class="summary-profile-row">${slidersSummary}</div>
+    <div class="summary-profile-row">
+      <span class="tag green">Crédits PLAR estimés: <strong>${plarEstimate.credits}</strong></span>
+      <span class="tag">Économie: <strong>${plarEstimate.savings}</strong></span>
+      <span class="tag">Réduction temps: <strong>${plarEstimate.time}</strong></span>
+    </div>
+  `;
+  cols.appendChild(plarBlock);
+
+  const uniBlock = document.createElement("div");
+  uniBlock.className = "summary-block";
+  const uniContent = document.createElement("div");
+  uniContent.className = "summary-checklist-list";
+  const uniPool = getRecommendedUniversities();
+  if (state.selectedUniversities.length > 0) {
+    state.selectedUniversities.forEach(name => {
+      const uni = uniPool.find(u => u.name === name);
+      const compat = uni ? getCompatibilityInfo(uni.score) : null;
+      const row = document.createElement("div");
+      row.className = "summary-uni-item";
+      row.innerHTML = `
+        <span class="summary-uni-name">${name}</span>
+        ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.percent}% — ${compat.badge}</span>` : ""}
+      `;
+      uniContent.appendChild(row);
+    });
+  } else {
+    const allTop = uniPool.slice(0, 3);
+    allTop.forEach(uni => {
+      const compat = getCompatibilityInfo(uni.score);
+      const row = document.createElement("div");
+      row.className = "summary-uni-item";
+      row.innerHTML = `
+        <span class="summary-uni-name">${uni.name}</span>
+        <span class="compat-badge ${compat.badgeClass}">${compat.percent}% — ${compat.badge}</span>
+      `;
+      uniContent.appendChild(row);
+    });
+    const note = document.createElement("p");
+    note.className = "summary-empty";
+    note.textContent = "Aucune université sélectionnée manuellement — top 3 affiché.";
+    uniContent.appendChild(note);
+  }
+  uniBlock.innerHTML = `<p class="summary-block-title">🏛️ Universités ciblées</p>`;
+  uniBlock.appendChild(uniContent);
+  cols.appendChild(uniBlock);
+
+  const roadmapBlock = document.createElement("div");
+  roadmapBlock.className = "summary-block";
+  const roadmapList = document.createElement("div");
+  roadmapList.className = "summary-roadmap-list";
+  getRoadmap().forEach((item, i) => {
+    const row = document.createElement("div");
+    row.className = "summary-roadmap-item";
+    row.innerHTML = `<span class="summary-roadmap-num">${i + 1}</span>${item}`;
+    roadmapList.appendChild(row);
+  });
+  roadmapBlock.innerHTML = `<p class="summary-block-title">🗺️ Roadmap</p>`;
+  roadmapBlock.appendChild(roadmapList);
+  cols.appendChild(roadmapBlock);
+
+  const checklistItems = [
+    "BSID verified", "Accreditation verified", "University contacted",
+    "Prerequisites verified", "NCAA verified", "Equivalencies confirmed"
+  ];
+  const checkBlock = document.createElement("div");
+  checkBlock.className = "summary-block";
+  const checkList = document.createElement("div");
+  checkList.className = "summary-checklist-list";
+  checklistItems.forEach(label => {
+    const done = Boolean(state.checklist[label]);
+    const row = document.createElement("div");
+    row.className = "summary-checklist-item " + (done ? "done" : "todo");
+    row.innerHTML = `
+      <span class="summary-check-icon ${done ? "done" : "todo"}">${done ? "✓" : "○"}</span>
+      ${label}
+    `;
+    checkList.appendChild(row);
+  });
+  checkBlock.innerHTML = `<p class="summary-block-title">✅ Checklist</p>`;
+  checkBlock.appendChild(checkList);
+  cols.appendChild(checkBlock);
+
+  wrap.appendChild(cols);
+
+  const printBtn = document.createElement("button");
+  printBtn.className = "summary-print-btn";
+  printBtn.type = "button";
+  printBtn.innerHTML = "🖨️ Imprimer ce résumé";
+  printBtn.addEventListener("click", () => window.print());
+  wrap.appendChild(printBtn);
+
+  shell.appendChild(wrap);
   return shell;
 }
 
