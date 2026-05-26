@@ -23,6 +23,102 @@ const state = {
   checklist: {}
 };
 
+const secondarySchools = {
+  ossd: [
+    { name: "Blyth Academy Online", bsid: "669675", tier: "★ Tier 1", site: "blytheducation.com/online", prix: "Sur demande", duree: "Auto-rythmé ou live (Orbit)", highlights: ["30 000+ familles", "160+ cours", "NCAA approuvé", "AP disponible", "Inspection MÉO max 3 ans"], plarQC: "PLAR + crédits QC évalués" },
+    { name: "Virtual High School (VHS)", bsid: "665681", tier: "★ Tier 1", site: "virtualhighschool.com", prix: "469 $–589 $ CAD/cours", duree: "Min 2 sem. / Max 18 mois", highlights: ["20+ ans d'expérience", "Tutorat gratuit inclus", "NCAA approuvé", "70+ cours", "120+ pays"], plarQC: "Éval. équivalence QC" },
+    { name: "Ontario Virtual School (OVS)", bsid: "665804", tier: "★ Tier 1", site: "ontariovirtualschool.ca", prix: "~650 $ CAD (CA) / ~1 224 $ (Intl)", duree: "Min 4 sem. / Max 12 mois", highlights: ["170+ cours", "25 000+ étudiants", "Éval. sous 2 jours", "Start anytime"], plarQC: "Via OVS Quebec – NPU" },
+    { name: "Ontario eSecondary (OES)", bsid: "667186", tier: "★ Tier 2", site: "oeshighschool.com", prix: "École-hôte 250 $ + éval. QC 150 $ + cours", duree: "Min 4 sem. / Max 12 mois", highlights: ["Tutorat 24/7 GRATUIT illimité", "Remise dès 2 cours", "NCAA approuvé", "~7 cours gr.12"], plarQC: "Programme QC dédié; PLAR" },
+    { name: "Toronto eSchool", bsid: "886520", tier: "★ Tier 2", site: "ossd.torontoeschool.com", prix: "Applic. 150 $ + Éval. 200 $ + École-hôte 500 $ + cours", duree: "9–10 mois (programme QC)", highlights: ["Accompagnement OUAC/OCAS", "Orientation 1-on-1", "60+ cours", "3 streams"], plarQC: "Programme structuré DES→OSSD en 1 an" },
+    { name: "Keystone School", bsid: "888468", tier: "★ Tier 3", site: "keystoneschools.ca", prix: "Sur demande", duree: "Min 4 sem. / Max 12 mois", highlights: ["École IB candidate", "Approche par projets", "Check-ins hebdo", "Campus Toronto"], plarQC: "Page dédiée DES QC; ~7 cours gr.12" },
+    { name: "Canadian Virtual School", bsid: "882250", tier: "★ Tier 2", site: "canadianvirtualschool.ca", prix: "~500 $–550 $ (CA) / ~750 $–800 $ (Intl)", duree: "Min 3 sem. / Max 12 mois", highlights: ["15+ ans d'expérience", "Parmi les moins chers", "OCT 1-on-1", "Fast-track gratuit"], plarQC: "Éval. équivalence dispo" },
+    { name: "Ontario Education Online (OEO)", bsid: "882902", tier: "★ Tier 3", site: "ontarioeducationonline.ca", prix: "499 $ (gr.10) / 599 $ (gr.11-12)", duree: "Min 4 sem. / Max 12 mois", highlights: ["AUCUN examen final", "100% auto-rythmé", "Projets + tâche culminante", "OCT certifié"], plarQC: "Éval. équivalence; programme personnalisé" },
+    { name: "The New Educator", bsid: "669484", tier: "★ Tier 3", site: "theneweducator.com", prix: "Sur demande (site en français)", duree: "Auto-rythmé; min 4 sem.", highlights: ["Site 100% en français", "Accompagnement FR disponible", "Ouvert à l'international", "~8 cours restants"], plarQC: "Éval. équivalence; crédits QC reconnus" },
+    { name: "Aubrey Academy", bsid: "665140", tier: "★ Tier 3", site: "aubreyacademy.ca", prix: "Sur demande (consultation gratuite)", duree: "Standard / fast-track / extended", highlights: ["NCAA approuvé", "3 vitesses de rythme", "Idéal athlètes", "Éval. gratuite du transcript"], plarQC: "Éval. gratuite du transcript" },
+    { name: "USCA Academy", bsid: "À confirmer", tier: "★ Tier 3", site: "uscaacademy.com", prix: "~16 800 $ CAD/an", duree: "Hybride live Zoom + campus (5j/sem)", highlights: ["Classes 5-15 élèves", "5 rentrées/an", "Alumni McGill/Waterloo", "Site FR disponible"], plarQC: "PLAR; crédits QC transférables" },
+    { name: "Blyth Academy Orbit", bsid: "669675", tier: "★ Option live", site: "blytheducation.com/orbit", prix: "Inclus dans Blyth", duree: "Semestres fixes", highlights: ["Classes virtuelles en temps réel", "Petits groupes", "Horaire structuré", "Idéal si encadrement fort"], plarQC: "Idem Blyth Academy" },
+    { name: "KAI Global School", bsid: "665538", tier: "★ Tier 3", site: "kaiglobalschool.com", prix: "Sur demande", duree: "Min 4 sem. / Max 12 mois", highlights: ["100+ cours", "Dual diploma disponible", "Programme international", "PLAR", "Ottawa (Kanata)"], plarQC: "Éval. équivalence QC; PLAR disponible" },
+    { name: "Toronto Imperial School (TIS)", bsid: "881941", tier: "★ Tier 3", site: "torontoimperial.com", prix: "690 $–1 450 $ CAD/cours", duree: "Classes live avec enseignants", highlights: ["Classes de 8-12 élèves", "20+ experts en admissions intl", "Réseau 330 universités partenaires", "Accompagnement international"], plarQC: "6-8 cours suffisent depuis DES; crédits QC reconnus" }
+  ],
+  usa: [
+    { name: "Clonlara School", accred: "NCPSA, MSA-CESS, Accred. Intl", site: "clonlara.org", pays: "Michigan, USA", prix: "395 $ USD/demi-crédit ou 695 $ USD/crédit + frais Off-Campus", duree: "Libre — max 3 cours/an", highlights: ["Site et accompagnement en FRANÇAIS", "Philosophie autonome/unschooling", "Diplôme Michigan (USA)", "Le seul avec support FR"], plarQC: "Crédits QC évalués et intégrés" },
+    { name: "Laurel Springs School", accred: "WASC + Cognia", site: "laurelsprings.com", pays: "USA", prix: "7 200 $–17 250 $ USD/an", duree: "Auto-rythmé — 12 mois min", highlights: ["240+ cours", "24 AP®", "AP Capstone", "160+ NCAA", "6700+ diplômés", "100 pays", "Double inscription Baylor/Syracuse"], plarQC: "Éval. crédits antérieurs; transfert jusqu'à 75%" },
+    { name: "Excel High School", accred: "Cognia + MSA-CESS + NCA + NWAC", site: "excelhighschool.com", pays: "USA", prix: "~1 900 $ USD/an (standard) / 99 $ USD/mois (adultes)", duree: "Auto-rythmé — quelques mois si crédits transférés", highlights: ["Le plus abordable de la catégorie", "Paiement mensuel flexible", "AP® et honours", "Reconnu universités US et Canada ang."], plarQC: "Transfert jusqu'à 75%; crédits QC reconnus" },
+    { name: "Forest Trail Academy", accred: "Cognia + MSA-CESS + AI + NCPSA", site: "foresttrailacademy.com", pays: "USA", prix: "~3 200 $ USD/an", duree: "Auto-rythmé — 12 mois", highlights: ["Dual diploma HS + Associate (AA)", "NCAA approuvé", "Idéal athlètes", "100% en ligne", "100% admission garantie"], plarQC: "Transfert crédits; 100% admission garantie" },
+    { name: "James Madison HS", accred: "Cognia + DEAC", site: "jmhs.com", pays: "USA", prix: "699 $–1 299 $ USD (diplôme complet)", duree: "Auto-rythmé — quelques mois", highlights: ["Le moins cher pour diplôme complet", "Paiement mensuel sans intérêt", "Reconnu emploi et community college", "⚠️ Moins fort pour universités R1"], plarQC: "Transfert jusqu'à 17 crédits" },
+    { name: "American School of Correspondence", accred: "MSA-CESS + NCPSA + Accred. Intl", site: "americanschoolofcorr.com", pays: "USA (1897)", prix: "~1 100 $ USD/an (5 crédits) / ~4 400 $ USD diplôme complet (matériel INCLUS)", duree: "Auto-rythmé — papier OU en ligne", highlights: ["LA PLUS ANCIENNE (1897)", "Non-profit / BBB A+", "Matériel inclus", "General HS et College Preparatory"], plarQC: "Transfert crédits depuis école accréditée" },
+    { name: "Penn Foster High School", accred: "Cognia + MSA-CESS + DEAC", site: "pennfoster.edu", pays: "USA (1890)", prix: "1 149 $ USD (complet) / 55 $ USD/mois", duree: "Auto-rythmé — 21 crédits", highlights: ["Fondée en 1890", "Triple accréditation", "2 tracks : General et College Prep", "Paiement mensuel flexible", "Idéal budget serré"], plarQC: "Transfert crédits accepté" },
+    { name: "Whitmore School", accred: "Cognia + NCA-CASI + SACS-CASI + NWAC", site: "whitmoreschool.org", pays: "USA (1994)", prix: "1 699 $ USD/an (Diploma) / 475 $ USD/crédit", duree: "Mastery learning — pas de semestres ni délais", highlights: ["Première école secondaire en ligne (1994)", "Apprentissage par maîtrise", "Enseignant 1-on-1", "4 formules", "⚠️ Cours NON reconnus NCAA"], plarQC: "Min 4.5 crédits à compléter à Whitmore" },
+    { name: "Ogburn Online School", accred: "Cognia + WASC + MSA-CESS + Ai + NCPSA + AISF + NCAA", site: "ogburnonlineschool.com", pays: "USA", prix: "250 $ USD/mois", duree: "Auto-rythmé — mensuel", highlights: ["6 organismes d'accréditation", "Le plus accrédité de la catégorie", "250 $/mois seulement", "NCAA approuvé", "Très sous-estimé"], plarQC: "Transfert crédits accepté" },
+    { name: "Crimson Global Academy (CGA)", accred: "WASC + NCAA + Cambridge + CollegeBoard AP", site: "crimsonglobalacademy.school", pays: "USA / International", prix: "Prix par cours (sur demande)", duree: "Live + auto-rythmé + 1-on-1", highlights: ["Top 3 online high school USA (Niche 2025)", "WASC 6 ans (maximum)", "NCAA approuvé", "US Diploma + IGCSE + A-Levels + AP", "200+ enseignants", "Accès réseau Crimson (idéal Ivy League)"], plarQC: "Crédits QC transférables" },
+    { name: "Dwight Global Online School", accred: "Cognia + MSA-CESS + CIS + IBO", site: "dwight.edu/dwight-global", pays: "USA (New York)", prix: "42 750 $ USD/an", duree: "Annuel — classes live", highlights: ["#1 online high school USA (Niche 2025)", "IB Diploma + AP", "Programme le plus prestigieux", "Pour profils d'élite uniquement", "Réseau Dwight Schools mondial"], plarQC: "Crédits internationaux reconnus; IB ou AP" }
+  ],
+  udem: [
+    { name: "Année préparatoire UdeM", accred: "Université de Montréal", site: "admission.umontreal.ca/programmes/annee-preparatoire", pays: "Québec, Canada", prix: "~4 350 $ CAD total (résident QC, 2 trimestres)", duree: "1 an (24 crédits)", highlights: ["250+ programmes de baccalauréat en français", "Sciences / Sciences humaines / Arts et lettres", "DES + OSSD = accès direct recommandé", "DES + 4 ans d'interruption aussi accepté", "Coût très abordable pour résidents QC"], plarQC: "Programme 1-955-4-1 — Faculté des arts et des sciences" }
+  ]
+};
+
+function buildSchoolCard(school, type) {
+  const isBSID = type === "ossd";
+  const idLabel = isBSID ? `BSID ${school.bsid}` : school.accred;
+  const tierBadge = school.tier ? `<span class="school-tier">${school.tier}</span>` : "";
+  return `
+    <div class="school-card">
+      <div class="school-card-top">
+        <div class="school-name-row">
+          <strong class="school-name">${school.name}</strong>
+          ${tierBadge}
+        </div>
+        <div class="school-id">${idLabel}</div>
+      </div>
+      <div class="school-meta">
+        <div class="school-meta-item"><span class="school-meta-label">💰 Prix</span><span>${school.prix}</span></div>
+        <div class="school-meta-item"><span class="school-meta-label">⏱ Durée</span><span>${school.duree}</span></div>
+        <div class="school-meta-item"><span class="school-meta-label">📋 Crédits QC</span><span>${school.plarQC}</span></div>
+      </div>
+      <div class="school-highlights">
+        ${school.highlights.map(h => `<span class="school-tag">${h}</span>`).join("")}
+      </div>
+      <a href="https://${school.site}" target="_blank" rel="noopener" class="school-link">↗ Visiter ${school.site}</a>
+    </div>
+  `;
+}
+
+function renderAnnuaireTab(tab) {
+  const content = document.getElementById("annuaireContent");
+  const schools = secondarySchools[tab];
+  const type = tab;
+  content.innerHTML = `<div class="school-grid">${schools.map(s => buildSchoolCard(s, type)).join("")}</div>`;
+}
+
+document.getElementById("annuaireBtn").addEventListener("click", () => {
+  const overlay = document.getElementById("annuaireOverlay");
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  renderAnnuaireTab("ossd");
+});
+
+document.getElementById("annuaireClose").addEventListener("click", () => {
+  const overlay = document.getElementById("annuaireOverlay");
+  overlay.classList.remove("open");
+  overlay.setAttribute("aria-hidden", "true");
+});
+
+document.getElementById("annuaireOverlay").addEventListener("click", (e) => {
+  if (e.target === document.getElementById("annuaireOverlay")) {
+    document.getElementById("annuaireOverlay").classList.remove("open");
+    document.getElementById("annuaireOverlay").setAttribute("aria-hidden", "true");
+  }
+});
+
+document.querySelectorAll(".annuaire-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".annuaire-tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderAnnuaireTab(btn.dataset.tab);
+  });
+});
+
 const STORAGE_KEY = "cap-diplome-v1";
 
 function saveStateToStorage() {

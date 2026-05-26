@@ -23,8 +23,29 @@
             <small>Simulateur éducatif</small>
           </div>
         </div>
-        <div class="persistent-disclaimer">Document informatif et suggestif uniquement.</div>
+        <div class="topbar-right">
+          <button id="annuaireBtn" class="annuaire-btn" type="button">📋 Annuaire des écoles</button>
+          <div class="persistent-disclaimer">Document informatif et suggestif uniquement.</div>
+        </div>
       </header>
+
+      <div id="annuaireOverlay" class="annuaire-overlay" aria-hidden="true">
+        <div class="annuaire-modal" role="dialog" aria-label="Annuaire des écoles">
+          <div class="annuaire-header">
+            <div>
+              <h2 class="annuaire-title">📋 Annuaire des écoles</h2>
+              <p class="annuaire-subtitle">21 écoles comparées et vérifiées — source : Guide v2.4 Mai 2026</p>
+            </div>
+            <button id="annuaireClose" class="annuaire-close" type="button" aria-label="Fermer">✕</button>
+          </div>
+          <div class="annuaire-tabs">
+            <button class="annuaire-tab active" data-tab="ossd" type="button">🇨🇦 OSSD Ontario <span class="tab-count">14</span></button>
+            <button class="annuaire-tab" data-tab="usa" type="button">🇺🇸 USA Diploma <span class="tab-count">11</span></button>
+            <button class="annuaire-tab" data-tab="udem" type="button">🎓 Année prépa UdeM <span class="tab-count">1</span></button>
+          </div>
+          <div id="annuaireContent" class="annuaire-content"></div>
+        </div>
+      </div>
 
       <main class="wizard" aria-live="polite">
         <section class="panel">
