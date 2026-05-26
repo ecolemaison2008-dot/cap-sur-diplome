@@ -23,6 +23,58 @@ const state = {
   checklist: {}
 };
 
+const STORAGE_KEY = "cap-diplome-v1";
+
+function saveStateToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, step: currentStep }));
+  } catch (e) {}
+}
+
+function loadStateFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return false;
+    const saved = JSON.parse(raw);
+    if (!saved || typeof saved !== "object") return false;
+    const s = saved.state;
+    if (s.des !== undefined) state.des = s.des;
+    if (s.language !== undefined) state.language = s.language;
+    if (s.diploma !== undefined) state.diploma = s.diploma;
+    if (Array.isArray(s.traits)) state.traits = s.traits;
+    if (s.sliders) state.sliders = { ...state.sliders, ...s.sliders };
+    if (s.career !== undefined) state.career = s.career;
+    if (s.universityType !== undefined) state.universityType = s.universityType;
+    if (Array.isArray(s.selectedUniversities)) state.selectedUniversities = s.selectedUniversities;
+    if (s.plar) state.plar = { ...state.plar, ...s.plar };
+    if (s.checklist) state.checklist = s.checklist;
+    if (typeof saved.step === "number") currentStep = saved.step;
+    return true;
+  } catch (e) { return false; }
+}
+
+function clearStorage() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+
+function showRestoredToast() {
+  const toast = document.createElement("div");
+  toast.className = "restore-toast";
+  toast.innerHTML = "↩️ Progression restaurée automatiquement — <button class='restore-reset'>Recommencer à zéro</button>";
+  toast.querySelector(".restore-reset").addEventListener("click", () => {
+    resetState();
+    currentStep = 0;
+    toast.remove();
+    render();
+  });
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add("toast-visible"), 50);
+  setTimeout(() => {
+    toast.classList.remove("toast-visible");
+    setTimeout(() => toast.remove(), 400);
+  }, 6000);
+}
+
 function resetState() {
   state.des = null;
   state.language = null;
@@ -34,6 +86,7 @@ function resetState() {
   state.selectedUniversities = [];
   state.plar = { homeschooling: false, projects: false, work: false, selfLearning: false, portfolios: false };
   state.checklist = {};
+  clearStorage();
 }
 
 let currentStep = 0;
@@ -157,6 +210,7 @@ function render() {
   document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "Recommencer" : "Continuer";
   document.getElementById("nextBtn").disabled = !canContinue();
   updateInsight();
+  saveStateToStorage();
 }
 
 function screenShell(step, subcopy, warning) {
@@ -912,5 +966,11 @@ document.getElementById("nextBtn").addEventListener("click", () => {
 const restoredFromURL = decodeStateFromURL();
 if (restoredFromURL) {
   currentStep = steps.length - 1;
+  render();
+} else {
+  const restoredFromStorage = loadStateFromStorage();
+  render();
+  if (restoredFromStorage && currentStep > 0) {
+    showRestoredToast();
+  }
 }
-render();
