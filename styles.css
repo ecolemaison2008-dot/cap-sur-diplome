@@ -1417,7 +1417,31 @@ h1 {
   border: 1px solid var(--line);
   color: var(--navy);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
+}
+
+.signal-green {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.signal-blue {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.signal-gold {
+  background: #fffbeb;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.signal-red {
+  background: #fff5f5;
+  border-color: #fca5a5;
+  color: #991b1b;
 }
 
 .ethics-card {

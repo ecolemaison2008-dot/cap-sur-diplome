@@ -933,23 +933,65 @@ function canContinue() {
 function updateInsight() {
   const insight = document.getElementById("insightText");
   const signals = document.getElementById("signalList");
-  const profile = [];
-  if (state.traits.includes("Scientifique") && state.sliders.math >= 4 && state.traits.includes("Fast-track")) {
-    profile.push("Profil STEM compétitif");
-  }
-  if (state.traits.includes("Créatif") && state.traits.includes("Anxieux face aux examens") && state.language === "francais") {
-    profile.push("Profil flexible orienté projets");
-  }
-  if (state.language === "francais") profile.push("Vérification Québec requise");
-  if (state.career === "stem") profile.push("AP et préalables à prévoir");
-  if (state.universityType === "usa-top") profile.push("Admissions ultra compétitives");
-  if (state.diploma === "ossd") profile.push("OSSD lisible en Ontario");
-  if (state.diploma === "us") profile.push("Common App / NCAA à vérifier");
 
-  insight.textContent = profile.length
-    ? "Le simulateur ajuste le parcours selon les signaux détectés."
-    : "Répondez à quelques questions pour générer une stratégie prudente et personnalisée.";
-  signals.innerHTML = profile.slice(0, 5).map((item) => `<div class="signal">${item}</div>`).join("");
+  const stepMessages = [
+    "Ton point de départ change tout — deux chemins très différents t'attendent.",
+    state.language === "francais"
+      ? "Peu d'options en français — quelques écoles offrent un accompagnement francophone."
+      : "L'anglais ouvre l'accès à la majorité des écoles et universités recommandées.",
+    state.diploma === "ossd"
+      ? "L'OSSD est reconnu partout au Canada, aux USA et à l'international."
+      : state.diploma === "us"
+      ? "Le diplôme américain est idéal pour Common App, NCAA et les universités US."
+      : "Choisis ton diplôme cible pour affiner les recommandations.",
+    state.traits.length
+      ? `${state.traits.length} trait${state.traits.length > 1 ? "s" : ""} sélectionné${state.traits.length > 1 ? "s" : ""} — le simulateur ajuste les recommandations.`
+      : "Sélectionne ce qui te ressemble — plusieurs réponses possibles.",
+    state.career
+      ? `Objectif ${getCareerTitle()} — les préalables et la compétitivité sont ajustés.`
+      : "Ton domaine détermine les préalables et le niveau de compétition.",
+    state.universityType
+      ? `Catégorie sélectionnée : ${labelUniversityGroup(state.universityType)}.`
+      : "Choisis la catégorie d'université qui correspond à ton ambition.",
+    state.selectedUniversities.length
+      ? `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} dans ton parcours.`
+      : "Sélectionne les universités qui t'intéressent pour les ajouter au résumé.",
+    "Ces écoles sont filtrées selon ton diplôme et ton profil. Consulte l'Annuaire pour plus de détails.",
+    "Ton expérience passée peut réduire la durée et le coût de ton parcours.",
+    "Ce plan est une base de départ — valide chaque étape avec les institutions.",
+    "Quelques points clés à confirmer avant de finaliser ton choix d'école.",
+    "Ton parcours complet est prêt. Imprime ou partage pour garder une trace."
+  ];
+
+  const msg = stepMessages[currentStep] || "Le simulateur s'adapte à ton profil en temps réel.";
+  insight.textContent = msg;
+
+  const tags = [];
+
+  if (state.des === "oui") tags.push({ text: "DES obtenu ✓", tone: "green" });
+  if (state.des === "non") tags.push({ text: "Parcours secondaire complet", tone: "blue" });
+
+  if (state.diploma === "ossd") tags.push({ text: "OSSD Ontario", tone: "green" });
+  if (state.diploma === "us") tags.push({ text: "US Diploma", tone: "green" });
+
+  if (state.language === "francais") tags.push({ text: "Suivi francophone — options limitées", tone: "gold" });
+
+  if (state.career === "stem") tags.push({ text: "AP et préalables à planifier", tone: "gold" });
+  else if (state.career) tags.push({ text: getCareerTitle(), tone: "blue" });
+
+  if (state.traits.includes("Fast-track")) tags.push({ text: "Rythme accéléré", tone: "gold" });
+  if (state.traits.includes("Anxieux face aux examens")) tags.push({ text: "Évaluations progressives", tone: "blue" });
+  if (state.traits.includes("International")) tags.push({ text: "Dossier international", tone: "blue" });
+
+  if (state.universityType === "usa-top") tags.push({ text: "Dossier exceptionnel requis", tone: "red" });
+  if (state.universityType === "quebec-fr") tags.push({ text: "Vérification individuelle", tone: "red" });
+
+  const plarCount = Object.values(state.plar).filter(Boolean).length;
+  if (plarCount >= 2) tags.push({ text: `~${plarCount * 2}–${Math.min(16, plarCount * 4)} crédits PLAR estimés`, tone: "green" });
+
+  if (state.selectedUniversities.length) tags.push({ text: `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} ciblée${state.selectedUniversities.length > 1 ? "s" : ""}`, tone: "green" });
+
+  signals.innerHTML = tags.slice(0, 5).map(t => `<div class="signal signal-${t.tone}">${t.text}</div>`).join("");
 }
 
 function getRiskTags() {
