@@ -640,6 +640,75 @@ function renderSummary(step) {
 
   wrap.appendChild(cols);
 
+  const verifSection = document.createElement("div");
+  verifSection.className = "warning-section";
+  verifSection.innerHTML = `
+    <div class="warning-section-header">
+      <span class="warning-section-icon">⚠️</span>
+      <div>
+        <h3 class="warning-section-title">Vérifications obligatoires</h3>
+        <p class="warning-section-sub">Ces points doivent être confirmés directement auprès des institutions avant toute décision.</p>
+      </div>
+    </div>
+    <div class="verif-grid">
+      ${[
+        ["🏛️", "Accréditation", "Vérifier que l'école est reconnue par les autorités compétentes (BSID, accréditation régionale ou nationale)."],
+        ["🆔", "BSID", "Le Business / School Identification Number doit être valide et actif pour la reconnaissance du diplôme."],
+        ["🏈", "NCAA", "Si un parcours sportif est envisagé, valider l'éligibilité avec le NCAA Eligibility Center avant l'inscription."],
+        ["📋", "Admissions", "Les exigences d'admission changent chaque cycle. Contacter directement le bureau des admissions de chaque université ciblée."],
+        ["📚", "AP disponibles", "Confirmer quels cours AP sont réellement offerts par l'école et si les examens College Board sont accessibles."],
+        ["🏠", "Politique homeschool", "Chaque université a sa propre politique envers les candidats homeschoolés ou issus d'écoles en ligne."],
+        ["🎯", "Exigences université cible", "Préalables, portfolio, lettre de motivation, tests standardisés — vérifier programme par programme."],
+        ["💲", "Coûts réels", "Les frais indiqués sont des estimations. Ajouter frais d'inscription, matériel, examens AP, hébergement et assurance."],
+        ["👁️", "Examens surveillés", "Certains programmes exigent des examens en présentiel ou sous surveillance. À confirmer avant toute inscription."],
+        ["📄", "Transcript", "La validité et la lisibilité du relevé de notes officiel doivent être confirmées par l'université cible."]
+      ].map(([icon, label, desc]) => `
+        <div class="verif-card">
+          <span class="verif-icon">${icon}</span>
+          <div class="verif-body">
+            <strong class="verif-label">${label}</strong>
+            <span class="verif-desc">${desc}</span>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+  wrap.appendChild(verifSection);
+
+  const limitesSection = document.createElement("div");
+  limitesSection.className = "warning-section limits-section";
+  limitesSection.innerHTML = `
+    <div class="warning-section-header">
+      <span class="warning-section-icon">🚨</span>
+      <div>
+        <h3 class="warning-section-title">LIMITES ET AVERTISSEMENTS</h3>
+        <p class="warning-section-sub">Ce simulateur est un outil éducatif. Il ne remplace pas un conseiller professionnel ni les informations officielles.</p>
+      </div>
+    </div>
+    <div class="limits-grid">
+      ${[
+        ["Les admissions changent régulièrement", "Les politiques, exigences et critères d'évaluation peuvent être modifiés sans préavis d'une année à l'autre."],
+        ["Chaque université évalue les dossiers différemment", "Il n'existe pas de formule universelle. Deux dossiers identiques peuvent obtenir des résultats opposés selon l'institution."],
+        ["Aucun parcours ne garantit l'admission", "Ce simulateur génère des pistes éducatives, non des garanties. L'admission reste une décision discrétionnaire de chaque université."],
+        ["Certaines écoles sont plus reconnues que d'autres", "La lisibilité d'un diplôme en ligne ou homeschool varie selon l'université cible, le programme et le pays."],
+        ["Les programmes compétitifs évaluent le profil global", "Notes, activités, lettres, tests standardisés, portfolio, entretiens — un seul critère ne suffit jamais."],
+        ["Les informations doivent être revérifiées directement", "Toutes les données de ce simulateur proviennent de sources publiques et doivent être validées auprès des institutions concernées."]
+      ].map(([title, desc]) => `
+        <div class="limit-card">
+          <span class="limit-bullet">!</span>
+          <div class="limit-body">
+            <strong class="limit-title">${title}</strong>
+            <span class="limit-desc">${desc}</span>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+    <div class="limits-footer">
+      Ce document est fourni à titre informatif et suggestif uniquement. CAP DIPLÔME ne garantit aucun résultat académique ou d'admission.
+    </div>
+  `;
+  wrap.appendChild(limitesSection);
+
   const actionRow = document.createElement("div");
   actionRow.className = "summary-action-row";
 
