@@ -403,6 +403,44 @@ h1 {
   color: var(--muted);
 }
 
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 0 4px;
+  flex-wrap: wrap;
+}
+
+.card-fees {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  background: #f1f5f9;
+  border-radius: 999px;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.card-link {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(11,107,67,0.3);
+  background: #f0fdf4;
+  white-space: nowrap;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.card-link:hover {
+  background: #dcfce7;
+  border-color: var(--green);
+}
+
 .selected-check {
   margin-top: 10px;
   display: inline-flex;
@@ -629,14 +667,53 @@ h1 {
   border: 1px solid var(--line);
 }
 
-.summary-uni-item + .summary-uni-item {
-  margin-top: 0;
+.summary-uni-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.summary-uni-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .summary-uni-name {
   font-size: 13px;
   font-weight: 800;
   color: var(--navy);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-uni-fees {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.summary-uni-link {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(11,107,67,0.3);
+  background: #f0fdf4;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 150ms ease;
+  flex-shrink: 0;
+}
+
+.summary-uni-link:hover {
+  background: #dcfce7;
 }
 
 .summary-roadmap-list {

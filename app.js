@@ -98,35 +98,35 @@ const options = {
 };
 
 const universities = [
-  { name: "Athabasca University", group: "canada-flex", fit: ["Autonome", "International"], text: "Option ouverte et flexible. Valider exigences du programme précis." },
-  { name: "Thompson Rivers Open Learning", group: "canada-flex", fit: ["Autonome"], text: "Souplesse élevée, utile pour transition ou reprise de préalables." },
-  { name: "Royal Roads", group: "canada-flex", fit: ["Créatif"], text: "Approches appliquées selon programme, admission à vérifier." },
-  { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option standard en Ontario. OSSD souvent lisible, préalables variables." },
-  { name: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués et urbains. Portfolio parfois requis." },
-  { name: "University of Ottawa", group: "canada-standard", fit: ["Littéraire"], text: "Bilinguisme institutionnel possible selon programme, exigences à confirmer." },
-  { name: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Bon alignement politiques publiques, médias, informatique." },
-  { name: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très compétitif en STEM. AP, math avancée et notes élevées recommandées." },
-  { name: "University of Toronto", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences par campus et programme." },
-  { name: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Ne pas simplifier les préalables." },
-  { name: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Profil global solide requis. Exigences et suppléments à vérifier." },
-  { name: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Reconnaissance et équivalences variables pour candidats non traditionnels." },
-  { name: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Conditions variables: DEC, préalables, année préparatoire ou étude individuelle." },
-  { name: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Vérification individuelle requise, surtout pour profils sans DEC." },
-  { name: "Sherbrooke", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer." },
-  { name: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Flexible et accessible selon programme. Valider reconnaissance externe." },
-  { name: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large offre en ligne. Exigences précises selon programme." },
-  { name: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible. Bien vérifier objectifs professionnels." },
-  { name: "Oregon State", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option USA standard avec parcours en ligne dans certains domaines." },
-  { name: "University of Arizona", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Options variées, dossier international à valider." },
-  { name: "Penn State", group: "usa-standard", fit: ["International"], text: "World Campus et options standards. Conditions par programme." },
-  { name: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif, portfolio ou supplément possible selon faculté." },
-  { name: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Très fort en tech/STEM. Math, AP et projets recommandés." },
-  { name: "Boston University", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif, dossier académique et activités importantes." },
-  { name: "Harvard", group: "usa-top", fit: ["International"], text: "Admissions ultra compétitives. Aucun parcours ne garantit l'accès." },
-  { name: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Admissions ultra compétitives, niveau STEM exceptionnel attendu." },
-  { name: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Admissions ultra compétitives, impact et excellence requis." },
-  { name: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Admissions ultra compétitives, profil global exceptionnel." },
-  { name: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Admissions ultra compétitives, exigences académiques très élevées." }
+  { name: "Athabasca University", group: "canada-flex", fit: ["Autonome", "International"], text: "Option ouverte et flexible. Valider exigences du programme précis.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Thompson Rivers Open Learning", group: "canada-flex", fit: ["Autonome"], text: "Souplesse élevée, utile pour transition ou reprise de préalables.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Royal Roads", group: "canada-flex", fit: ["Créatif"], text: "Approches appliquées selon programme, admission à vérifier.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
+  { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option standard en Ontario. OSSD souvent lisible, préalables variables.", url: "https://futurestudents.yorku.ca/apply", fees: "~30 000–38 000 CAD/an", currency: "CAD" },
+  { name: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués et urbains. Portfolio parfois requis.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
+  { name: "University of Ottawa", group: "canada-standard", fit: ["Littéraire"], text: "Bilinguisme institutionnel possible selon programme, exigences à confirmer.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
+  { name: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Bon alignement politiques publiques, médias, informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
+  { name: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très compétitif en STEM. AP, math avancée et notes élevées recommandées.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
+  { name: "University of Toronto", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
+  { name: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Ne pas simplifier les préalables.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
+  { name: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Profil global solide requis. Exigences et suppléments à vérifier.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
+  { name: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Reconnaissance et équivalences variables pour candidats non traditionnels.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
+  { name: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Conditions variables: DEC, préalables, année préparatoire ou étude individuelle.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
+  { name: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Vérification individuelle requise, surtout pour profils sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
+  { name: "Sherbrooke", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer.", url: "https://www.usherbrooke.ca/admission/", fees: "~7 000–21 000 CAD/an", currency: "CAD" },
+  { name: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Flexible et accessible selon programme. Valider reconnaissance externe.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
+  { name: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large offre en ligne. Exigences précises selon programme.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
+  { name: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible. Bien vérifier objectifs professionnels.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
+  { name: "Oregon State", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option USA standard avec parcours en ligne dans certains domaines.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
+  { name: "University of Arizona", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Options variées, dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
+  { name: "Penn State", group: "usa-standard", fit: ["International"], text: "World Campus et options standards. Conditions par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
+  { name: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif, portfolio ou supplément possible selon faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
+  { name: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Très fort en tech/STEM. Math, AP et projets recommandés.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
+  { name: "Boston University", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif, dossier académique et activités importantes.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
+  { name: "Harvard", group: "usa-top", fit: ["International"], text: "Admissions ultra compétitives. Aucun parcours ne garantit l'accès.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Admissions ultra compétitives, niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Admissions ultra compétitives, impact et excellence requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Admissions ultra compétitives, profil global exceptionnel.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Admissions ultra compétitives, exigences académiques très élevées.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
 ];
 
 const schools = [
@@ -310,6 +310,10 @@ function renderUniversities(step) {
         <span class="compat-percent">${compat.percent}%</span>
       </div>
       <p class="card-text">${uni.text}</p>
+      <div class="card-meta-row">
+        <span class="card-fees">💰 ${uni.fees}</span>
+        <a class="card-link" href="${uni.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Admissions officielles ↗</a>
+      </div>
       <div class="tag-row">
         <span class="tag green">${labelUniversityGroup(uni.group)}</span>
         ${getRiskTags().map((tag) => `<span class="tag ${tag.tone}">${tag.text}</span>`).join("")}
@@ -560,8 +564,14 @@ function renderSummary(step) {
       const row = document.createElement("div");
       row.className = "summary-uni-item";
       row.innerHTML = `
-        <span class="summary-uni-name">${name}</span>
-        ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.percent}% — ${compat.badge}</span>` : ""}
+        <div class="summary-uni-left">
+          <span class="summary-uni-name">${name}</span>
+          ${uni && uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
+        </div>
+        <div class="summary-uni-right">
+          ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.percent}%</span>` : ""}
+          ${uni && uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
+        </div>
       `;
       uniContent.appendChild(row);
     });
@@ -572,8 +582,14 @@ function renderSummary(step) {
       const row = document.createElement("div");
       row.className = "summary-uni-item";
       row.innerHTML = `
-        <span class="summary-uni-name">${uni.name}</span>
-        <span class="compat-badge ${compat.badgeClass}">${compat.percent}% — ${compat.badge}</span>
+        <div class="summary-uni-left">
+          <span class="summary-uni-name">${uni.name}</span>
+          ${uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
+        </div>
+        <div class="summary-uni-right">
+          <span class="compat-badge ${compat.badgeClass}">${compat.percent}%</span>
+          ${uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
+        </div>
       `;
       uniContent.appendChild(row);
     });
