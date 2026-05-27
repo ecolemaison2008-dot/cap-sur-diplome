@@ -88,6 +88,7 @@ function renderAnnuaireTab(tab) {
   const content = document.getElementById("annuaireContent");
   if (tab === "glossaire") {
     content.innerHTML = buildGlossaire();
+    initGlossaireSearch();
     return;
   }
   const schoolList = secondarySchools[tab];
@@ -122,22 +123,57 @@ function buildGlossaire() {
     { abbr: "OEO", full: "Ontario Education Online", desc: "École en ligne ontarienne sans examen final (BSID 882902). 100% auto-rythmé, apprentissage par projets." }
   ];
 
+  const cardsHtml = terms.map(t => `
+    <div class="glossaire-card" data-abbr="${t.abbr.toLowerCase()}" data-full="${t.full.toLowerCase()}" data-desc="${t.desc.toLowerCase()}">
+      <div class="glossaire-abbr">${t.abbr}</div>
+      <div class="glossaire-body">
+        <strong class="glossaire-full">${t.full}</strong>
+        <span class="glossaire-desc">${t.desc}</span>
+      </div>
+    </div>
+  `).join("");
+
   return `
+    <div class="glossaire-search-wrap">
+      <input
+        id="glossaireSearch"
+        class="glossaire-search"
+        type="search"
+        placeholder="Rechercher un terme… ex : OSSD, AP, DEC"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
     <div class="glossaire-intro">
       <p>Définitions des termes et abréviations utilisés dans ce simulateur. Toutes les informations sont à valider directement auprès des institutions concernées.</p>
     </div>
-    <div class="glossaire-grid">
-      ${terms.map(t => `
-        <div class="glossaire-card">
-          <div class="glossaire-abbr">${t.abbr}</div>
-          <div class="glossaire-body">
-            <strong class="glossaire-full">${t.full}</strong>
-            <span class="glossaire-desc">${t.desc}</span>
-          </div>
-        </div>
-      `).join("")}
+    <div id="glossaireGrid" class="glossaire-grid">
+      ${cardsHtml}
     </div>
+    <p id="glossaireEmpty" class="glossaire-empty" style="display:none;">Aucun résultat pour cette recherche.</p>
   `;
+}
+
+function initGlossaireSearch() {
+  const input = document.getElementById("glossaireSearch");
+  if (!input) return;
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase();
+    const grid = document.getElementById("glossaireGrid");
+    const empty = document.getElementById("glossaireEmpty");
+    if (!grid) return;
+    let visible = 0;
+    grid.querySelectorAll(".glossaire-card").forEach(card => {
+      const match = !q
+        || card.dataset.abbr.includes(q)
+        || card.dataset.full.includes(q)
+        || card.dataset.desc.includes(q);
+      card.style.display = match ? "" : "none";
+      if (match) visible++;
+    });
+    empty.style.display = visible === 0 ? "block" : "none";
+  });
+  input.focus();
 }
 
 document.getElementById("annuaireBtn").addEventListener("click", () => {
