@@ -420,7 +420,9 @@ function renderUniversityType(step) {
       ? "Chaque dossier est évalué individuellement — vérification directe indispensable"
       : "Niveau ultra-compétitif — dossier exceptionnel requis"
     : null;
-  return renderChoiceStep(step, "universityType", options.universityType, "Choisis la catégorie qui correspond à ton ambition et à ta préparation actuelle.", warning, "three");
+  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "ton diplôme";
+  const subcopy = `Ton parcours secondaire (${diplomaLabel}) est maintenant défini. Choisis le niveau universitaire qui correspond à ton ambition et ta préparation.`;
+  return renderChoiceStep(step, "universityType", options.universityType, subcopy, warning, "three");
 }
 
 function getCompatibilityInfo(score) {
@@ -431,7 +433,9 @@ function getCompatibilityInfo(score) {
 }
 
 function renderUniversities(step) {
-  const shell = screenShell(step, "Sélectionne une ou plusieurs universités qui t'intéressent. Aucune garantie d'admission.", universityWarning());
+  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "ton diplôme";
+  const subcopy = `Ces universités sont filtrées selon ton profil, ton ${diplomaLabel} et ta catégorie choisie. Sélectionne celles qui t'intéressent — aucune garantie d'admission.`;
+  const shell = screenShell(step, subcopy, universityWarning());
 
   const selectionInfo = document.createElement("p");
   selectionInfo.className = "selection-hint";
