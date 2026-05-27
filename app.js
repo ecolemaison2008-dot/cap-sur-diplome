@@ -86,9 +86,58 @@ function buildSchoolCard(school, type) {
 
 function renderAnnuaireTab(tab) {
   const content = document.getElementById("annuaireContent");
-  const schools = secondarySchools[tab];
+  if (tab === "glossaire") {
+    content.innerHTML = buildGlossaire();
+    return;
+  }
+  const schoolList = secondarySchools[tab];
   const type = tab;
-  content.innerHTML = `<div class="school-grid">${schools.map(s => buildSchoolCard(s, type)).join("")}</div>`;
+  content.innerHTML = `<div class="school-grid">${schoolList.map(s => buildSchoolCard(s, type)).join("")}</div>`;
+}
+
+function buildGlossaire() {
+  const terms = [
+    { abbr: "DES", full: "Diplôme d'études secondaires", desc: "Le diplôme de fin d'études secondaires québécois. Équivalent du diplôme de 5e secondaire au Québec." },
+    { abbr: "OSSD", full: "Ontario Secondary School Diploma", desc: "Diplôme secondaire de la province de l'Ontario (Canada). Reconnu dans la plupart des universités canadiennes, américaines et internationales." },
+    { abbr: "AP", full: "Advanced Placement", desc: "Cours universitaires offerts au secondaire par College Board (USA). Les examens AP permettent d'obtenir des crédits universitaires reconnus par de nombreuses universités." },
+    { abbr: "NCAA", full: "National Collegiate Athletic Association", desc: "Organisation américaine qui régit le sport universitaire. Les étudiants-athlètes doivent être déclarés éligibles par le NCAA Eligibility Center avant de s'inscrire dans une université membre." },
+    { abbr: "PLAR", full: "Prior Learning Assessment and Recognition", desc: "Reconnaissance des apprentissages antérieurs. Permet d'obtenir des crédits scolaires pour des expériences de vie, de travail ou d'auto-apprentissage documentées." },
+    { abbr: "SAT", full: "Scholastic Assessment Test", desc: "Test standardisé américain (College Board) utilisé pour l'admission universitaire aux États-Unis. Score sur 1600. Souvent exigé ou fortement recommandé pour les universités US." },
+    { abbr: "ACT", full: "American College Testing", desc: "Alternative au SAT. Test standardisé américain couvrant anglais, maths, lecture et sciences. Score sur 36. Accepté par la plupart des universités américaines." },
+    { abbr: "BSID", full: "Business / School Identification Number", desc: "Numéro d'identification officiel attribué par le ministère de l'Éducation de l'Ontario à chaque école accréditée. Permet de vérifier la légitimité d'une école OSSD." },
+    { abbr: "DEC", full: "Diplôme d'études collégiales", desc: "Diplôme collégial québécois (CÉGEP). Souvent exigé pour accéder aux universités francophones du Québec (UdeM, Laval, Sherbrooke, UQAM, etc.)." },
+    { abbr: "OUAC", full: "Ontario Universities' Application Centre", desc: "Portail centralisé pour les demandes d'admission aux universités de l'Ontario. Équivalent du système québécois SRAM/SRASL pour les universités ontariennes." },
+    { abbr: "Common App", full: "Common Application", desc: "Plateforme américaine centralisée pour postuler à plus de 1 000 universités aux États-Unis et à l'international via un seul formulaire." },
+    { abbr: "IB", full: "International Baccalaureate", desc: "Programme international rigoureux offert dans certaines écoles secondaires. Le diplôme IB est reconnu par les universités du monde entier." },
+    { abbr: "TMU", full: "Toronto Metropolitan University", desc: "Anciennement Ryerson University. Université publique ontarienne spécialisée dans les programmes appliqués, la technologie et les arts." },
+    { abbr: "UBC", full: "University of British Columbia", desc: "Université publique de la Colombie-Britannique, classée parmi les meilleures au Canada et dans le monde." },
+    { abbr: "UdeM", full: "Université de Montréal", desc: "Principale université francophone de Montréal. Offre plus de 650 programmes. Un DEC ou une année préparatoire est souvent requis." },
+    { abbr: "SNHU", full: "Southern New Hampshire University", desc: "Université américaine principalement en ligne, reconnue pour son accessibilité et ses frais compétitifs. Accréditée NECHE." },
+    { abbr: "ASU", full: "Arizona State University", desc: "Grande université publique américaine réputée pour ses programmes en ligne et son innovation pédagogique. Accréditée HLC." },
+    { abbr: "MIT", full: "Massachusetts Institute of Technology", desc: "Institut technologique d'élite de Boston. Ultra-sélectif, reconnu mondialement pour les STEM. Admission inférieure à 5%." },
+    { abbr: "NYU", full: "New York University", desc: "Université privée de New York. Reconnue pour ses programmes en arts, business et droit. Campus principal à Greenwich Village." },
+    { abbr: "VHS", full: "Virtual High School", desc: "École secondaire en ligne accréditée OSSD, basée en Ontario. Reconnue par le ministère de l'Éducation de l'Ontario (BSID 665681)." },
+    { abbr: "OVS", full: "Ontario Virtual School", desc: "École secondaire en ligne accréditée OSSD (BSID 665804). Offre plus de 170 cours avec évaluation rapide." },
+    { abbr: "OES", full: "Ontario eSecondary", desc: "École en ligne ontarienne accréditée OSSD (BSID 667186). Programme dédié pour étudiants québécois incluant PLAR." },
+    { abbr: "OEO", full: "Ontario Education Online", desc: "École en ligne ontarienne sans examen final (BSID 882902). 100% auto-rythmé, apprentissage par projets." }
+  ];
+
+  return `
+    <div class="glossaire-intro">
+      <p>Définitions des termes et abréviations utilisés dans ce simulateur. Toutes les informations sont à valider directement auprès des institutions concernées.</p>
+    </div>
+    <div class="glossaire-grid">
+      ${terms.map(t => `
+        <div class="glossaire-card">
+          <div class="glossaire-abbr">${t.abbr}</div>
+          <div class="glossaire-body">
+            <strong class="glossaire-full">${t.full}</strong>
+            <span class="glossaire-desc">${t.desc}</span>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  `;
 }
 
 document.getElementById("annuaireBtn").addEventListener("click", () => {
@@ -247,51 +296,51 @@ const options = {
 };
 
 const universities = [
-  { name: "Athabasca University", group: "canada-flex", fit: ["Autonome", "International"], text: "Très flexible. Parfait pour une transition ou un complément de préalables en ligne.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Thompson Rivers Open Learning", group: "canada-flex", fit: ["Autonome"], text: "Grande souplesse. Idéal pour reprendre des crédits à ton rythme.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Royal Roads", group: "canada-flex", fit: ["Créatif"], text: "Approche appliquée et pratique. Programme et admission à confirmer directement.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
+  { name: "Athabasca University", abbr: "AU", group: "canada-flex", fit: ["Autonome", "International"], text: "Très flexible. Parfait pour une transition ou un complément de préalables en ligne.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Thompson Rivers University — Open Learning", abbr: "TRU-OL", group: "canada-flex", fit: ["Autonome"], text: "Grande souplesse. Idéal pour reprendre des crédits à ton rythme.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
+  { name: "Royal Roads University", abbr: "RRU", group: "canada-flex", fit: ["Créatif"], text: "Approche appliquée et pratique. Programme et admission à confirmer directement.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
   { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option solide en Ontario. OSSD souvent lisible — préalables variables.", url: "https://futurestudents.yorku.ca/apply", fees: "~30 000–38 000 CAD/an", currency: "CAD" },
-  { name: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués, campus urbain. Portfolio parfois demandé.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
-  { name: "University of Ottawa", group: "canada-standard", fit: ["Littéraire"], text: "Option bilingue selon programme. Exigences à valider directement.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
-  { name: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Fort en politiques publiques, médias et informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
-  { name: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très sélectif en STEM. AP, math avancée et notes élevées sont attendus.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
-  { name: "University of Toronto", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences précises par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
-  { name: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Chaque préalable compte.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
-  { name: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Dossier global solide requis. Suppléments et préalables à bien préparer.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
-  { name: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Équivalences variables pour parcours non traditionnels. À vérifier en admissions.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
-  { name: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Accès variable — DEC, préalables ou année préparatoire selon le programme.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
-  { name: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Dossier évalué au cas par cas, surtout sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
-  { name: "Sherbrooke", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer.", url: "https://www.usherbrooke.ca/admission/", fees: "~7 000–21 000 CAD/an", currency: "CAD" },
-  { name: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Très accessible en ligne. Vérifier la reconnaissance externe avant de t'inscrire.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
-  { name: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large catalogue en ligne. Exigences précises selon le programme choisi.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
-  { name: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible pour le business. Vérifier l'alignement avec tes objectifs.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
-  { name: "Oregon State", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option solide en STEM. Certains programmes disponibles en ligne.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
-  { name: "University of Arizona", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Bon choix pour business et arts. Dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
-  { name: "Penn State", group: "usa-standard", fit: ["International"], text: "Campus et options en ligne. Conditions spécifiques par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
-  { name: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif. Portfolio ou supplément d'admission selon la faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
-  { name: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Référence en tech et STEM. AP et projets personnels font la différence.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
-  { name: "Boston University", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif. Dossier académique solide et activités parascolaires comptent.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
-  { name: "Harvard", group: "usa-top", fit: ["International"], text: "Ultra-compétitif. Aucun parcours ne garantit l'admission.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Ultra-compétitif. Niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Ultra-compétitif. Excellence, impact et originalité requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Ultra-compétitif. Profil global exceptionnel attendu.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Ultra-compétitif. Exigences académiques parmi les plus élevées au monde.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
+  { name: "Toronto Metropolitan University", abbr: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués, campus urbain. Portfolio parfois demandé.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
+  { name: "University of Ottawa", abbr: "uOttawa", group: "canada-standard", fit: ["Littéraire"], text: "Option bilingue selon programme. Exigences à valider directement.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
+  { name: "Carleton University", abbr: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Fort en politiques publiques, médias et informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
+  { name: "University of Waterloo", abbr: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très sélectif en STEM. AP, math avancée et notes élevées sont attendus.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
+  { name: "University of Toronto", abbr: "U of T", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences précises par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
+  { name: "McMaster University", abbr: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Chaque préalable compte.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
+  { name: "University of British Columbia", abbr: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Dossier global solide requis. Suppléments et préalables à bien préparer.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
+  { name: "McGill University", abbr: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Équivalences variables pour parcours non traditionnels. À vérifier en admissions.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
+  { name: "Université de Montréal", abbr: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Accès variable — DEC, préalables ou année préparatoire selon le programme.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
+  { name: "Université Laval", abbr: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Dossier évalué au cas par cas, surtout sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
+  { name: "Université de Sherbrooke", abbr: "UdeS", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer.", url: "https://www.usherbrooke.ca/admission/", fees: "~7 000–21 000 CAD/an", currency: "CAD" },
+  { name: "Southern New Hampshire University", abbr: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Très accessible en ligne. Vérifier la reconnaissance externe avant de t'inscrire.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
+  { name: "Arizona State University Online", abbr: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large catalogue en ligne. Exigences précises selon le programme choisi.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
+  { name: "Purdue University Global", abbr: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible pour le business. Vérifier l'alignement avec tes objectifs.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
+  { name: "Oregon State University", abbr: "OSU", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option solide en STEM. Certains programmes disponibles en ligne.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
+  { name: "University of Arizona", abbr: "U of A", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Bon choix pour business et arts. Dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
+  { name: "Pennsylvania State University", abbr: "Penn State", group: "usa-standard", fit: ["International"], text: "Campus et options en ligne. Conditions spécifiques par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
+  { name: "New York University", abbr: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif. Portfolio ou supplément d'admission selon la faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
+  { name: "Georgia Institute of Technology", abbr: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Référence en tech et STEM. AP et projets personnels font la différence.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
+  { name: "Boston University", abbr: "BU", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif. Dossier académique solide et activités parascolaires comptent.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
+  { name: "Harvard University", abbr: "Harvard", group: "usa-top", fit: ["International"], text: "Ultra-compétitif. Aucun parcours ne garantit l'admission.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Massachusetts Institute of Technology", abbr: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Ultra-compétitif. Niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Stanford University", abbr: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Ultra-compétitif. Excellence, impact et originalité requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Yale University", abbr: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Ultra-compétitif. Profil global exceptionnel attendu.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
+  { name: "Princeton University", abbr: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Ultra-compétitif. Exigences académiques parmi les plus élevées au monde.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
 ];
 
 const schools = [
-  { name: "VHS", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "Certains cours avancés", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Autonome, OSSD Ontario" },
-  { name: "Blyth", diploma: "ossd", pacing: "Structuré", support: "Élevé", ap: "Options possibles", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "Besoin d'encadrement" },
-  { name: "OVS", diploma: "ossd", pacing: "Très flexible", support: "Moyen", ap: "Options selon offre", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Fast-track, autonome" },
-  { name: "OES", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme progressif" },
-  { name: "OEO", diploma: "ossd", pacing: "Flexible", support: "Variable", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Budget contrôlé" },
-  { name: "KAI Global", diploma: "ossd", pacing: "Accompagné", support: "Élevé", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "International, encadrement" },
-  { name: "Clonlara", diploma: "us", pacing: "Personnalisé", support: "Élevé", ap: "Selon plan", ncaa: "À vérifier", language: "Français possible", cost: "$$$", ideal: "Créatif, français, projets" },
-  { name: "Laurel Springs", diploma: "us", pacing: "Structuré", support: "Élevé", ap: "Disponible", ncaa: "Souvent pertinent, vérifier", language: "Anglais", cost: "$$$$", ideal: "Université USA compétitive" },
-  { name: "Dwight Global", diploma: "us", pacing: "Rigoureux", support: "Élevé", ap: "Disponible", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "International ambitieux" },
-  { name: "Crimson Global Academy", diploma: "us", pacing: "Accéléré", support: "Élevé", ap: "Fort", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "Top USA, AP" },
-  { name: "Excel HS", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "Limité/à confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$", ideal: "Budget et autonomie" },
-  { name: "American School", diploma: "us", pacing: "Traditionnel", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Parcours classique" },
-  { name: "Ogburn", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme indépendant" }
+  { name: "Virtual High School", abbr: "VHS", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "Certains cours avancés", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Autonome, OSSD Ontario" },
+  { name: "Blyth Academy Online", abbr: "Blyth", diploma: "ossd", pacing: "Structuré", support: "Élevé", ap: "Options possibles", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "Besoin d'encadrement" },
+  { name: "Ontario Virtual School", abbr: "OVS", diploma: "ossd", pacing: "Très flexible", support: "Moyen", ap: "Options selon offre", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Fast-track, autonome" },
+  { name: "Ontario eSecondary", abbr: "OES", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme progressif" },
+  { name: "Ontario Education Online", abbr: "OEO", diploma: "ossd", pacing: "Flexible", support: "Variable", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Budget contrôlé" },
+  { name: "KAI Global School", abbr: "KAI Global", diploma: "ossd", pacing: "Accompagné", support: "Élevé", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "International, encadrement" },
+  { name: "Clonlara School", abbr: "Clonlara", diploma: "us", pacing: "Personnalisé", support: "Élevé", ap: "Selon plan", ncaa: "À vérifier", language: "Français possible", cost: "$$$", ideal: "Créatif, français, projets" },
+  { name: "Laurel Springs School", abbr: "Laurel Springs", diploma: "us", pacing: "Structuré", support: "Élevé", ap: "Disponible", ncaa: "Souvent pertinent, vérifier", language: "Anglais", cost: "$$$$", ideal: "Université USA compétitive" },
+  { name: "Dwight Global Online School", abbr: "Dwight Global", diploma: "us", pacing: "Rigoureux", support: "Élevé", ap: "Disponible", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "International ambitieux" },
+  { name: "Crimson Global Academy", abbr: "CGA", diploma: "us", pacing: "Accéléré", support: "Élevé", ap: "Fort", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "Top USA, AP" },
+  { name: "Excel High School", abbr: "Excel HS", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "Limité/à confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$", ideal: "Budget et autonomie" },
+  { name: "American School of Correspondence", abbr: "American School", diploma: "us", pacing: "Traditionnel", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Parcours classique" },
+  { name: "Ogburn Online School", abbr: "Ogburn", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme indépendant" }
 ];
 
 function render() {
@@ -456,7 +505,10 @@ function renderUniversities(step) {
     card.setAttribute("tabindex", "0");
     card.innerHTML = `
       <div class="card-header-row">
-        <h3 class="card-title">${uni.name}</h3>
+        <div class="card-title-block">
+          <h3 class="card-title">${uni.name}</h3>
+          ${uni.abbr ? `<span class="card-abbr">${uni.abbr}</span>` : ""}
+        </div>
         <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
       </div>
       <div class="compat-bar-wrap">
@@ -513,7 +565,10 @@ function renderSchools(step) {
     const card = document.createElement("article");
     card.className = "school-card";
     card.innerHTML = `
-      <h3 class="card-title">${school.name}</h3>
+      <div class="card-title-block">
+        <h3 class="card-title">${school.name}</h3>
+        ${school.abbr ? `<span class="card-abbr">${school.abbr}</span>` : ""}
+      </div>
       <div class="school-ideal">${school.ideal}</div>
       <div class="tag-row">
         <span class="tag green">${school.pacing}</span>
