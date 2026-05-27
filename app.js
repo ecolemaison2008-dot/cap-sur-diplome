@@ -188,18 +188,18 @@ function resetState() {
 let currentStep = 0;
 
 const steps = [
-  { title: "AS-TU TON DES ?", eyebrow: "Point de départ", render: renderDes },
-  { title: "TA LANGUE D'ÉTUDES", eyebrow: "Langue", render: renderLanguage },
-  { title: "TON DIPLÔME CIBLE", eyebrow: "Diplôme", render: renderDiploma },
-  { title: "TON PROFIL", eyebrow: "Profil", render: renderProfile },
-  { title: "OÙ TU TE VOIS ?", eyebrow: "Objectif", render: renderCareer },
-  { title: "QUEL TYPE D'UNIVERSITÉ ?", eyebrow: "Sélectivité", render: renderUniversityType },
-  { title: "TES UNIVERSITÉS", eyebrow: "Recommandations", render: renderUniversities },
-  { title: "TES ÉCOLES", eyebrow: "Écoles", render: renderSchools },
-  { title: "TES CRÉDITS RECONNUS", eyebrow: "Crédits possibles", render: renderPlar },
-  { title: "TON PLAN D'ACTION", eyebrow: "Roadmap", render: renderRoadmap },
-  { title: "AVANT DE PARTIR", eyebrow: "Vérifications", render: renderChecklist },
-  { title: "TON PARCOURS", eyebrow: "Résumé", render: renderSummary }
+  { title: "AS-TU TON DES ?",          eyebrow: "Point de départ",   render: renderDes },
+  { title: "TA LANGUE D'ÉTUDES",        eyebrow: "Langue",            render: renderLanguage },
+  { title: "OÙ TU TE VOIS ?",          eyebrow: "Objectif",          render: renderCareer },
+  { title: "TON PROFIL",               eyebrow: "Profil",            render: renderProfile },
+  { title: "TON DIPLÔME CIBLE",        eyebrow: "Diplôme",           render: renderDiploma },
+  { title: "TES ÉCOLES",               eyebrow: "Écoles",            render: renderSchools },
+  { title: "QUEL TYPE D'UNIVERSITÉ ?", eyebrow: "Sélectivité",       render: renderUniversityType },
+  { title: "TES UNIVERSITÉS",          eyebrow: "Recommandations",   render: renderUniversities },
+  { title: "TES CRÉDITS RECONNUS",     eyebrow: "Crédits possibles", render: renderPlar },
+  { title: "TON PLAN D'ACTION",        eyebrow: "Roadmap",           render: renderRoadmap },
+  { title: "AVANT DE PARTIR",          eyebrow: "Vérifications",     render: renderChecklist },
+  { title: "TON PARCOURS",             eyebrow: "Résumé",            render: renderSummary }
 ];
 
 const options = {
@@ -922,7 +922,8 @@ function fallbackCopy(text, btn) {
 }
 
 function canContinue() {
-  const keys = ["des", "language", "diploma", "traits", "career", "universityType"];
+  // Order matches steps array: des, language, career, traits, diploma, schools(free), universityType, ...
+  const keys = ["des", "language", "career", "traits", "diploma", null, "universityType"];
   const key = keys[currentStep];
   if (!key) return true;
   if (Array.isArray(state[key])) return state[key].length > 0;
@@ -934,31 +935,43 @@ function updateInsight() {
   const signals = document.getElementById("signalList");
 
   const stepMessages = [
+    // 0 — DES
     "Ton point de départ change tout — deux chemins très différents t'attendent.",
+    // 1 — Langue
     state.language === "francais"
       ? "Peu d'options en français — quelques écoles offrent un accompagnement francophone."
       : "L'anglais ouvre l'accès à la majorité des écoles et universités recommandées.",
+    // 2 — Objectif carrière
+    state.career
+      ? `Objectif ${getCareerTitle()} — les préalables et la compétitivité sont ajustés.`
+      : "Ton domaine détermine les préalables et le niveau de compétition.",
+    // 3 — Profil
+    state.traits.length
+      ? `${state.traits.length} trait${state.traits.length > 1 ? "s" : ""} sélectionné${state.traits.length > 1 ? "s" : ""} — le simulateur ajuste les recommandations.`
+      : "Sélectionne ce qui te ressemble — plusieurs réponses possibles.",
+    // 4 — Diplôme
     state.diploma === "ossd"
       ? "L'OSSD est reconnu partout au Canada, aux USA et à l'international."
       : state.diploma === "us"
       ? "Le diplôme américain est idéal pour Common App, NCAA et les universités US."
       : "Choisis ton diplôme cible pour affiner les recommandations.",
-    state.traits.length
-      ? `${state.traits.length} trait${state.traits.length > 1 ? "s" : ""} sélectionné${state.traits.length > 1 ? "s" : ""} — le simulateur ajuste les recommandations.`
-      : "Sélectionne ce qui te ressemble — plusieurs réponses possibles.",
-    state.career
-      ? `Objectif ${getCareerTitle()} — les préalables et la compétitivité sont ajustés.`
-      : "Ton domaine détermine les préalables et le niveau de compétition.",
+    // 5 — Écoles secondaires
+    "Ces écoles sont filtrées selon ton diplôme et ton profil. Consulte l'Annuaire pour plus de détails.",
+    // 6 — Type d'université
     state.universityType
       ? `Catégorie sélectionnée : ${labelUniversityGroup(state.universityType)}.`
       : "Choisis la catégorie d'université qui correspond à ton ambition.",
+    // 7 — Universités
     state.selectedUniversities.length
       ? `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} dans ton parcours.`
       : "Sélectionne les universités qui t'intéressent pour les ajouter au résumé.",
-    "Ces écoles sont filtrées selon ton diplôme et ton profil. Consulte l'Annuaire pour plus de détails.",
+    // 8 — PLAR
     "Ton expérience passée peut réduire la durée et le coût de ton parcours.",
+    // 9 — Roadmap
     "Ce plan est une base de départ — valide chaque étape avec les institutions.",
+    // 10 — Checklist
     "Quelques points clés à confirmer avant de finaliser ton choix d'école.",
+    // 11 — Résumé
     "Ton parcours complet est prêt. Imprime ou partage pour garder une trace."
   ];
 
