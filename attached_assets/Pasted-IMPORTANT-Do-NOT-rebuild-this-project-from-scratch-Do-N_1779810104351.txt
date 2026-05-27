@@ -1,0 +1,312 @@
+IMPORTANT:
+Do NOT rebuild this project from scratch.
+Do NOT convert to React, Next.js, TypeScript, backend or database.
+Keep the existing HTML/CSS/JavaScript structure.
+
+This is an existing educational simulator called CAP DIPLÔME.
+Only improve and stabilize the current project.
+
+==================================================
+GLOBAL OBJECTIVE
+==================================================
+
+Improve:
+- UX
+- readability
+- compactness
+- professionalism
+- responsiveness
+- credibility
+- visual hierarchy
+- stability
+
+Keep:
+- existing structure
+- existing logic
+- French language
+- roadmap system
+- recommendation logic
+- warning philosophy
+- educational exploratory approach
+
+Do NOT change the philosophy of the simulator.
+
+==================================================
+RESPONSIVE / LAYOUT FIXES
+==================================================
+
+Current issues:
+- interface too large on laptops
+- oversized spacing
+- cards too tall
+- sidebar too large
+- users must zoom out browser
+- scrolling issues
+- content overflow
+
+Fix:
+- reduce overall UI scale
+- reduce excessive padding/margins
+- reduce card height
+- reduce sidebar width
+- improve laptop usability
+- improve responsive behavior
+- prevent horizontal overflow
+- ensure proper vertical scrolling
+- improve compactness
+
+Important:
+Do NOT redesign the whole UI.
+Keep current dark modern visual identity.
+
+Possible CSS issues to fix:
+- overflow hidden
+- fixed heights
+- oversized containers
+- bad vh usage
+
+==================================================
+TEXT / UX IMPROVEMENTS
+==================================================
+
+Improve all instructional texts.
+
+Make them:
+- shorter
+- cleaner
+- more premium
+- easier to scan
+- less robotic
+- less administrative
+
+Avoid:
+- long explanations
+- repetitive warnings
+- overly technical wording
+
+Keep:
+- educational caution
+- professional tone
+- realistic guidance
+
+Example:
+Replace:
+"Ce choix ajuste le niveau de prudence..."
+
+With:
+"Votre point de départ permet au simulateur de construire une stratégie adaptée à votre profil."
+
+==================================================
+RESULTS PAGE IMPROVEMENTS
+==================================================
+
+Improve:
+- university cards
+- school cards
+- roadmap cards
+- warning sections
+- hierarchy
+- spacing
+- readability
+
+Add:
+- compatibility badges
+- softer visual indicators
+- hover effects
+- smoother transitions
+- cleaner typography
+
+Replace aggressive percentages like:
+"25%"
+
+With:
+- Compatibilité élevée
+- Compatibilité modérée
+- Compatible avec conditions
+
+Keep the simulator realistic and cautious.
+
+==================================================
+FINAL EXPERIENCE
+==================================================
+
+Keep working buttons:
+- Recommencer
+- Imprimer
+- Sauvegarder
+- URL sharing system
+
+Improve:
+- final step layout
+- print formatting
+- PDF formatting
+- copy link UX
+- confirmation messages
+
+Add:
+"Copier le lien du parcours"
+
+with clipboard support.
+
+Do NOT break the current encoded URL save/share system.
+
+==================================================
+CREDIBILITY / SAFETY
+==================================================
+
+Very important:
+Keep all recommendations cautious.
+
+Never imply:
+- guaranteed admission
+- guaranteed recognition
+- guaranteed NCAA approval
+- guaranteed equivalencies
+
+Always keep wording careful.
+
+Add reminders like:
+- conditions may vary
+- verify directly with institution
+- policies change regularly
+- admissions evolve over time
+
+==================================================
+UNIVERSITIES / SCHOOLS CONTENT
+==================================================
+
+Use ONLY:
+- real universities
+- real schools
+- official references
+
+Do NOT invent:
+- accreditations
+- NCAA approvals
+- AP availability
+- recognitions
+
+Use official/cautious wording.
+
+Examples:
+
+Replace:
+"OSSD souvent lisible"
+
+With:
+"OSSD généralement reconnu selon université et programme"
+
+Replace:
+"NCAA approved"
+
+With:
+"NCAA verification required"
+
+Replace:
+"admission possible"
+
+With:
+"admission depends on program requirements and institutional evaluation"
+
+==================================================
+QUÉBEC / HOMESCHOOL WARNINGS
+==================================================
+
+Strengthen warnings for:
+- Québec francophone universities
+- homeschool profiles
+- non traditional admissions
+
+Clearly explain:
+- profiles are evaluated individually
+- prerequisites vary
+- DEC requirements may apply
+- preparatory years may be required
+- institutional verification is mandatory
+
+Avoid oversimplifying Québec admissions.
+
+==================================================
+TOP USA / IVY LEAGUE WARNINGS
+==================================================
+
+Strengthen warnings for:
+- Ivy League
+- MIT
+- Stanford
+- Harvard
+- top competitive STEM programs
+
+Mention clearly:
+- admissions are highly unpredictable
+- no pathway guarantees admission
+- exceptional academic profile required
+- extracurriculars and portfolio may matter
+
+==================================================
+CHECKLIST / WARNING SECTIONS
+==================================================
+
+Keep and improve:
+- Vérifications obligatoires
+- Limites et avertissements
+
+Make them:
+- visually important
+- compact
+- professional
+- easier to scan
+
+Avoid giant text blocks.
+
+==================================================
+SAVE / SHARE SYSTEM
+==================================================
+
+Keep the current encoded URL save system.
+
+Improve:
+- stability
+- UX
+- sharing
+- copy link interaction
+
+Do NOT replace with backend/accounts/database.
+
+==================================================
+PERFORMANCE / CLEANUP
+==================================================
+
+Clean:
+- duplicated CSS
+- duplicated JS
+- inconsistent spacing
+- oversized containers
+- unnecessary complexity
+
+Improve:
+- maintainability
+- readability
+- responsiveness
+- performance
+
+==================================================
+IMPORTANT FINAL RULES
+==================================================
+
+- Do NOT rebuild from scratch
+- Do NOT remove sections
+- Do NOT break functionality
+- Keep beginner-friendly code
+- Keep educational exploratory philosophy
+- Keep realistic tone
+- Keep warnings visible
+- Improve progressively only
+
+This simulator must feel:
+- serious
+- modern
+- realistic
+- professional
+- cautious
+- trustworthy

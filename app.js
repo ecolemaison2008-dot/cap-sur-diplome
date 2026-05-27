@@ -457,7 +457,6 @@ function renderUniversities(step) {
       </div>
       <div class="compat-bar-wrap">
         <div class="compat-bar" style="width:${compat.percent}%" data-class="${compat.badgeClass}"></div>
-        <span class="compat-percent">${compat.percent}%</span>
       </div>
       <p class="card-text">${uni.text}</p>
       <div class="card-meta-row">
@@ -719,7 +718,7 @@ function renderSummary(step) {
           ${uni && uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
         </div>
         <div class="summary-uni-right">
-          ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.percent}%</span>` : ""}
+          ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>` : ""}
           ${uni && uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
         </div>
       `;
@@ -737,7 +736,7 @@ function renderSummary(step) {
           ${uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
         </div>
         <div class="summary-uni-right">
-          <span class="compat-badge ${compat.badgeClass}">${compat.percent}%</span>
+          <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
           ${uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
         </div>
       `;
@@ -767,8 +766,8 @@ function renderSummary(step) {
   cols.appendChild(roadmapBlock);
 
   const checklistItems = [
-    "BSID verified", "Accreditation verified", "University contacted",
-    "Prerequisites verified", "NCAA verified", "Equivalencies confirmed"
+    "BSID vérifié", "Accréditation confirmée", "Université contactée",
+    "Préalables vérifiés", "NCAA vérifié", "Équivalences confirmées"
   ];
   const checkBlock = document.createElement("div");
   checkBlock.className = "summary-block";
