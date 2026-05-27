@@ -357,7 +357,7 @@ function renderLanguage(step) {
 }
 
 function renderDiploma(step) {
-  return renderChoiceStep(step, "diploma", options.diploma, "Ton diplôme oriente les écoles, les universités et ta stratégie de candidature.", null);
+  return renderChoiceStep(step, "diploma", options.diploma, "Chaque diplôme mène à des parcours différents et nécessite une stratégie adaptée pour les candidatures.", null);
 }
 
 function renderProfile(step) {
@@ -411,7 +411,7 @@ function profileBody(trait) {
 
 function renderCareer(step) {
   const warning = state.career === "stem" ? "Domaine compétitif — AP, notes élevées et préalables solides souvent requis." : null;
-  return renderChoiceStep(step, "career", options.career, "Ton domaine influence les préalables recommandés et le niveau de compétition.", warning, "three");
+  return renderChoiceStep(step, "career", options.career, "Certaines orientations demandent des préalables et un dossier académique plus exigeants.", warning, "three");
 }
 
 function renderUniversityType(step) {
