@@ -1,47 +1,19 @@
 const state = {
   des: null,
-
   language: null,
-
   diploma: null,
-
-  learningMode: null,
-
-  secondaryBudget: null,
-
-  universityBudget: null,
-
-  wantUniversity: null,
-
   traits: [],
-
-  selectedSchools: [],
-
-  selectedUniversities: [],
-
   sliders: {
     motivation: 3,
     math: 3,
     english: 3,
     availability: 3,
-    pace: 3
+    pace: 3,
   },
-
   career: null,
-
-  universityType: null,
-
-  plar: {
-    homeschooling: false,
-    projects: false,
-    work: false,
-    selfLearning: false,
-    portfolios: false
-  },
-
-  checklist: {}
-};
-  career: null,
+  learningMode: null,
+  secondaryBudget: null,
+  wantsUniversity: null,
   universityType: null,
   selectedUniversities: [],
   plar: {
@@ -740,6 +712,11 @@ function loadStateFromStorage() {
     if (Array.isArray(s.traits)) state.traits = s.traits;
     if (s.sliders) state.sliders = { ...state.sliders, ...s.sliders };
     if (s.career !== undefined) state.career = s.career;
+    if (s.learningMode !== undefined) state.learningMode = s.learningMode;
+    if (s.secondaryBudget !== undefined)
+      state.secondaryBudget = s.secondaryBudget;
+    if (s.wantsUniversity !== undefined)
+      state.wantsUniversity = s.wantsUniversity;
     if (s.universityType !== undefined) state.universityType = s.universityType;
     if (Array.isArray(s.selectedUniversities))
       state.selectedUniversities = s.selectedUniversities;
@@ -790,6 +767,9 @@ function resetState() {
     pace: 3,
   };
   state.career = null;
+  state.learningMode = null;
+  state.secondaryBudget = null;
+  state.wantsUniversity = null;
   state.universityType = null;
   state.selectedUniversities = [];
   state.plar = {
@@ -805,97 +785,224 @@ function resetState() {
 
 let currentStep = 0;
 
+// Step indices (15 total):
+// 0  AS-TU TON DES ?
+// 1  TA LANGUE D'ÉTUDES
+// 2  OÙ TU TE VOIS ?
+// 3  TON PROFIL
+// 4  TON DIPLÔME CIBLE
+// 5  TON MODE D'APPRENTISSAGE  (NEW)
+// 6  TON BUDGET SECONDAIRE     (NEW)
+// 7  TES ÉCOLES
+// 8  VEUX-TU UNE UNIVERSITÉ ?  (NEW)
+// 9  QUEL TYPE D'UNIVERSITÉ ?
+// 10 TES UNIVERSITÉS
+// 11 TES CRÉDITS RECONNUS
+// 12 TON PLAN D'ACTION
+// 13 AVANT DE PARTIR
+// 14 TON PARCOURS
+
+const STEP_WANTS_UNIVERSITY = 8;
+const STEP_UNIVERSITY_TYPE = 9;
+const STEP_UNIVERSITIES = 10;
+const STEP_PLAR = 11;
+
 const steps = [
-  {
-    title: "AS-TU TON DES ?",
-    eyebrow: "Point de départ",
-    render: renderDes
-  },
-
-  {
-    title: "TA LANGUE D'ÉTUDES",
-    eyebrow: "Langue",
-    render: renderLanguage
-  },
-
+  { title: "AS-TU TON DES ?", eyebrow: "Point de départ", render: renderDes },
+  { title: "TA LANGUE D'ÉTUDES", eyebrow: "Langue", render: renderLanguage },
+  { title: "OÙ TU TE VOIS ?", eyebrow: "Objectif", render: renderCareer },
+  { title: "TON PROFIL", eyebrow: "Profil", render: renderProfile },
+  { title: "TON DIPLÔME CIBLE", eyebrow: "Diplôme", render: renderDiploma },
   {
     title: "TON MODE D'APPRENTISSAGE",
-    eyebrow: "Fonctionnement",
-    render: renderLearningMode
+    eyebrow: "Mode",
+    render: renderLearningMode,
   },
-
   {
     title: "TON BUDGET SECONDAIRE",
     eyebrow: "Budget",
-    render: renderSecondaryBudget
+    render: renderSecondaryBudget,
   },
-
-  {
-    title: "OÙ TU TE VOIS ?",
-    eyebrow: "Objectif",
-    render: renderCareer
-  },
-
-  {
-    title: "TON PROFIL",
-    eyebrow: "Profil",
-    render: renderProfile
-  },
-
-  {
-    title: "TON DIPLÔME CIBLE",
-    eyebrow: "Diplôme",
-    render: renderDiploma
-  },
-
-  {
-    title: "TES ÉCOLES",
-    eyebrow: "Écoles",
-    render: renderSchools
-  },
-
+  { title: "TES ÉCOLES", eyebrow: "Écoles", render: renderSchools },
   {
     title: "VEUX-TU UNE UNIVERSITÉ ?",
     eyebrow: "Université",
-    render: renderWantUniversity
+    render: renderWantsUniversity,
   },
-
   {
     title: "QUEL TYPE D'UNIVERSITÉ ?",
     eyebrow: "Sélectivité",
-    render: renderUniversityType
+    render: renderUniversityType,
   },
-
   {
     title: "TES UNIVERSITÉS",
     eyebrow: "Recommandations",
-    render: renderUniversities
+    render: renderUniversities,
   },
-
   {
     title: "TES CRÉDITS RECONNUS",
     eyebrow: "Crédits possibles",
-    render: renderPlar
+    render: renderPlar,
   },
-
-  {
-    title: "TON PLAN D'ACTION",
-    eyebrow: "Roadmap",
-    render: renderRoadmap
-  },
-
+  { title: "TON PLAN D'ACTION", eyebrow: "Roadmap", render: renderRoadmap },
   {
     title: "AVANT DE PARTIR",
     eyebrow: "Vérifications",
-    render: renderChecklist
+    render: renderChecklist,
   },
-
-  {
-    title: "TON PARCOURS",
-    eyebrow: "Résumé",
-    render: renderSummary
-  }
+  { title: "TON PARCOURS", eyebrow: "Résumé", render: renderSummary },
 ];
+
+const options = {
+  des: [
+    ["oui", "Avec DES", ""],
+    ["non", "Sans DES", ""],
+  ],
+  language: [
+    [
+      "francais",
+      "FRANÇAIS",
+      "Quelques écoles offrent un soutien en français. Options limitées — à vérifier.",
+    ],
+    [
+      "anglais",
+      "ANGLAIS",
+      "La majorité des parcours OSSD et USA se font en anglais.",
+    ],
+  ],
+  diploma: [
+    [
+      "ossd",
+      "OSSD",
+      "Diplôme ontarien. Reconnu partout au Canada, aux USA et à l'international.",
+    ],
+    [
+      "us",
+      "US Diploma",
+      "Diplôme américain. Idéal pour Common App, NCAA et universités américaines.",
+    ],
+  ],
+  career: [
+    [
+      "stem",
+      "Sciences / Génie / Santé",
+      "Profil compétitif — notes élevées et AP souvent indispensables.",
+    ],
+    [
+      "business",
+      "Business / Comptabilité",
+      "Math solide et anglais académique font la différence.",
+    ],
+    [
+      "law",
+      "Juridique / Politique",
+      "Accès souvent indirect — vérifier programme par programme.",
+    ],
+    [
+      "humanities",
+      "Littéraire / Sciences humaines",
+      "Plus de souplesse. Écriture, analyse et réflexion comptent.",
+    ],
+    [
+      "arts",
+      "Arts / Créatif",
+      "Portfolio et projets personnels ont souvent autant de poids que les notes.",
+    ],
+    [
+      "tech",
+      "Informatique / Technologie",
+      "Math, projets perso et AP CS sont de vrais atouts.",
+    ],
+  ],
+  learningMode: [
+    [
+      "asynchrone",
+      "ASYNCHRONE",
+      "Travail à ton propre rythme, sans horaire imposé ni sessions live.",
+    ],
+    [
+      "hybride",
+      "HYBRIDE",
+      "Mix de modules auto-rythmés et de sessions en direct pour garder le lien.",
+    ],
+    [
+      "synchrone",
+      "SYNCHRONE",
+      "Cours en temps réel avec horaire structuré, classes et interactions régulières.",
+    ],
+  ],
+  secondaryBudget: [
+    [
+      "low",
+      "BUDGET SERRÉ",
+      "Options économiques — autour de 500 $–1 000 $ CAD par cours.",
+    ],
+    [
+      "medium",
+      "BUDGET MOYEN",
+      "Équilibre qualité/coût — entre 1 000 $ et 2 500 $ CAD par cours.",
+    ],
+    [
+      "high",
+      "BUDGET ÉLEVÉ",
+      "Accès aux meilleures écoles, accompagnement premium et classes réduites.",
+    ],
+  ],
+  wantsUniversity: [
+    [
+      "oui",
+      "OUI, JE VISE L'UNIVERSITÉ",
+      "Explorer les universités adaptées à mon diplôme et à mon profil.",
+    ],
+    [
+      "non",
+      "NON, PAS MAINTENANT",
+      "Je me concentre sur le diplôme secondaire pour l'instant.",
+    ],
+  ],
+  universityType: [
+    [
+      "canada-flex",
+      "Canada — Flexible",
+      "Athabasca, Thompson Rivers, Royal Roads.",
+    ],
+    ["canada-standard", "Canada — Standard", "York, TMU, Ottawa, Carleton."],
+    [
+      "canada-competitive",
+      "Canada — Compétitif",
+      "Waterloo, UofT, McMaster, UBC, McGill.",
+    ],
+    [
+      "quebec-fr",
+      "Québec francophone",
+      "UdeM, Laval, Sherbrooke — conditions à vérifier.",
+    ],
+    ["usa-flex", "USA — Flexible", "SNHU, ASU Online, Purdue Global."],
+    ["usa-standard", "USA — Standard", "Oregon State, Arizona, Penn State."],
+    [
+      "usa-competitive",
+      "USA — Compétitif",
+      "NYU, Georgia Tech, Boston University.",
+    ],
+    [
+      "usa-top",
+      "Ivy League / Top USA",
+      "Harvard, MIT, Stanford, Yale, Princeton.",
+    ],
+  ],
+  traits: [
+    "Autonome",
+    "Besoin d'encadrement",
+    "Créatif",
+    "Scientifique",
+    "Littéraire",
+    "Technologique",
+    "Fast-track",
+    "Anxieux face aux examens",
+    "International",
+  ],
+};
+
 const universities = [
   {
     name: "Athabasca University",
@@ -1378,7 +1485,8 @@ function screenShell(step, subcopy, warning) {
   return shell;
 }
 
-function renderChoiceStep(step, key, list, subcopy, warning, columns = "") {
+function renderChoiceStep(step, key, list, subcopy, warning, columns) {
+  columns = columns || "";
   const shell = screenShell(step, subcopy, warning);
   const grid = document.createElement("div");
   grid.className = `choices ${columns}`;
@@ -1427,35 +1535,7 @@ function renderLanguage(step) {
     warning,
   );
 }
-function renderLearningMode(step) {
-  return renderChoiceStep(
-    step,
-    "learningMode",
-    options.learningMode,
-    "Le mode d'apprentissage influence énormément la réussite et le choix des écoles.",
-    null
-  );
-}
 
-function renderSecondaryBudget(step) {
-  return renderChoiceStep(
-    step,
-    "secondaryBudget",
-    options.budget,
-    "Les coûts varient énormément selon l'encadrement, les AP et les services.",
-    null
-  );
-}
-
-function renderWantUniversity(step) {
-  return renderChoiceStep(
-    step,
-    "wantUniversity",
-    options.wantUniversity,
-    "Certaines personnes veulent seulement le diplôme secondaire. D'autres préparent aussi l'université.",
-    null
-  );
-}
 function renderDiploma(step) {
   return renderChoiceStep(
     step,
@@ -1464,6 +1544,48 @@ function renderDiploma(step) {
     "Chaque diplôme mène à des parcours différents et nécessite une stratégie adaptée pour les candidatures.",
     null,
   );
+}
+
+function renderLearningMode(step) {
+  return renderChoiceStep(
+    step,
+    "learningMode",
+    options.learningMode,
+    "Ton mode d'apprentissage influence directement les écoles recommandées — certaines sont optimisées pour un rythme libre, d'autres pour un cadre structuré.",
+    null,
+    "three",
+  );
+}
+
+function renderSecondaryBudget(step) {
+  return renderChoiceStep(
+    step,
+    "secondaryBudget",
+    options.secondaryBudget,
+    "Ton budget oriente les recommandations d'écoles. Les estimations sont indicatives — toujours vérifier les frais réels directement auprès de l'école.",
+    null,
+    "three",
+  );
+}
+
+function renderWantsUniversity(step) {
+  const shell = screenShell(
+    step,
+    "Veux-tu explorer les universités après ton diplôme secondaire ? Ta réponse personnalise la suite du parcours.",
+    null,
+  );
+  const grid = document.createElement("div");
+  grid.className = "choices";
+  options.wantsUniversity.forEach(([value, title, body]) => {
+    grid.appendChild(
+      choiceCard(title, body, state.wantsUniversity === value, () => {
+        state.wantsUniversity = value;
+        render();
+      }),
+    );
+  });
+  shell.appendChild(grid);
+  return shell;
 }
 
 function renderProfile(step) {
@@ -1673,7 +1795,7 @@ function compatibleCountry(group) {
 function renderSchools(step) {
   const shell = screenShell(
     step,
-    "Écoles filtrées selon ton diplôme et ton profil. Vérifie toujours les détails directement sur leur site.",
+    "Écoles filtrées selon ton diplôme, ton mode d'apprentissage, ton budget et ton profil. Vérifie toujours les détails directement sur leur site.",
     null,
   );
   const grid = document.createElement("div");
@@ -1711,56 +1833,108 @@ function getRecommendedSchools() {
 }
 
 function schoolScore(school) {
-
   let score = 0;
 
+  // --- Support level ---
   if (
     state.traits.includes("Besoin d'encadrement") &&
     school.support === "Élevé"
-  ) score += 2;
+  )
+    score += 2;
+  if (
+    state.traits.includes("Autonome") &&
+    (school.support === "Moyen" || school.support === "Variable")
+  )
+    score += 1;
 
+  // --- Pacing from traits ---
   if (
     state.traits.includes("Fast-track") &&
-    school.pacing.includes("Flexible")
-  ) score += 2;
-
+    (school.pacing === "Flexible" ||
+      school.pacing === "Très flexible" ||
+      school.pacing === "Accéléré")
+  )
+    score += 2;
   if (
-    state.language === "francais" &&
-    school.language.includes("Français")
-  ) score += 3;
+    state.traits.includes("Anxieux face aux examens") &&
+    school.pacing !== "Rigoureux"
+  )
+    score += 1;
 
-  if (
-    state.career === "stem" &&
-    school.ap.includes("Disponible")
-  ) score += 2;
+  // --- Language ---
+  if (state.language === "francais" && school.language.includes("Français"))
+    score += 3;
 
-  if (
-    state.learningMode === "synchrone" &&
-    school.pacing.includes("Structuré")
-  ) score += 2;
+  // --- Career STEM / AP ---
+  if (state.career === "stem" && school.ap.includes("Disponible")) score += 2;
 
-  if (
-    state.learningMode === "asynchrone" &&
-    school.pacing.includes("Flexible")
-  ) score += 2;
+  // --- Learning mode ---
+  if (state.learningMode === "asynchrone") {
+    if (
+      school.pacing === "Flexible" ||
+      school.pacing === "Très flexible" ||
+      school.pacing === "Personnalisé"
+    )
+      score += 3;
+    if (school.pacing === "Accéléré") score += 2;
+    if (school.pacing === "Structuré" || school.pacing === "Rigoureux")
+      score -= 1;
+    if (school.support === "Moyen" || school.support === "Variable") score += 1;
+  }
+  if (state.learningMode === "synchrone") {
+    if (
+      school.pacing === "Structuré" ||
+      school.pacing === "Accompagné" ||
+      school.pacing === "Rigoureux"
+    )
+      score += 3;
+    if (school.pacing === "Très flexible") score -= 1;
+    if (school.support === "Élevé") score += 1;
+  }
+  if (state.learningMode === "hybride") {
+    if (
+      school.pacing === "Flexible" ||
+      school.pacing === "Accompagné" ||
+      school.pacing === "Accéléré"
+    )
+      score += 2;
+    if (school.pacing === "Structuré") score += 1;
+  }
 
-  if (
-    state.secondaryBudget === "low" &&
-    school.cost === "$"
-  ) score += 3;
+  // --- Budget ---
+  if (state.secondaryBudget === "low") {
+    if (school.cost === "$") score += 4;
+    if (school.cost === "$$") score += 2;
+    if (school.cost === "$$$") score -= 1;
+    if (school.cost === "$$$$") score -= 3;
+  }
+  if (state.secondaryBudget === "medium") {
+    if (school.cost === "$$") score += 4;
+    if (school.cost === "$") score += 2;
+    if (school.cost === "$$$") score += 2;
+    if (school.cost === "$$$$") score -= 1;
+  }
+  if (state.secondaryBudget === "high") {
+    if (school.cost === "$$$$") score += 4;
+    if (school.cost === "$$$") score += 3;
+    if (school.cost === "$$") score += 1;
+  }
 
+  // --- Pace slider ---
   if (
-    state.secondaryBudget === "medium" &&
-    school.cost === "$$"
-  ) score += 2;
-
+    state.sliders.pace >= 4 &&
+    (school.pacing === "Flexible" || school.pacing === "Accéléré")
+  )
+    score += 1;
   if (
-    state.secondaryBudget === "high" &&
-    school.cost.includes("$$$")
-  ) score += 2;
+    state.sliders.pace <= 2 &&
+    (school.pacing === "Structuré" || school.pacing === "Accompagné")
+  )
+    score += 1;
 
   return score;
 }
+
 function renderPlar(step) {
   const shell = screenShell(
     step,
@@ -1852,16 +2026,21 @@ function getRoadmap() {
   route.push("PLAR / crédits à évaluer");
   if (state.career === "stem" || state.traits.includes("Scientifique"))
     route.push("AP Calculus / sciences");
-  if (state.diploma === "us" || String(state.universityType).startsWith("usa"))
-    route.push("SAT / Common App");
-  if (
-    state.diploma === "ossd" &&
-    String(state.universityType).startsWith("canada")
-  )
-    route.push("OUAC");
-  if (state.language === "francais" || state.universityType === "quebec-fr")
-    route.push("Équivalences Québec");
-  route.push("Universités contactées");
+  if (state.wantsUniversity !== "non") {
+    if (
+      state.diploma === "us" ||
+      String(state.universityType).startsWith("usa")
+    )
+      route.push("SAT / Common App");
+    if (
+      state.diploma === "ossd" &&
+      String(state.universityType).startsWith("canada")
+    )
+      route.push("OUAC");
+    if (state.language === "francais" || state.universityType === "quebec-fr")
+      route.push("Équivalences Québec");
+    route.push("Universités contactées");
+  }
   return route.slice(0, 6);
 }
 
@@ -1939,6 +2118,25 @@ function renderSummary(step) {
   const uniTypeLabel = state.universityType
     ? labelUniversityGroup(state.universityType)
     : "—";
+  const learningModeLabel = state.learningMode
+    ? (options.learningMode.find(([v]) => v === state.learningMode) || [
+        null,
+        "—",
+      ])[1]
+    : "—";
+  const budgetLabel = state.secondaryBudget
+    ? (options.secondaryBudget.find(([v]) => v === state.secondaryBudget) || [
+        null,
+        "—",
+      ])[1]
+    : "—";
+  const wantsUniLabel =
+    state.wantsUniversity === "oui"
+      ? "Oui"
+      : state.wantsUniversity === "non"
+        ? "Non"
+        : "—";
+
   profileBlock.innerHTML = `
     <p class="summary-block-title">👤 Profil</p>
     <div class="summary-profile-row">
@@ -1946,7 +2144,10 @@ function renderSummary(step) {
       <span class="tag green">Diplôme: <strong>${diplomaLabel}</strong></span>
       <span class="tag">Langue: <strong>${langLabel}</strong></span>
       <span class="tag gold">Carrière: <strong>${careerLabel}</strong></span>
-      <span class="tag">Université: <strong>${uniTypeLabel}</strong></span>
+      <span class="tag">Mode: <strong>${learningModeLabel}</strong></span>
+      <span class="tag">Budget: <strong>${budgetLabel}</strong></span>
+      <span class="tag">Université: <strong>${wantsUniLabel}</strong></span>
+      ${state.wantsUniversity !== "non" ? `<span class="tag">Catégorie: <strong>${uniTypeLabel}</strong></span>` : ""}
       ${state.traits.map((t) => `<span class="tag">${t}</span>`).join("")}
     </div>
   `;
@@ -1978,56 +2179,69 @@ function renderSummary(step) {
   `;
   cols.appendChild(plarBlock);
 
-  const uniBlock = document.createElement("div");
-  uniBlock.className = "summary-block";
-  const uniContent = document.createElement("div");
-  uniContent.className = "summary-checklist-list";
-  const uniPool = getRecommendedUniversities();
-  if (state.selectedUniversities.length > 0) {
-    state.selectedUniversities.forEach((name) => {
-      const uni = uniPool.find((u) => u.name === name);
-      const compat = uni ? getCompatibilityInfo(uni.score) : null;
-      const row = document.createElement("div");
-      row.className = "summary-uni-item";
-      row.innerHTML = `
-        <div class="summary-uni-left">
-          <span class="summary-uni-name">${name}</span>
-          ${uni && uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
-        </div>
-        <div class="summary-uni-right">
-          ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>` : ""}
-          ${uni && uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
-        </div>
-      `;
-      uniContent.appendChild(row);
-    });
+  // Universities block — only if user wants university
+  if (state.wantsUniversity !== "non") {
+    const uniBlock = document.createElement("div");
+    uniBlock.className = "summary-block";
+    const uniContent = document.createElement("div");
+    uniContent.className = "summary-checklist-list";
+    const uniPool = getRecommendedUniversities();
+    if (state.selectedUniversities.length > 0) {
+      state.selectedUniversities.forEach((name) => {
+        const uni = uniPool.find((u) => u.name === name);
+        const compat = uni ? getCompatibilityInfo(uni.score) : null;
+        const row = document.createElement("div");
+        row.className = "summary-uni-item";
+        row.innerHTML = `
+          <div class="summary-uni-left">
+            <span class="summary-uni-name">${name}</span>
+            ${uni && uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
+          </div>
+          <div class="summary-uni-right">
+            ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>` : ""}
+            ${uni && uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
+          </div>
+        `;
+        uniContent.appendChild(row);
+      });
+    } else {
+      const allTop = uniPool.slice(0, 3);
+      allTop.forEach((uni) => {
+        const compat = getCompatibilityInfo(uni.score);
+        const row = document.createElement("div");
+        row.className = "summary-uni-item";
+        row.innerHTML = `
+          <div class="summary-uni-left">
+            <span class="summary-uni-name">${uni.name}</span>
+            ${uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
+          </div>
+          <div class="summary-uni-right">
+            <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
+            ${uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
+          </div>
+        `;
+        uniContent.appendChild(row);
+      });
+      const note = document.createElement("p");
+      note.className = "summary-empty";
+      note.textContent =
+        "Aucune université sélectionnée manuellement — top 3 affiché.";
+      uniContent.appendChild(note);
+    }
+    uniBlock.innerHTML = `<p class="summary-block-title">🏛️ Universités ciblées</p>`;
+    uniBlock.appendChild(uniContent);
+    cols.appendChild(uniBlock);
   } else {
-    const allTop = uniPool.slice(0, 3);
-    allTop.forEach((uni) => {
-      const compat = getCompatibilityInfo(uni.score);
-      const row = document.createElement("div");
-      row.className = "summary-uni-item";
-      row.innerHTML = `
-        <div class="summary-uni-left">
-          <span class="summary-uni-name">${uni.name}</span>
-          ${uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
-        </div>
-        <div class="summary-uni-right">
-          <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
-          ${uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
-        </div>
-      `;
-      uniContent.appendChild(row);
-    });
-    const note = document.createElement("p");
-    note.className = "summary-empty";
-    note.textContent =
-      "Aucune université sélectionnée manuellement — top 3 affiché.";
-    uniContent.appendChild(note);
+    const noUniBlock = document.createElement("div");
+    noUniBlock.className = "summary-block";
+    noUniBlock.innerHTML = `
+      <p class="summary-block-title">🏛️ Universités</p>
+      <div class="summary-profile-row">
+        <span class="tag">Parcours secondaire uniquement — étape université non activée.</span>
+      </div>
+    `;
+    cols.appendChild(noUniBlock);
   }
-  uniBlock.innerHTML = `<p class="summary-block-title">🏛️ Universités ciblées</p>`;
-  uniBlock.appendChild(uniContent);
-  cols.appendChild(uniBlock);
 
   const roadmapBlock = document.createElement("div");
   roadmapBlock.className = "summary-block";
@@ -2276,15 +2490,27 @@ function fallbackCopy(text, btn) {
 }
 
 function canContinue() {
-  // Order matches steps array: des, language, career, traits, diploma, schools(free), universityType, ...
+  // Step index → required state key (null = always free to continue)
+  // 0=des, 1=language, 2=career, 3=traits, 4=diploma,
+  // 5=learningMode, 6=secondaryBudget, 7=null(schools),
+  // 8=wantsUniversity, 9=universityType, 10=null(universities),
+  // 11=null(plar), 12=null(roadmap), 13=null(checklist), 14=null(summary)
   const keys = [
-    "des",
-    "language",
-    "career",
-    "traits",
-    "diploma",
-    null,
-    "universityType",
+    "des", // 0
+    "language", // 1
+    "career", // 2
+    "traits", // 3
+    "diploma", // 4
+    "learningMode", // 5
+    "secondaryBudget", // 6
+    null, // 7 schools — free
+    "wantsUniversity", // 8
+    "universityType", // 9
+    null, // 10 universities — free
+    null, // 11 plar — free
+    null, // 12 roadmap — free
+    null, // 13 checklist — free
+    null, // 14 summary — free
   ];
   const key = keys[currentStep];
   if (!key) return true;
@@ -2317,23 +2543,45 @@ function updateInsight() {
       : state.diploma === "us"
         ? "Le diplôme américain est idéal pour Common App, NCAA et les universités US."
         : "Choisis ton diplôme cible pour affiner les recommandations.",
-    // 5 — Écoles secondaires
-    "Ces écoles sont filtrées selon ton diplôme et ton profil. Consulte l'Annuaire pour plus de détails.",
-    // 6 — Type d'université
+    // 5 — Mode d'apprentissage
+    state.learningMode === "asynchrone"
+      ? "Mode asynchrone — les écoles les plus flexibles seront mises en avant."
+      : state.learningMode === "synchrone"
+        ? "Mode synchrone — les écoles avec classes live et horaire structuré sont prioritaires."
+        : state.learningMode === "hybride"
+          ? "Mode hybride — les écoles offrant les deux formats remontent dans les résultats."
+          : "Ton mode d'apprentissage influence directement les écoles recommandées.",
+    // 6 — Budget secondaire
+    state.secondaryBudget === "low"
+      ? "Budget serré — les options économiques seront priorisées dans les recommandations."
+      : state.secondaryBudget === "medium"
+        ? "Budget moyen — bon équilibre entre qualité et accessibilité."
+        : state.secondaryBudget === "high"
+          ? "Budget élevé — accès aux écoles premium avec encadrement renforcé."
+          : "Ton budget oriente les recommandations d'écoles secondaires.",
+    // 7 — Écoles secondaires
+    "Ces écoles sont filtrées selon ton diplôme, ton mode et ton budget. Consulte l'Annuaire pour plus de détails.",
+    // 8 — Veux-tu une université ?
+    state.wantsUniversity === "oui"
+      ? "Parfait — les étapes université sont activées dans ton parcours."
+      : state.wantsUniversity === "non"
+        ? "Tu passes directement à la section crédits PLAR et roadmap."
+        : "Ta réponse active ou désactive les étapes universitaires qui suivent.",
+    // 9 — Type d'université
     state.universityType
       ? `Catégorie sélectionnée : ${labelUniversityGroup(state.universityType)}.`
       : "Choisis la catégorie d'université qui correspond à ton ambition.",
-    // 7 — Universités
+    // 10 — Universités
     state.selectedUniversities.length
       ? `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} dans ton parcours.`
       : "Sélectionne les universités qui t'intéressent pour les ajouter au résumé.",
-    // 8 — PLAR
+    // 11 — PLAR
     "Ton expérience passée peut réduire la durée et le coût de ton parcours.",
-    // 9 — Roadmap
+    // 12 — Roadmap
     "Ce plan est une base de départ — valide chaque étape avec les institutions.",
-    // 10 — Checklist
+    // 13 — Checklist
     "Quelques points clés à confirmer avant de finaliser ton choix d'école.",
-    // 11 — Résumé
+    // 14 — Résumé
     "Ton parcours complet est prêt. Imprime ou partage pour garder une trace.",
   ];
 
@@ -2359,6 +2607,20 @@ function updateInsight() {
     tags.push({ text: "AP et préalables à planifier", tone: "gold" });
   else if (state.career) tags.push({ text: getCareerTitle(), tone: "blue" });
 
+  if (state.learningMode === "asynchrone")
+    tags.push({ text: "Mode asynchrone", tone: "blue" });
+  if (state.learningMode === "synchrone")
+    tags.push({ text: "Mode synchrone", tone: "blue" });
+  if (state.learningMode === "hybride")
+    tags.push({ text: "Mode hybride", tone: "blue" });
+
+  if (state.secondaryBudget === "low")
+    tags.push({ text: "Budget serré", tone: "gold" });
+  if (state.secondaryBudget === "medium")
+    tags.push({ text: "Budget moyen", tone: "green" });
+  if (state.secondaryBudget === "high")
+    tags.push({ text: "Budget élevé", tone: "green" });
+
   if (state.traits.includes("Fast-track"))
     tags.push({ text: "Rythme accéléré", tone: "gold" });
   if (state.traits.includes("Anxieux face aux examens"))
@@ -2366,6 +2628,8 @@ function updateInsight() {
   if (state.traits.includes("International"))
     tags.push({ text: "Dossier international", tone: "blue" });
 
+  if (state.wantsUniversity === "non")
+    tags.push({ text: "Université désactivée", tone: "gold" });
   if (state.universityType === "usa-top")
     tags.push({ text: "Dossier exceptionnel requis", tone: "red" });
   if (state.universityType === "quebec-fr")
@@ -2454,6 +2718,9 @@ function encodeStateToURL() {
     traits: state.traits,
     sliders: state.sliders,
     career: state.career,
+    learningMode: state.learningMode,
+    secondaryBudget: state.secondaryBudget,
+    wantsUniversity: state.wantsUniversity,
     universityType: state.universityType,
     selectedUniversities: state.selectedUniversities,
     plar: state.plar,
@@ -2484,6 +2751,12 @@ function decodeStateFromURL() {
       if (snapshot.sliders && typeof snapshot.sliders === "object")
         state.sliders = { ...state.sliders, ...snapshot.sliders };
       if (snapshot.career !== undefined) state.career = snapshot.career;
+      if (snapshot.learningMode !== undefined)
+        state.learningMode = snapshot.learningMode;
+      if (snapshot.secondaryBudget !== undefined)
+        state.secondaryBudget = snapshot.secondaryBudget;
+      if (snapshot.wantsUniversity !== undefined)
+        state.wantsUniversity = snapshot.wantsUniversity;
       if (snapshot.universityType !== undefined)
         state.universityType = snapshot.universityType;
       if (Array.isArray(snapshot.selectedUniversities))
@@ -2498,9 +2771,34 @@ function decodeStateFromURL() {
   return false;
 }
 
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+function getNextStep(from) {
+  // Skip university type + universities if wantsUniversity === "non"
+  if (state.wantsUniversity === "non" && from === STEP_WANTS_UNIVERSITY) {
+    return STEP_PLAR;
+  }
+  return from + 1;
+}
+
+function getPrevStep(from) {
+  // Skip back over university steps if wantsUniversity === "non"
+  if (state.wantsUniversity === "non" && from === STEP_PLAR) {
+    return STEP_WANTS_UNIVERSITY;
+  }
+  // Also handle stepping back from within university steps when wantsUniversity was "non"
+  if (
+    state.wantsUniversity === "non" &&
+    (from === STEP_UNIVERSITY_TYPE || from === STEP_UNIVERSITIES)
+  ) {
+    return STEP_WANTS_UNIVERSITY;
+  }
+  return from - 1;
+}
+
 document.getElementById("prevBtn").addEventListener("click", () => {
   if (currentStep > 0) {
-    currentStep -= 1;
+    currentStep = getPrevStep(currentStep);
     render();
   }
 });
@@ -2508,7 +2806,7 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 document.getElementById("nextBtn").addEventListener("click", () => {
   if (!canContinue()) return;
   if (currentStep < steps.length - 1) {
-    currentStep++;
+    currentStep = getNextStep(currentStep);
     render();
   } else {
     resetState();
@@ -2516,6 +2814,8 @@ document.getElementById("nextBtn").addEventListener("click", () => {
     render();
   }
 });
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
 
 const restoredFromURL = decodeStateFromURL();
 if (restoredFromURL) {
