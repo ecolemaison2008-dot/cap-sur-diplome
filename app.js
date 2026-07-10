@@ -1,67 +1,59 @@
+// ==========================================================================
+// CAP DIPLÔME — Simulateur éducatif
+// Reconstruit pour suivre le Plan v4 (validé) et la Base Centrale Excel.
+// ==========================================================================
+
 const state = {
-  des: null,
-  language: null,
-  diploma: null,
-  traits: [],
-  sliders: {
-    motivation: 3,
-    math: 3,
-    english: 3,
-    availability: 3,
-    pace: 3
-  },
-  career: null,
-  universityType: null,
+  // Écran 2 — Profil de l'élève
+  age: null,
+  pays: null,
+  niveauScolaire: null, // ... 'des' = DES obtenu (déclenche l'intercalaire)
+
+  // Écran 3 — Parcours scolaire
+  langue: null, // 'francais' | 'anglais' | 'les-deux'
+  diplomes: [], // ['ossd', 'hsd']
+  modes: [], // ['synchrone','asynchrone','hybride','aucune-preference']
+
+  // Écran 4 — Domaine et niveau d'études visés
+  domaines: [],
+  niveauxVises: [],
+  neSaitPasEncore: false,
+
+  // Écran 6 — Poursuite à l'université en ligne ?
+  wantsUniversity: null, // 'oui' | 'non'
+
+  // Écran 7 — Type d'université recherchée
+  univLangue: null,
+  univPays: null,
+
+  // Écran 8 — sélection manuelle
   selectedUniversities: [],
-  plar: {
-    homeschooling: false,
-    projects: false,
-    work: false,
-    selfLearning: false,
-    portfolios: false
-  },
-  checklist: {}
 };
 
-const secondarySchools = {
-  ossd: [
-    { name: "Blyth Academy Online", bsid: "669675", tier: "★ Tier 1", site: "blytheducation.com/online", prix: "Sur demande", duree: "Auto-rythmé ou live (Orbit)", highlights: ["30 000+ familles", "160+ cours", "NCAA approuvé", "AP disponible", "Inspection MÉO max 3 ans"], plarQC: "PLAR + crédits QC évalués" },
-    { name: "Virtual High School (VHS)", bsid: "665681", tier: "★ Tier 1", site: "virtualhighschool.com", prix: "469 $–589 $ CAD/cours", duree: "Min 2 sem. / Max 18 mois", highlights: ["20+ ans d'expérience", "Tutorat gratuit inclus", "NCAA approuvé", "70+ cours", "120+ pays"], plarQC: "Éval. équivalence QC" },
-    { name: "Ontario Virtual School (OVS)", bsid: "665804", tier: "★ Tier 1", site: "ontariovirtualschool.ca", prix: "~650 $ CAD (CA) / ~1 224 $ (Intl)", duree: "Min 4 sem. / Max 12 mois", highlights: ["170+ cours", "25 000+ étudiants", "Éval. sous 2 jours", "Start anytime"], plarQC: "Via OVS Quebec – NPU" },
-    { name: "Ontario eSecondary (OES)", bsid: "667186", tier: "★ Tier 2", site: "oeshighschool.com", prix: "École-hôte 250 $ + éval. QC 150 $ + cours", duree: "Min 4 sem. / Max 12 mois", highlights: ["Tutorat 24/7 GRATUIT illimité", "Remise dès 2 cours", "NCAA approuvé", "~7 cours gr.12"], plarQC: "Programme QC dédié; PLAR" },
-    { name: "Toronto eSchool", bsid: "886520", tier: "★ Tier 2", site: "ossd.torontoeschool.com", prix: "Applic. 150 $ + Éval. 200 $ + École-hôte 500 $ + cours", duree: "9–10 mois (programme QC)", highlights: ["Accompagnement OUAC/OCAS", "Orientation 1-on-1", "60+ cours", "3 streams"], plarQC: "Programme structuré DES→OSSD en 1 an" },
-    { name: "Keystone School", bsid: "888468", tier: "★ Tier 3", site: "keystoneschools.ca", prix: "Sur demande", duree: "Min 4 sem. / Max 12 mois", highlights: ["École IB candidate", "Approche par projets", "Check-ins hebdo", "Campus Toronto"], plarQC: "Page dédiée DES QC; ~7 cours gr.12" },
-    { name: "Canadian Virtual School", bsid: "882250", tier: "★ Tier 2", site: "canadianvirtualschool.ca", prix: "~500 $–550 $ (CA) / ~750 $–800 $ (Intl)", duree: "Min 3 sem. / Max 12 mois", highlights: ["15+ ans d'expérience", "Parmi les moins chers", "OCT 1-on-1", "Fast-track gratuit"], plarQC: "Éval. équivalence dispo" },
-    { name: "Ontario Education Online (OEO)", bsid: "882902", tier: "★ Tier 3", site: "ontarioeducationonline.ca", prix: "499 $ (gr.10) / 599 $ (gr.11-12)", duree: "Min 4 sem. / Max 12 mois", highlights: ["AUCUN examen final", "100% auto-rythmé", "Projets + tâche culminante", "OCT certifié"], plarQC: "Éval. équivalence; programme personnalisé" },
-    { name: "The New Educator", bsid: "669484", tier: "★ Tier 3", site: "theneweducator.com", prix: "Sur demande (site en français)", duree: "Auto-rythmé; min 4 sem.", highlights: ["Site 100% en français", "Accompagnement FR disponible", "Ouvert à l'international", "~8 cours restants"], plarQC: "Éval. équivalence; crédits QC reconnus" },
-    { name: "Aubrey Academy", bsid: "665140", tier: "★ Tier 3", site: "aubreyacademy.ca", prix: "Sur demande (consultation gratuite)", duree: "Standard / fast-track / extended", highlights: ["NCAA approuvé", "3 vitesses de rythme", "Idéal athlètes", "Éval. gratuite du transcript"], plarQC: "Éval. gratuite du transcript" },
-    { name: "USCA Academy", bsid: "À confirmer", tier: "★ Tier 3", site: "uscaacademy.com", prix: "~16 800 $ CAD/an", duree: "Hybride live Zoom + campus (5j/sem)", highlights: ["Classes 5-15 élèves", "5 rentrées/an", "Alumni McGill/Waterloo", "Site FR disponible"], plarQC: "PLAR; crédits QC transférables" },
-    { name: "Blyth Academy Orbit", bsid: "669675", tier: "★ Option live", site: "blytheducation.com/orbit", prix: "Inclus dans Blyth", duree: "Semestres fixes", highlights: ["Classes virtuelles en temps réel", "Petits groupes", "Horaire structuré", "Idéal si encadrement fort"], plarQC: "Idem Blyth Academy" },
-    { name: "KAI Global School", bsid: "665538", tier: "★ Tier 3", site: "kaiglobalschool.com", prix: "Sur demande", duree: "Min 4 sem. / Max 12 mois", highlights: ["100+ cours", "Dual diploma disponible", "Programme international", "PLAR", "Ottawa (Kanata)"], plarQC: "Éval. équivalence QC; PLAR disponible" },
-    { name: "Toronto Imperial School (TIS)", bsid: "881941", tier: "★ Tier 3", site: "torontoimperial.com", prix: "690 $–1 450 $ CAD/cours", duree: "Classes live avec enseignants", highlights: ["Classes de 8-12 élèves", "20+ experts en admissions intl", "Réseau 330 universités partenaires", "Accompagnement international"], plarQC: "6-8 cours suffisent depuis DES; crédits QC reconnus" }
-  ],
-  usa: [
-    { name: "Clonlara School", accred: "NCPSA, MSA-CESS, Accred. Intl", site: "clonlara.org", pays: "Michigan, USA", prix: "395 $ USD/demi-crédit ou 695 $ USD/crédit + frais Off-Campus", duree: "Libre — max 3 cours/an", highlights: ["Site et accompagnement en FRANÇAIS", "Philosophie autonome/unschooling", "Diplôme Michigan (USA)", "Le seul avec support FR"], plarQC: "Crédits QC évalués et intégrés" },
-    { name: "Laurel Springs School", accred: "WASC + Cognia", site: "laurelsprings.com", pays: "USA", prix: "7 200 $–17 250 $ USD/an", duree: "Auto-rythmé — 12 mois min", highlights: ["240+ cours", "24 AP®", "AP Capstone", "160+ NCAA", "6700+ diplômés", "100 pays", "Double inscription Baylor/Syracuse"], plarQC: "Éval. crédits antérieurs; transfert jusqu'à 75%" },
-    { name: "Excel High School", accred: "Cognia + MSA-CESS + NCA + NWAC", site: "excelhighschool.com", pays: "USA", prix: "~1 900 $ USD/an (standard) / 99 $ USD/mois (adultes)", duree: "Auto-rythmé — quelques mois si crédits transférés", highlights: ["Le plus abordable de la catégorie", "Paiement mensuel flexible", "AP® et honours", "Reconnu universités US et Canada ang."], plarQC: "Transfert jusqu'à 75%; crédits QC reconnus" },
-    { name: "Forest Trail Academy", accred: "Cognia + MSA-CESS + AI + NCPSA", site: "foresttrailacademy.com", pays: "USA", prix: "~3 200 $ USD/an", duree: "Auto-rythmé — 12 mois", highlights: ["Dual diploma HS + Associate (AA)", "NCAA approuvé", "Idéal athlètes", "100% en ligne", "100% admission garantie"], plarQC: "Transfert crédits; 100% admission garantie" },
-    { name: "James Madison HS", accred: "Cognia + DEAC", site: "jmhs.com", pays: "USA", prix: "699 $–1 299 $ USD (diplôme complet)", duree: "Auto-rythmé — quelques mois", highlights: ["Le moins cher pour diplôme complet", "Paiement mensuel sans intérêt", "Reconnu emploi et community college", "⚠️ Moins fort pour universités R1"], plarQC: "Transfert jusqu'à 17 crédits" },
-    { name: "American School of Correspondence", accred: "MSA-CESS + NCPSA + Accred. Intl", site: "americanschoolofcorr.com", pays: "USA (1897)", prix: "~1 100 $ USD/an (5 crédits) / ~4 400 $ USD diplôme complet (matériel INCLUS)", duree: "Auto-rythmé — papier OU en ligne", highlights: ["LA PLUS ANCIENNE (1897)", "Non-profit / BBB A+", "Matériel inclus", "General HS et College Preparatory"], plarQC: "Transfert crédits depuis école accréditée" },
-    { name: "Penn Foster High School", accred: "Cognia + MSA-CESS + DEAC", site: "pennfoster.edu", pays: "USA (1890)", prix: "1 149 $ USD (complet) / 55 $ USD/mois", duree: "Auto-rythmé — 21 crédits", highlights: ["Fondée en 1890", "Triple accréditation", "2 tracks : General et College Prep", "Paiement mensuel flexible", "Idéal budget serré"], plarQC: "Transfert crédits accepté" },
-    { name: "Whitmore School", accred: "Cognia + NCA-CASI + SACS-CASI + NWAC", site: "whitmoreschool.org", pays: "USA (1994)", prix: "1 699 $ USD/an (Diploma) / 475 $ USD/crédit", duree: "Mastery learning — pas de semestres ni délais", highlights: ["Première école secondaire en ligne (1994)", "Apprentissage par maîtrise", "Enseignant 1-on-1", "4 formules", "⚠️ Cours NON reconnus NCAA"], plarQC: "Min 4.5 crédits à compléter à Whitmore" },
-    { name: "Ogburn Online School", accred: "Cognia + WASC + MSA-CESS + Ai + NCPSA + AISF + NCAA", site: "ogburnonlineschool.com", pays: "USA", prix: "250 $ USD/mois", duree: "Auto-rythmé — mensuel", highlights: ["6 organismes d'accréditation", "Le plus accrédité de la catégorie", "250 $/mois seulement", "NCAA approuvé", "Très sous-estimé"], plarQC: "Transfert crédits accepté" },
-    { name: "Crimson Global Academy (CGA)", accred: "WASC + NCAA + Cambridge + CollegeBoard AP", site: "crimsonglobalacademy.school", pays: "USA / International", prix: "Prix par cours (sur demande)", duree: "Live + auto-rythmé + 1-on-1", highlights: ["Top 3 online high school USA (Niche 2025)", "WASC 6 ans (maximum)", "NCAA approuvé", "US Diploma + IGCSE + A-Levels + AP", "200+ enseignants", "Accès réseau Crimson (idéal Ivy League)"], plarQC: "Crédits QC transférables" },
-    { name: "Dwight Global Online School", accred: "Cognia + MSA-CESS + CIS + IBO", site: "dwight.edu/dwight-global", pays: "USA (New York)", prix: "42 750 $ USD/an", duree: "Annuel — classes live", highlights: ["#1 online high school USA (Niche 2025)", "IB Diploma + AP", "Programme le plus prestigieux", "Pour profils d'élite uniquement", "Réseau Dwight Schools mondial"], plarQC: "Crédits internationaux reconnus; IB ou AP" }
-  ],
-  udem: [
-    { name: "Année préparatoire UdeM", accred: "Université de Montréal", site: "admission.umontreal.ca/programmes/annee-preparatoire", pays: "Québec, Canada", prix: "~4 350 $ CAD total (résident QC, 2 trimestres)", duree: "1 an (24 crédits)", highlights: ["250+ programmes de baccalauréat en français", "Sciences / Sciences humaines / Arts et lettres", "DES + OSSD = accès direct recommandé", "DES + 4 ans d'interruption aussi accepté", "Coût très abordable pour résidents QC"], plarQC: "Programme 1-955-4-1 — Faculté des arts et des sciences" }
-  ]
-};
+function buildSchoolHighlights(school, type) {
+  const h = [];
+  if (school.mode) h.push(school.mode);
+  if (school.langue) h.push("Langue : " + school.langue);
+  if (type === "ossd" && school.ecoleHote === "Oui")
+    h.push("École hôte (émet le diplôme)");
+  if (school.ncaa === "Oui") h.push("NCAA approuvé");
+  if (school.plar === "Oui") h.push("PLAR disponible");
+  return h;
+}
 
 function buildSchoolCard(school, type) {
-  const isBSID = type === "ossd";
-  const idLabel = isBSID ? `BSID ${school.bsid}` : school.accred;
-  const tierBadge = school.tier ? `<span class="school-tier">${school.tier}</span>` : "";
+  const isOSSD = type === "ossd";
+  const idLabel = isOSSD
+    ? `BSID ${school.bsid || "à confirmer"}`
+    : school.accred || "Accréditation à confirmer";
+  const tierBadge = school.tier
+    ? `<span class="school-tier">${school.tier}</span>`
+    : "";
+  const highlights = buildSchoolHighlights(school, type);
+  const plarText =
+    school.plar === "Oui"
+      ? "PLAR disponible — crédits à évaluer"
+      : "À vérifier directement avec l'école";
   return `
     <div class="school-card">
       <div class="school-card-top">
@@ -72,58 +64,66 @@ function buildSchoolCard(school, type) {
         <div class="school-id">${idLabel}</div>
       </div>
       <div class="school-meta">
-        <div class="school-meta-item"><span class="school-meta-label">💰 Prix</span><span>${school.prix}</span></div>
-        <div class="school-meta-item"><span class="school-meta-label">⏱ Durée</span><span>${school.duree}</span></div>
-        <div class="school-meta-item"><span class="school-meta-label">📋 Crédits QC</span><span>${school.plarQC}</span></div>
+        <div class="school-meta-item"><span class="school-meta-label">💰 Prix</span><span>${school.prix || "Sur demande"}</span></div>
+        <div class="school-meta-item"><span class="school-meta-label">⏱ Durée</span><span>${school.duree || "Variable"}</span></div>
+        <div class="school-meta-item"><span class="school-meta-label">📋 Crédits QC</span><span>${plarText}</span></div>
       </div>
       <div class="school-highlights">
-        ${school.highlights.map(h => `<span class="school-tag">${h}</span>`).join("")}
+        ${highlights.map((h) => `<span class="school-tag">${h}</span>`).join("")}
       </div>
-      <a href="https://${school.site}" target="_blank" rel="noopener" class="school-link">↗ Visiter ${school.site}</a>
+      <a href="${school.site}" target="_blank" rel="noopener" class="school-link">↗ Visiter le site officiel</a>
     </div>
   `;
 }
 
-function renderAnnuaireTab(tab) {
-  const content = document.getElementById("annuaireContent");
-  if (tab === "glossaire") {
-    content.innerHTML = buildGlossaire();
-    initGlossaireSearch();
-    return;
-  }
-  const schoolList = secondarySchools[tab];
-  const type = tab;
-  content.innerHTML = `<div class="school-grid">${schoolList.map(s => buildSchoolCard(s, type)).join("")}</div>`;
+function buildUniversityCard(uni, selected) {
+  return `
+    <article class="university-card ${selected ? "selected" : ""}" data-id="${uni.id}" role="button" tabindex="0">
+      <div class="card-header-row">
+        <div class="card-title-block">
+          <h3 class="card-title">${uni.name}</h3>
+          <span class="card-abbr">${uni.pays}${uni.province ? " · " + uni.province : ""}</span>
+        </div>
+      </div>
+      <p class="card-text">${uni.programmes || ""}</p>
+      <div class="card-meta-row">
+        <span class="card-fees">💰 ${uni.cout || "Sur demande"}</span>
+        <a class="card-link" href="${uni.site}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Admissions officielles ↗</a>
+      </div>
+      <div class="tag-row">
+        <span class="tag green">${uni.mode || ""}</span>
+        <span class="tag">${uni.langue || ""}</span>
+        <span class="tag gold">${uni.niveau || ""}</span>
+      </div>
+      <div class="tag-row">
+        <span class="tag">Admission avec : ${uni.admissionAvec || "à confirmer"}</span>
+      </div>
+      ${selected ? '<div class="selected-check">✓ Sélectionnée</div>' : ""}
+    </article>
+  `;
 }
 
 function buildGlossaire() {
   const terms = [
     { abbr: "DES", full: "Diplôme d'études secondaires", desc: "Le diplôme de fin d'études secondaires québécois. Équivalent du diplôme de 5e secondaire au Québec." },
     { abbr: "OSSD", full: "Ontario Secondary School Diploma", desc: "Diplôme secondaire de la province de l'Ontario (Canada). Reconnu dans la plupart des universités canadiennes, américaines et internationales." },
+    { abbr: "HSD", full: "High School Diploma", desc: "Diplôme secondaire américain. Reconnu par de nombreuses universités nord-américaines et internationales, notamment via Common App." },
     { abbr: "AP", full: "Advanced Placement", desc: "Cours universitaires offerts au secondaire par College Board (USA). Les examens AP permettent d'obtenir des crédits universitaires reconnus par de nombreuses universités." },
     { abbr: "NCAA", full: "National Collegiate Athletic Association", desc: "Organisation américaine qui régit le sport universitaire. Les étudiants-athlètes doivent être déclarés éligibles par le NCAA Eligibility Center avant de s'inscrire dans une université membre." },
     { abbr: "PLAR", full: "Prior Learning Assessment and Recognition", desc: "Reconnaissance des apprentissages antérieurs. Permet d'obtenir des crédits scolaires pour des expériences de vie, de travail ou d'auto-apprentissage documentées." },
-    { abbr: "SAT", full: "Scholastic Assessment Test", desc: "Test standardisé américain (College Board) utilisé pour l'admission universitaire aux États-Unis. Score sur 1600. Souvent exigé ou fortement recommandé pour les universités US." },
-    { abbr: "ACT", full: "American College Testing", desc: "Alternative au SAT. Test standardisé américain couvrant anglais, maths, lecture et sciences. Score sur 36. Accepté par la plupart des universités américaines." },
-    { abbr: "BSID", full: "Business / School Identification Number", desc: "Numéro d'identification officiel attribué par le ministère de l'Éducation de l'Ontario à chaque école accréditée. Permet de vérifier la légitimité d'une école OSSD." },
+    { abbr: "SAT", full: "Scholastic Assessment Test", desc: "Test standardisé américain (College Board) utilisé pour l'admission universitaire aux États-Unis. Score sur 1600." },
+    { abbr: "ACT", full: "American College Testing", desc: "Alternative au SAT. Test standardisé américain couvrant anglais, maths, lecture et sciences. Score sur 36." },
+    { abbr: "BSID", full: "Business / School Identification Number", desc: "Numéro d'identification officiel attribué par le ministère de l'Éducation de l'Ontario à chaque école accréditée." },
     { abbr: "DEC", full: "Diplôme d'études collégiales", desc: "Diplôme collégial québécois (CÉGEP). Souvent exigé pour accéder aux universités francophones du Québec (UdeM, Laval, Sherbrooke, UQAM, etc.)." },
-    { abbr: "OUAC", full: "Ontario Universities' Application Centre", desc: "Portail centralisé pour les demandes d'admission aux universités de l'Ontario. Équivalent du système québécois SRAM/SRASL pour les universités ontariennes." },
-    { abbr: "Common App", full: "Common Application", desc: "Plateforme américaine centralisée pour postuler à plus de 1 000 universités aux États-Unis et à l'international via un seul formulaire." },
+    { abbr: "OUAC", full: "Ontario Universities' Application Centre", desc: "Portail centralisé pour les demandes d'admission aux universités de l'Ontario." },
+    { abbr: "Common App", full: "Common Application", desc: "Plateforme américaine centralisée pour postuler à plus de 1 000 universités aux États-Unis et à l'international." },
     { abbr: "IB", full: "International Baccalaureate", desc: "Programme international rigoureux offert dans certaines écoles secondaires. Le diplôme IB est reconnu par les universités du monde entier." },
-    { abbr: "TMU", full: "Toronto Metropolitan University", desc: "Anciennement Ryerson University. Université publique ontarienne spécialisée dans les programmes appliqués, la technologie et les arts." },
-    { abbr: "UBC", full: "University of British Columbia", desc: "Université publique de la Colombie-Britannique, classée parmi les meilleures au Canada et dans le monde." },
-    { abbr: "UdeM", full: "Université de Montréal", desc: "Principale université francophone de Montréal. Offre plus de 650 programmes. Un DEC ou une année préparatoire est souvent requis." },
-    { abbr: "SNHU", full: "Southern New Hampshire University", desc: "Université américaine principalement en ligne, reconnue pour son accessibilité et ses frais compétitifs. Accréditée NECHE." },
-    { abbr: "ASU", full: "Arizona State University", desc: "Grande université publique américaine réputée pour ses programmes en ligne et son innovation pédagogique. Accréditée HLC." },
-    { abbr: "MIT", full: "Massachusetts Institute of Technology", desc: "Institut technologique d'élite de Boston. Ultra-sélectif, reconnu mondialement pour les STEM. Admission inférieure à 5%." },
-    { abbr: "NYU", full: "New York University", desc: "Université privée de New York. Reconnue pour ses programmes en arts, business et droit. Campus principal à Greenwich Village." },
-    { abbr: "VHS", full: "Virtual High School", desc: "École secondaire en ligne accréditée OSSD, basée en Ontario. Reconnue par le ministère de l'Éducation de l'Ontario (BSID 665681)." },
-    { abbr: "OVS", full: "Ontario Virtual School", desc: "École secondaire en ligne accréditée OSSD (BSID 665804). Offre plus de 170 cours avec évaluation rapide." },
-    { abbr: "OES", full: "Ontario eSecondary", desc: "École en ligne ontarienne accréditée OSSD (BSID 667186). Programme dédié pour étudiants québécois incluant PLAR." },
-    { abbr: "OEO", full: "Ontario Education Online", desc: "École en ligne ontarienne sans examen final (BSID 882902). 100% auto-rythmé, apprentissage par projets." }
+    { abbr: "DESS", full: "Diplôme d'études supérieures spécialisées", desc: "Diplôme universitaire québécois de 2e cycle, plus court qu'une maîtrise." },
   ];
 
-  const cardsHtml = terms.map(t => `
+  const cardsHtml = terms
+    .map(
+      (t) => `
     <div class="glossaire-card" data-abbr="${t.abbr.toLowerCase()}" data-full="${t.full.toLowerCase()}" data-desc="${t.desc.toLowerCase()}">
       <div class="glossaire-abbr">${t.abbr}</div>
       <div class="glossaire-body">
@@ -131,18 +131,13 @@ function buildGlossaire() {
         <span class="glossaire-desc">${t.desc}</span>
       </div>
     </div>
-  `).join("");
+  `,
+    )
+    .join("");
 
   return `
     <div class="glossaire-search-wrap">
-      <input
-        id="glossaireSearch"
-        class="glossaire-search"
-        type="search"
-        placeholder="Rechercher un terme… ex : OSSD, AP, DEC"
-        autocomplete="off"
-        spellcheck="false"
-      />
+      <input id="glossaireSearch" class="glossaire-search" type="search" placeholder="Rechercher un terme… ex : OSSD, AP, DEC" autocomplete="off" spellcheck="false" />
     </div>
     <div class="glossaire-intro">
       <p>Définitions des termes et abréviations utilisés dans ce simulateur. Toutes les informations sont à valider directement auprès des institutions concernées.</p>
@@ -163,17 +158,33 @@ function initGlossaireSearch() {
     const empty = document.getElementById("glossaireEmpty");
     if (!grid) return;
     let visible = 0;
-    grid.querySelectorAll(".glossaire-card").forEach(card => {
-      const match = !q
-        || card.dataset.abbr.includes(q)
-        || card.dataset.full.includes(q)
-        || card.dataset.desc.includes(q);
+    grid.querySelectorAll(".glossaire-card").forEach((card) => {
+      const match =
+        !q ||
+        card.dataset.abbr.includes(q) ||
+        card.dataset.full.includes(q) ||
+        card.dataset.desc.includes(q);
       card.style.display = match ? "" : "none";
       if (match) visible++;
     });
     empty.style.display = visible === 0 ? "block" : "none";
   });
   input.focus();
+}
+
+function renderAnnuaireTab(tab) {
+  const content = document.getElementById("annuaireContent");
+  if (tab === "glossaire") {
+    content.innerHTML = buildGlossaire();
+    initGlossaireSearch();
+    return;
+  }
+  if (tab === "universites") {
+    content.innerHTML = `<div class="results-grid">${onlineUniversities.map((u) => buildUniversityCard(u, false)).join("")}</div>`;
+    return;
+  }
+  const schoolList = secondarySchools[tab] || [];
+  content.innerHTML = schoolList.map((s) => buildSchoolCard(s, tab)).join("");
 }
 
 document.getElementById("annuaireBtn").addEventListener("click", () => {
@@ -196,15 +207,15 @@ document.getElementById("annuaireOverlay").addEventListener("click", (e) => {
   }
 });
 
-document.querySelectorAll(".annuaire-tab").forEach(btn => {
+document.querySelectorAll(".annuaire-tab").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".annuaire-tab").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".annuaire-tab").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     renderAnnuaireTab(btn.dataset.tab);
   });
 });
 
-const STORAGE_KEY = "cap-diplome-v1";
+const STORAGE_KEY = "cap-diplome-v4";
 
 function saveStateToStorage() {
   try {
@@ -217,31 +228,26 @@ function loadStateFromStorage() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return false;
     const saved = JSON.parse(raw);
-    if (!saved || typeof saved !== "object") return false;
-    const s = saved.state;
-    if (s.des !== undefined) state.des = s.des;
-    if (s.language !== undefined) state.language = s.language;
-    if (s.diploma !== undefined) state.diploma = s.diploma;
-    if (Array.isArray(s.traits)) state.traits = s.traits;
-    if (s.sliders) state.sliders = { ...state.sliders, ...s.sliders };
-    if (s.career !== undefined) state.career = s.career;
-    if (s.universityType !== undefined) state.universityType = s.universityType;
-    if (Array.isArray(s.selectedUniversities)) state.selectedUniversities = s.selectedUniversities;
-    if (s.plar) state.plar = { ...state.plar, ...s.plar };
-    if (s.checklist) state.checklist = s.checklist;
+    if (!saved || typeof saved !== "object" || !saved.state) return false;
+    Object.assign(state, saved.state);
     if (typeof saved.step === "number") currentStep = saved.step;
     return true;
-  } catch (e) { return false; }
+  } catch (e) {
+    return false;
+  }
 }
 
 function clearStorage() {
-  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (e) {}
 }
 
 function showRestoredToast() {
   const toast = document.createElement("div");
   toast.className = "restore-toast";
-  toast.innerHTML = "↩️ Progression restaurée automatiquement — <button class='restore-reset'>Recommencer à zéro</button>";
+  toast.innerHTML =
+    "↩️ Progression restaurée automatiquement — <button class='restore-reset'>Recommencer à zéro</button>";
   toast.querySelector(".restore-reset").addEventListener("click", () => {
     resetState();
     currentStep = 0;
@@ -257,126 +263,121 @@ function showRestoredToast() {
 }
 
 function resetState() {
-  state.des = null;
-  state.language = null;
-  state.diploma = null;
-  state.traits = [];
-  state.sliders = { motivation: 3, math: 3, english: 3, availability: 3, pace: 3 };
-  state.career = null;
-  state.universityType = null;
+  state.age = null;
+  state.pays = null;
+  state.niveauScolaire = null;
+  state.langue = null;
+  state.diplomes = [];
+  state.modes = [];
+  state.domaines = [];
+  state.niveauxVises = [];
+  state.neSaitPasEncore = false;
+  state.wantsUniversity = null;
+  state.univLangue = null;
+  state.univPays = null;
   state.selectedUniversities = [];
-  state.plar = { homeschooling: false, projects: false, work: false, selfLearning: false, portfolios: false };
-  state.checklist = {};
   clearStorage();
 }
 
 let currentStep = 0;
 
-const steps = [
-  { title: "AS-TU TON DES ?",          eyebrow: "Point de départ",   render: renderDes },
-  { title: "TA LANGUE D'ÉTUDES",        eyebrow: "Langue",            render: renderLanguage },
-  { title: "OÙ TU TE VOIS ?",          eyebrow: "Objectif",          render: renderCareer },
-  { title: "TON PROFIL",               eyebrow: "Profil",            render: renderProfile },
-  { title: "TON DIPLÔME CIBLE",        eyebrow: "Diplôme",           render: renderDiploma },
-  { title: "TES ÉCOLES",               eyebrow: "Écoles",            render: renderSchools },
-  { title: "QUEL TYPE D'UNIVERSITÉ ?", eyebrow: "Sélectivité",       render: renderUniversityType },
-  { title: "TES UNIVERSITÉS",          eyebrow: "Recommandations",   render: renderUniversities },
-  { title: "TES CRÉDITS RECONNUS",     eyebrow: "Crédits possibles", render: renderPlar },
-  { title: "TON PLAN D'ACTION",        eyebrow: "Roadmap",           render: renderRoadmap },
-  { title: "AVANT DE PARTIR",          eyebrow: "Vérifications",     render: renderChecklist },
-  { title: "TON PARCOURS",             eyebrow: "Résumé",            render: renderSummary }
-];
-
-const options = {
-  des: [
-    ["oui", "Avec DES", ""],
-    ["non", "Sans DES", ""]
-  ],
-  language: [
-    ["francais", "FRANÇAIS", "Quelques écoles offrent un soutien en français. Options limitées — à vérifier."],
-    ["anglais", "ANGLAIS", "La majorité des parcours OSSD et USA se font en anglais."]
-  ],
-  diploma: [
-    ["ossd", "OSSD", "Diplôme ontarien. Reconnu partout au Canada, aux USA et à l'international."],
-    ["us", "US Diploma", "Diplôme américain. Idéal pour Common App, NCAA et universités américaines."]
-  ],
-  career: [
-    ["stem", "Sciences / Génie / Santé", "Profil compétitif — notes élevées et AP souvent indispensables."],
-    ["business", "Business / Comptabilité", "Math solide et anglais académique font la différence."],
-    ["law", "Juridique / Politique", "Accès souvent indirect — vérifier programme par programme."],
-    ["humanities", "Littéraire / Sciences humaines", "Plus de souplesse. Écriture, analyse et réflexion comptent."],
-    ["arts", "Arts / Créatif", "Portfolio et projets personnels ont souvent autant de poids que les notes."],
-    ["tech", "Informatique / Technologie", "Math, projets perso et AP CS sont de vrais atouts."]
-  ],
-  universityType: [
-    ["canada-flex", "Canada — Flexible", "Athabasca, Thompson Rivers, Royal Roads."],
-    ["canada-standard", "Canada — Standard", "York, TMU, Ottawa, Carleton."],
-    ["canada-competitive", "Canada — Compétitif", "Waterloo, UofT, McMaster, UBC, McGill."],
-    ["quebec-fr", "Québec francophone", "UdeM, Laval, Sherbrooke — conditions à vérifier."],
-    ["usa-flex", "USA — Flexible", "SNHU, ASU Online, Purdue Global."],
-    ["usa-standard", "USA — Standard", "Oregon State, Arizona, Penn State."],
-    ["usa-competitive", "USA — Compétitif", "NYU, Georgia Tech, Boston University."],
-    ["usa-top", "Ivy League / Top USA", "Harvard, MIT, Stanford, Yale, Princeton."]
-  ],
-  traits: [
-    "Autonome",
-    "Besoin d'encadrement",
-    "Créatif",
-    "Scientifique",
-    "Littéraire",
-    "Technologique",
-    "Fast-track",
-    "Anxieux face aux examens",
-    "International"
-  ]
+// Écrans (Plan v4) :
+// 0 Accueil · 1 Profil de l'élève · 2 Intercalaire DES (conditionnel)
+// 3 Parcours scolaire · 4 Domaine et niveau visés · 5 Écoles secondaires
+// 6 Poursuite université ? · 7 Type d'université (conditionnel)
+// 8 Liste des universités (conditionnel) · 9 Résumé final
+const STEP_ACCUEIL = 0;
+const STEP_PROFIL = 1;
+const STEP_INTERCALAIRE = 2;
+const STEP_PARCOURS = 3;
+const STEP_DOMAINE = 4;
+const STEP_ECOLES = 5;
+const STEP_VEUT_UNIV = 6;
+const STEP_TYPE_UNIV = 7;
+const STEP_LISTE_UNIV = 8;
+const STEP_RESUME = 9;
+const secondarySchools = {
+  ossd: [{"id": "OSSD-001", "name": "Blyth Academy Online", "bsid": "669675", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 1", "site": "https://blytheducation.com/online", "email": "admissions@blytheducation.com", "prix": "Sur demande", "duree": "Min 2 sem.", "mode": "Asynchrone / Live (Orbit)", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Oui"}, {"id": "OSSD-002", "name": "Virtual High School (VHS)", "bsid": "665681", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 1", "site": "https://virtualhighschool.com", "email": "info@virtualhighschool.com", "prix": "469$–589$/cours", "duree": "Min 2 sem.", "mode": "Asynchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Oui"}, {"id": "OSSD-003", "name": "Ontario Virtual School (OVS)", "bsid": "665804", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 1", "site": "https://ontariovirtualschool.ca", "email": "admin@ontariovirtualschool.ca", "prix": "~650$/cours", "duree": "Min 4 sem.", "mode": "Asynchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Non", "ncaa": "Non"}, {"id": "OSSD-004", "name": "Northern Pre-University (NPU)", "bsid": "882700", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 1", "site": "https://np-u.com", "email": "admin@np-u.com", "prix": "Via OVS ~650$", "duree": "Min 4 sem.", "mode": "Asynchrone", "langue": "Français/Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-005", "name": "Ontario eSecondary (OES)", "bsid": "667186", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 2", "site": "https://oeshighschool.com", "email": "info@oeshighschool.com", "prix": "Voir page cours (CA) · 795$/cours (Intl)", "duree": "Min 4 sem.", "mode": "Asynchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Oui"}, {"id": "OSSD-006", "name": "Toronto eSchool", "bsid": "886520", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 2", "site": "https://ossd.torontoeschool.com", "email": "info@torontoeschool.com", "prix": "150$+200$+500$+cours", "duree": "9-10 mois (prog.QC)", "mode": "Hybride", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-007", "name": "Canadian Virtual School (CVS)", "bsid": "882250", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 2", "site": "https://canadianvirtualschool.ca", "email": "info@canadianvirtualschool.ca", "prix": "500$–550$/cours", "duree": "Min 3 sem.", "mode": "Hybride", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-008", "name": "Ontario Education Online (OEO)", "bsid": "882902", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://ontarioeducationonline.ca", "email": "info@ontarioeducationonline.ca", "prix": "499$–599$/cours", "duree": "Min 4 sem.", "mode": "Asynchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Non", "ncaa": "Non"}, {"id": "OSSD-009", "name": "The New Educator", "bsid": "669484", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://theneweducator.com", "email": "contact@theneweducator.com", "prix": "Sur demande", "duree": "Min 4 sem.", "mode": "Asynchrone", "langue": "Français/Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-010", "name": "Keystone School", "bsid": "888468", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://keystoneschools.ca", "email": "info@keystoneschools.ca", "prix": "Sur demande", "duree": "Min 4 sem.", "mode": "Hybride", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-011", "name": "Aubrey Academy", "bsid": "665140", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://aubreyacademy.ca", "email": "info@aubreyacademy.ca", "prix": "Sur demande", "duree": "Flexible", "mode": "Asynchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Oui"}, {"id": "OSSD-012", "name": "KAI Global School", "bsid": "665538", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://kaiglobalschool.com", "email": "info@kaiglobalschool.com", "prix": "Sur demande", "duree": "Min 4 sem.", "mode": "Hybride", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-013", "name": "Toronto Imperial School (TIS)", "bsid": "881941", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://torontoimperial.com", "email": "info@torontoimperial.com", "prix": "690$–1450$/cours", "duree": "Flexible", "mode": "Synchrone", "langue": "Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}, {"id": "OSSD-014", "name": "USCA Academy", "bsid": "À confirmer", "accred": "Ministère Éducation Ontario", "tier": "★ Tier 3", "site": "https://uscaacademy.com", "email": "info@uscaacademy.com", "prix": "~16 800$/an", "duree": "Hybride live", "mode": "Synchrone", "langue": "Français/Anglais", "pays": "Canada", "ecoleHote": "Oui", "plar": "Oui", "ncaa": "Non"}],
+  hsd: [{"id": "HSD-001", "name": "Clonlara School", "bsid": "", "accred": "NCPSA · MSA-CESS · Accred.Intl", "tier": "★ Tier 2", "site": "https://clonlara.org", "email": "info@clonlara.org", "prix": "395$–695$/crédit USD", "duree": "Libre", "mode": "Asynchrone", "langue": "Français/Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}, {"id": "HSD-002", "name": "Laurel Springs School", "bsid": "", "accred": "WASC · Cognia", "tier": "★ Tier 1", "site": "https://laurelsprings.com", "email": "admissions@laurelsprings.com", "prix": "7 200$–17 250$/an USD", "duree": "12 mois min", "mode": "Hybride", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Oui"}, {"id": "HSD-003", "name": "Excel High School", "bsid": "", "accred": "Cognia · MSA-CESS · NCA · NWAC", "tier": "★ Tier 2", "site": "https://excelhighschool.com", "email": "info@excelhighschool.com", "prix": "~1 900$/an USD", "duree": "Flexible", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Oui"}, {"id": "HSD-004", "name": "Forest Trail Academy", "bsid": "", "accred": "Cognia · MSA · AI · NCPSA", "tier": "★ Tier 2", "site": "https://foresttrailacademy.com", "email": "info@foresttrailacademy.com", "prix": "~3 200$/an USD", "duree": "12 mois", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Oui"}, {"id": "HSD-005", "name": "James Madison HS", "bsid": "", "accred": "Cognia · DEAC", "tier": "★ Tier 3", "site": "https://jmhs.com", "email": "info@jmhs.com", "prix": "699$–1 299$ USD total", "duree": "Flexible", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}, {"id": "HSD-006", "name": "American School of Correspondence", "bsid": "", "accred": "MSA-CESS · NCPSA · Accred.Intl", "tier": "★ Tier 3", "site": "https://americanschoolofcorr.com", "email": "customerrelations@americanschool.org", "prix": "~1 100$/an USD", "duree": "Flexible", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}, {"id": "HSD-007", "name": "Penn Foster High School", "bsid": "", "accred": "Cognia · MSA-CESS · DEAC", "tier": "★ Tier 3", "site": "https://pennfoster.edu", "email": "admissions@pennfoster.edu", "prix": "1 149$ USD (complet)", "duree": "Flexible", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}, {"id": "HSD-008", "name": "Whitmore School", "bsid": "", "accred": "Cognia · NCA · SACS · NWAC", "tier": "★ Tier 3", "site": "https://whitmoreschool.org", "email": "info@whitmoreschool.org", "prix": "1 699$/an USD", "duree": "Mastery", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}, {"id": "HSD-009", "name": "Ogburn Online School", "bsid": "", "accred": "Cognia · WASC · MSA · AI · NCPSA · AISF", "tier": "★ Tier 2", "site": "https://ogburnonlineschool.com", "email": "info@ogburnonlineschool.com", "prix": "250$/mois USD", "duree": "Mensuel", "mode": "Asynchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Oui"}, {"id": "HSD-010", "name": "Crimson Global Academy (CGA)", "bsid": "", "accred": "WASC · NCAA · Cambridge · AP", "tier": "★ Tier 2", "site": "https://crimsonglobalacademy.school", "email": "admissions@crimsoneducation.org", "prix": "Sur demande", "duree": "Flexible", "mode": "Hybride / Live", "langue": "Anglais", "pays": "International", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Oui"}, {"id": "HSD-011", "name": "Dwight Global Online School", "bsid": "", "accred": "Cognia · MSA-CESS · CIS · IBO", "tier": "★ Tier 1", "site": "https://dwight.edu/dwight-global", "email": "admissions@dwight.edu", "prix": "42 750$/an USD", "duree": "Annuel", "mode": "Synchrone", "langue": "Anglais", "pays": "États-Unis", "ecoleHote": "N/A", "plar": "Oui", "ncaa": "Non"}]
 };
 
-const universities = [
-  { name: "Athabasca University", abbr: "AU", group: "canada-flex", fit: ["Autonome", "International"], text: "Très flexible. Parfait pour une transition ou un complément de préalables en ligne.", url: "https://www.athabascau.ca/admissions/", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Thompson Rivers University — Open Learning", abbr: "TRU-OL", group: "canada-flex", fit: ["Autonome"], text: "Grande souplesse. Idéal pour reprendre des crédits à ton rythme.", url: "https://www.tru.ca/distance/apply.html", fees: "~700–900 CAD/cours", currency: "CAD" },
-  { name: "Royal Roads University", abbr: "RRU", group: "canada-flex", fit: ["Créatif"], text: "Approche appliquée et pratique. Programme et admission à confirmer directement.", url: "https://www.royalroads.ca/admissions", fees: "~800–1 200 CAD/cours", currency: "CAD" },
-  { name: "York University", group: "canada-standard", fit: ["Littéraire", "Business / Comptabilité"], text: "Option solide en Ontario. OSSD souvent lisible — préalables variables.", url: "https://futurestudents.yorku.ca/apply", fees: "~30 000–38 000 CAD/an", currency: "CAD" },
-  { name: "Toronto Metropolitan University", abbr: "TMU", group: "canada-standard", fit: ["Créatif", "Technologique"], text: "Programmes appliqués, campus urbain. Portfolio parfois demandé.", url: "https://www.torontomu.ca/admissions/", fees: "~26 000–36 000 CAD/an", currency: "CAD" },
-  { name: "University of Ottawa", abbr: "uOttawa", group: "canada-standard", fit: ["Littéraire"], text: "Option bilingue selon programme. Exigences à valider directement.", url: "https://www.uottawa.ca/en/admissions", fees: "~28 000–36 000 CAD/an", currency: "CAD" },
-  { name: "Carleton University", abbr: "Carleton", group: "canada-standard", fit: ["Juridique / Politique", "Technologique"], text: "Fort en politiques publiques, médias et informatique.", url: "https://admissions.carleton.ca/", fees: "~26 000–33 000 CAD/an", currency: "CAD" },
-  { name: "University of Waterloo", abbr: "Waterloo", group: "canada-competitive", fit: ["Scientifique", "Technologique", "Fast-track"], text: "Très sélectif en STEM. AP, math avancée et notes élevées sont attendus.", url: "https://uwaterloo.ca/future-students/admissions", fees: "~30 000–58 000 CAD/an", currency: "CAD" },
-  { name: "University of Toronto", abbr: "U of T", group: "canada-competitive", fit: ["Scientifique", "Littéraire"], text: "Admission compétitive. Exigences précises par campus et programme.", url: "https://admissions.utoronto.ca/", fees: "~42 000–62 000 CAD/an", currency: "CAD" },
-  { name: "McMaster University", abbr: "McMaster", group: "canada-competitive", fit: ["Scientifique"], text: "Santé et sciences très sélectives. Chaque préalable compte.", url: "https://future.mcmaster.ca/admissions/", fees: "~31 000–47 000 CAD/an", currency: "CAD" },
-  { name: "University of British Columbia", abbr: "UBC", group: "canada-competitive", fit: ["International", "Scientifique"], text: "Dossier global solide requis. Suppléments et préalables à bien préparer.", url: "https://you.ubc.ca/applying-ubc/", fees: "~36 000–56 000 CAD/an", currency: "CAD" },
-  { name: "McGill University", abbr: "McGill", group: "canada-competitive", fit: ["Scientifique", "International"], text: "Équivalences variables pour parcours non traditionnels. À vérifier en admissions.", url: "https://www.mcgill.ca/applying/", fees: "~21 000–46 000 CAD/an", currency: "CAD" },
-  { name: "Université de Montréal", abbr: "UdeM", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Accès variable — DEC, préalables ou année préparatoire selon le programme.", url: "https://admission.umontreal.ca/", fees: "~8 000–26 000 CAD/an", currency: "CAD" },
-  { name: "Université Laval", abbr: "Laval", group: "quebec-fr", fit: ["Littéraire", "Scientifique"], text: "Dossier évalué au cas par cas, surtout sans DEC.", url: "https://www.ulaval.ca/admission", fees: "~7 000–25 000 CAD/an", currency: "CAD" },
-  { name: "Université de Sherbrooke", abbr: "UdeS", group: "quebec-fr", fit: ["Scientifique", "Business / Comptabilité"], text: "Accès selon programme et dossier. Équivalences à confirmer.", url: "https://www.usherbrooke.ca/admission/", fees: "~7 000–21 000 CAD/an", currency: "CAD" },
-  { name: "Southern New Hampshire University", abbr: "SNHU", group: "usa-flex", fit: ["Autonome"], text: "Très accessible en ligne. Vérifier la reconnaissance externe avant de t'inscrire.", url: "https://www.snhu.edu/admission", fees: "~9 600–12 000 USD/an", currency: "USD" },
-  { name: "Arizona State University Online", abbr: "ASU Online", group: "usa-flex", fit: ["Technologique", "International"], text: "Large catalogue en ligne. Exigences précises selon le programme choisi.", url: "https://asuonline.asu.edu/admissions/", fees: "~10 000–12 500 USD/an", currency: "USD" },
-  { name: "Purdue University Global", abbr: "Purdue Global", group: "usa-flex", fit: ["Business / Comptabilité"], text: "Option flexible pour le business. Vérifier l'alignement avec tes objectifs.", url: "https://www.purdueglobal.edu/admissions/", fees: "~12 000–15 000 USD/an", currency: "USD" },
-  { name: "Oregon State University", abbr: "OSU", group: "usa-standard", fit: ["Technologique", "Scientifique"], text: "Option solide en STEM. Certains programmes disponibles en ligne.", url: "https://admissions.oregonstate.edu/", fees: "~30 000–33 000 USD/an", currency: "USD" },
-  { name: "University of Arizona", abbr: "U of A", group: "usa-standard", fit: ["Business / Comptabilité", "Arts / Créatif"], text: "Bon choix pour business et arts. Dossier international à valider.", url: "https://admissions.arizona.edu/", fees: "~29 000–36 000 USD/an", currency: "USD" },
-  { name: "Pennsylvania State University", abbr: "Penn State", group: "usa-standard", fit: ["International"], text: "Campus et options en ligne. Conditions spécifiques par programme.", url: "https://admissions.psu.edu/", fees: "~36 000–42 000 USD/an", currency: "USD" },
-  { name: "New York University", abbr: "NYU", group: "usa-competitive", fit: ["Arts / Créatif", "Business / Comptabilité"], text: "Compétitif. Portfolio ou supplément d'admission selon la faculté.", url: "https://www.nyu.edu/admissions/undergraduate-admissions.html", fees: "~57 000–62 000 USD/an", currency: "USD" },
-  { name: "Georgia Institute of Technology", abbr: "Georgia Tech", group: "usa-competitive", fit: ["Technologique", "Scientifique"], text: "Référence en tech et STEM. AP et projets personnels font la différence.", url: "https://admission.gatech.edu/", fees: "~32 000–36 000 USD/an", currency: "USD" },
-  { name: "Boston University", abbr: "BU", group: "usa-competitive", fit: ["International", "Scientifique"], text: "Compétitif. Dossier académique solide et activités parascolaires comptent.", url: "https://www.bu.edu/admissions/", fees: "~57 000–63 000 USD/an", currency: "USD" },
-  { name: "Harvard University", abbr: "Harvard", group: "usa-top", fit: ["International"], text: "Ultra-compétitif. Aucun parcours ne garantit l'admission.", url: "https://college.harvard.edu/admissions", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Massachusetts Institute of Technology", abbr: "MIT", group: "usa-top", fit: ["Scientifique", "Technologique"], text: "Ultra-compétitif. Niveau STEM exceptionnel attendu.", url: "https://mitadmissions.org/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Stanford University", abbr: "Stanford", group: "usa-top", fit: ["Technologique", "Créatif"], text: "Ultra-compétitif. Excellence, impact et originalité requis.", url: "https://admission.stanford.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Yale University", abbr: "Yale", group: "usa-top", fit: ["Littéraire", "International"], text: "Ultra-compétitif. Profil global exceptionnel attendu.", url: "https://admissions.yale.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" },
-  { name: "Princeton University", abbr: "Princeton", group: "usa-top", fit: ["Scientifique", "Littéraire"], text: "Ultra-compétitif. Exigences académiques parmi les plus élevées au monde.", url: "https://admission.princeton.edu/", fees: "~57 000–62 000 USD/an*", currency: "USD" }
-];
+const onlineUniversities = [{"id": "UNIV-001", "name": "Athabasca University", "pays": "Canada", "province": "Alberta", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Éducation · Santé · Sciences", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "OSSD · HSD · DES+12e année", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "~900$–1100$/cours CAD", "site": "https://athabascau.ca"}, {"id": "UNIV-002", "name": "Thompson Rivers Open University", "pays": "Canada", "province": "Colombie-Brit.", "langue": "Anglais", "type": "Publique", "programmes": "Business · Arts · Technologie · Sciences", "niveau": "Certificat · Bac", "admissionAvec": "OSSD · HSD · 12e année complétée", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "Variable", "site": "https://tru.ca/distance.html"}, {"id": "UNIV-003", "name": "TÉLUQ", "pays": "Canada", "province": "Québec", "langue": "Français", "type": "Publique", "programmes": "Administration · Informatique · Communication · Éducation", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "DEC · 21 ans+", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "~1 200$/cours CAD", "site": "https://teluq.ca"}, {"id": "UNIV-004", "name": "Arizona State University Online", "pays": "États-Unis", "province": "Arizona", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Sciences · Ingénierie", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "4 ans", "cout": "~600$/crédit USD", "site": "https://asuonline.asu.edu"}, {"id": "UNIV-005", "name": "Southern New Hampshire University (SNHU)", "pays": "États-Unis", "province": "New Hampshire", "langue": "Anglais", "type": "Privée", "programmes": "Business · Informatique · Psychologie · Éducation", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "~320$/crédit USD", "site": "https://snhu.edu"}, {"id": "UNIV-006", "name": "Western Governors University (WGU)", "pays": "États-Unis", "province": "Utah", "langue": "Anglais", "type": "Non-profit", "programmes": "Business · IT · Santé · Éducation", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "~4 000$/6 mois USD", "site": "https://wgu.edu"}, {"id": "UNIV-007", "name": "University of the People (UoPeople)", "pays": "États-Unis", "province": "Californie", "langue": "Anglais", "type": "Non-profit", "programmes": "Business · Informatique · Santé publique", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "Frais d'examen seulement", "site": "https://uopeople.edu"}, {"id": "UNIV-008", "name": "Purdue Global", "pays": "États-Unis", "province": "Indiana", "langue": "Anglais", "type": "Publique", "programmes": "Business · IT · Santé · Justice", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~375$/crédit USD", "site": "https://purdueglobal.edu"}, {"id": "UNIV-009", "name": "Penn State World Campus", "pays": "États-Unis", "province": "Pennsylvanie", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Sciences · Ingénierie", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "4 ans", "cout": "~650$/crédit USD", "site": "https://worldcampus.psu.edu"}, {"id": "UNIV-010", "name": "Liberty University Online", "pays": "États-Unis", "province": "Virginie", "langue": "Anglais", "type": "Privée", "programmes": "Business · Éducation · Santé · Théologie", "niveau": "Bac · Maîtrise · Doctorat", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~390$/crédit USD", "site": "https://liberty.edu/online"}, {"id": "UNIV-011", "name": "Open University UK", "pays": "Royaume-Uni", "province": "Angleterre", "langue": "Anglais", "type": "Publique", "programmes": "Arts · Business · Technologie · Sciences humaines", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "12e année ou adulte", "mode": "Asynchrone", "duree": "Flexible", "cout": "~2 000–6 000 £/an", "site": "https://open.ac.uk"}, {"id": "UNIV-012", "name": "Année préparatoire UdeM", "pays": "Canada", "province": "Québec", "langue": "Français", "type": "Publique", "programmes": "Sciences · Sciences humaines · Arts et lettres", "niveau": "Pré-bac (passerelle)", "admissionAvec": "OSSD · DES+4ans · Diplôme 12e année", "mode": "Présentiel (Montréal/Laval)", "duree": "1 an", "cout": "~4 350$ CAD total", "site": "https://admission.umontreal.ca/programmes/annee-preparatoire"}, {"id": "UNIV-013", "name": "Capella University", "pays": "États-Unis", "province": "Minnesota", "langue": "Anglais", "type": "Privée", "programmes": "Business · Psychologie · IT · Santé", "niveau": "Bac · Maîtrise · Doctorat", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~470$/crédit USD", "site": "https://capella.edu"}];
+const options = {
+  niveauScolaire: [
+    ["3e-sec", "3e SECONDAIRE", ""],
+    ["4e-sec", "4e SECONDAIRE", ""],
+    ["5e-sec", "5e SECONDAIRE", ""],
+    ["des", "DES OBTENU", "Affiche l'écran de conversion DES avant de continuer."],
+    ["post-sec", "POST-SECONDAIRE / CÉGEP", ""],
+  ],
+  pays: [
+    ["qc", "QUÉBEC", ""],
+    ["on", "ONTARIO", ""],
+    ["autre-ca", "AUTRE PROVINCE CANADIENNE", ""],
+    ["hors-ca", "HORS CANADA", ""],
+  ],
+  langue: [
+    ["francais", "FRANÇAIS", "Options francophones plus limitées — à vérifier école par école."],
+    ["anglais", "ANGLAIS", "La majorité des parcours OSSD et HSD se font en anglais."],
+    ["les-deux", "LES DEUX", "Élargit les résultats aux écoles francophones et anglophones."],
+  ],
+  diplomes: [
+    ["ossd", "OSSD", "Diplôme ontarien. Reconnu partout au Canada, aux USA et à l'international."],
+    ["hsd", "HSD", "Diplôme secondaire américain. Idéal pour Common App, NCAA et universités américaines."],
+  ],
+  modes: [
+    ["asynchrone", "ASYNCHRONE", "Travail à ton propre rythme, sans horaire imposé."],
+    ["hybride", "HYBRIDE", "Mix de modules auto-rythmés et de sessions en direct."],
+    ["synchrone", "SYNCHRONE", "Cours en temps réel avec horaire structuré."],
+    ["aucune-preference", "AUCUNE PRÉFÉRENCE", "Affiche toutes les écoles, peu importe le mode."],
+  ],
+  domaines: [
+    ["medecine", "MÉDECINE", ""],
+    ["droit", "DROIT", ""],
+    ["pharmacie", "PHARMACIE", ""],
+    ["genie", "GÉNIE", ""],
+    ["ti", "TI / INFORMATIQUE", ""],
+    ["arts", "ARTS", ""],
+    ["education", "ÉDUCATION", ""],
+    ["sciences", "SCIENCES", ""],
+    ["administration", "ADMINISTRATION", ""],
+  ],
+  niveauxVises: [
+    ["certificat", "CERTIFICAT", ""],
+    ["bac", "BACCALAURÉAT", ""],
+    ["dess", "DESS", ""],
+    ["maitrise", "MAÎTRISE", ""],
+    ["doctorat", "DOCTORAT", ""],
+  ],
+  wantsUniversity: [
+    ["oui", "OUI, JE VISE L'UNIVERSITÉ", "Explorer les universités en ligne adaptées à mon diplôme."],
+    ["non", "NON, PAS MAINTENANT", "Je me concentre sur le diplôme secondaire pour l'instant."],
+  ],
+  univPays: [
+    ["canada", "CANADA", ""],
+    ["etats-unis", "ÉTATS-UNIS", ""],
+    ["les-deux", "LES DEUX", ""],
+  ],
+};
 
-const schools = [
-  { name: "Virtual High School", abbr: "VHS", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "Certains cours avancés", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Autonome, OSSD Ontario" },
-  { name: "Blyth Academy Online", abbr: "Blyth", diploma: "ossd", pacing: "Structuré", support: "Élevé", ap: "Options possibles", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "Besoin d'encadrement" },
-  { name: "Ontario Virtual School", abbr: "OVS", diploma: "ossd", pacing: "Très flexible", support: "Moyen", ap: "Options selon offre", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Fast-track, autonome" },
-  { name: "Ontario eSecondary", abbr: "OES", diploma: "ossd", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme progressif" },
-  { name: "Ontario Education Online", abbr: "OEO", diploma: "ossd", pacing: "Flexible", support: "Variable", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Budget contrôlé" },
-  { name: "KAI Global School", abbr: "KAI Global", diploma: "ossd", pacing: "Accompagné", support: "Élevé", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$$", ideal: "International, encadrement" },
-  { name: "Clonlara School", abbr: "Clonlara", diploma: "us", pacing: "Personnalisé", support: "Élevé", ap: "Selon plan", ncaa: "À vérifier", language: "Français possible", cost: "$$$", ideal: "Créatif, français, projets" },
-  { name: "Laurel Springs School", abbr: "Laurel Springs", diploma: "us", pacing: "Structuré", support: "Élevé", ap: "Disponible", ncaa: "Souvent pertinent, vérifier", language: "Anglais", cost: "$$$$", ideal: "Université USA compétitive" },
-  { name: "Dwight Global Online School", abbr: "Dwight Global", diploma: "us", pacing: "Rigoureux", support: "Élevé", ap: "Disponible", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "International ambitieux" },
-  { name: "Crimson Global Academy", abbr: "CGA", diploma: "us", pacing: "Accéléré", support: "Élevé", ap: "Fort", ncaa: "À vérifier", language: "Anglais", cost: "$$$$", ideal: "Top USA, AP" },
-  { name: "Excel High School", abbr: "Excel HS", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "Limité/à confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$", ideal: "Budget et autonomie" },
-  { name: "American School of Correspondence", abbr: "American School", diploma: "us", pacing: "Traditionnel", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Parcours classique" },
-  { name: "Ogburn Online School", abbr: "Ogburn", diploma: "us", pacing: "Flexible", support: "Moyen", ap: "À confirmer", ncaa: "À vérifier", language: "Anglais", cost: "$$", ideal: "Rythme indépendant" }
+function labelFromOptions(optKey, value) {
+  if (!value) return "—";
+  const list = options[optKey] || [];
+  const found = list.find(([v]) => v === value);
+  return found ? found[1] : value;
+}
+
+const steps = [
+  { title: "CAP DIPLÔME", eyebrow: "Bienvenue", render: renderAccueil },
+  { title: "PROFIL DE L'ÉLÈVE", eyebrow: "Étape 1", render: renderProfilEleve },
+  { title: "CONVERSION DE TON DES", eyebrow: "Information", render: renderIntercalaireDES },
+  { title: "PARCOURS SCOLAIRE", eyebrow: "Étape 2", render: renderParcoursScolaire },
+  { title: "DOMAINE ET NIVEAU VISÉS", eyebrow: "Étape 3", render: renderDomaineNiveau },
+  { title: "ÉCOLES SECONDAIRES", eyebrow: "Résultats", render: renderSchools },
+  { title: "POURSUITE À L'UNIVERSITÉ ?", eyebrow: "Étape 4", render: renderWantsUniversity },
+  { title: "TYPE D'UNIVERSITÉ RECHERCHÉE", eyebrow: "Étape 5", render: renderTypeUniversite },
+  { title: "UNIVERSITÉS EN LIGNE", eyebrow: "Résultats", render: renderUniversities },
+  { title: "RÉSUMÉ FINAL", eyebrow: "Ton parcours", render: renderSummary },
 ];
 
 function render() {
@@ -388,7 +389,8 @@ function render() {
   document.getElementById("screen").innerHTML = "";
   document.getElementById("screen").appendChild(step.render(step));
   document.getElementById("prevBtn").disabled = currentStep === 0;
-  document.getElementById("nextBtn").textContent = currentStep === steps.length - 1 ? "Recommencer" : "Continuer";
+  document.getElementById("nextBtn").textContent =
+    currentStep === steps.length - 1 ? "Recommencer" : "Continuer";
   document.getElementById("nextBtn").disabled = !canContinue();
   updateInsight();
   saveStateToStorage();
@@ -408,18 +410,12 @@ function screenShell(step, subcopy, warning) {
   return shell;
 }
 
-function renderChoiceStep(step, key, list, subcopy, warning, columns = "") {
-  const shell = screenShell(step, subcopy, warning);
-  const grid = document.createElement("div");
-  grid.className = `choices ${columns}`;
-  list.forEach(([value, title, body]) => {
-    grid.appendChild(choiceCard(title, body, state[key] === value, () => {
-      state[key] = value;
-      render();
-    }));
-  });
-  shell.appendChild(grid);
-  return shell;
+function sectionTitle(text) {
+  const p = document.createElement("p");
+  p.textContent = text;
+  p.style.cssText =
+    "font-weight:700;margin:24px 0 10px;font-size:0.95rem;letter-spacing:0.02em;";
+  return p;
 }
 
 function choiceCard(title, body, selected, onClick) {
@@ -432,325 +428,363 @@ function choiceCard(title, body, selected, onClick) {
   return node;
 }
 
-function renderDes(step) {
-  return renderChoiceStep(step, "des", options.des, "Chaque parcours ouvre des possibilités différentes selon les universités, les préalables et les équivalences reconnues.", null);
-}
-
-function renderLanguage(step) {
-  const warning = state.language === "francais" ? "Options francophones limitées — chaque situation est unique" : null;
-  return renderChoiceStep(step, "language", options.language, "La langue d'études influence les écoles disponibles et les débouchés universitaires.", warning);
-}
-
-function renderDiploma(step) {
-  return renderChoiceStep(step, "diploma", options.diploma, "Chaque diplôme mène à des parcours différents et nécessite une stratégie adaptée pour les candidatures.", null);
-}
-
-function renderProfile(step) {
-  const shell = screenShell(step, "Choisis ce qui te ressemble — plusieurs réponses possibles. Ça personnalise tout ce qui suit.", null);
+function renderChoiceStep(step, key, list, subcopy, warning, columns) {
+  columns = columns || "";
+  const shell = screenShell(step, subcopy, warning);
   const grid = document.createElement("div");
-  grid.className = "choices multi";
-  options.traits.forEach((trait) => {
-    grid.appendChild(choiceCard(trait, profileBody(trait), state.traits.includes(trait), () => {
-      state.traits = toggle(state.traits, trait);
-      render();
-    }));
+  grid.className = `choices ${columns}`;
+  list.forEach(([value, title, body]) => {
+    grid.appendChild(
+      choiceCard(title, body, state[key] === value, () => {
+        state[key] = value;
+        render();
+      }),
+    );
   });
   shell.appendChild(grid);
-
-  const controls = document.createElement("div");
-  controls.className = "controls-grid";
-  [
-    ["motivation", "Motivation"],
-    ["math", "Math"],
-    ["english", "Anglais"],
-    ["availability", "Disponibilité"],
-    ["pace", "Rythme"]
-  ].forEach(([key, label]) => {
-    const box = document.createElement("div");
-    box.className = "slider-box";
-    box.innerHTML = `<label><span>${label}</span><b>${state.sliders[key]}/5</b></label><input type="range" min="1" max="5" value="${state.sliders[key]}" />`;
-    box.querySelector("input").addEventListener("input", (event) => {
-      state.sliders[key] = Number(event.target.value);
-      render();
-    });
-    controls.appendChild(box);
-  });
-  shell.appendChild(controls);
   return shell;
 }
 
-function profileBody(trait) {
-  const map = {
-    "Autonome": "Tu gères ton rythme sans suivi rapproché.",
-    "Besoin d'encadrement": "Tu travailles mieux avec structure et soutien.",
-    "Créatif": "Ton portfolio raconte ce que les notes ne montrent pas.",
-    "Scientifique": "AP sciences et math font la différence ici.",
-    "Littéraire": "Écriture, analyse, réflexion — ton terrain naturel.",
-    "Technologique": "Projets, code, math appliquée.",
-    "Fast-track": "Tu veux aller vite — attention à ne pas brûler les étapes.",
-    "Anxieux face aux examens": "On privilégie les évaluations progressives.",
-    "International": "Ton dossier doit être lisible dans plusieurs systèmes."
-  };
-  return map[trait];
-}
-
-function renderCareer(step) {
-  const warning = state.career === "stem" ? "Domaine compétitif — AP, notes élevées et préalables solides souvent requis." : null;
-  return renderChoiceStep(step, "career", options.career, "Certaines orientations demandent des préalables et un dossier académique plus exigeants.", warning, "three");
-}
-
-function renderUniversityType(step) {
-  const warning = ["quebec-fr", "usa-top"].includes(state.universityType)
-    ? state.universityType === "quebec-fr"
-      ? "Chaque dossier est évalué individuellement — vérification directe indispensable"
-      : "Niveau ultra-compétitif — dossier exceptionnel requis"
-    : null;
-  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "ton diplôme";
-  const subcopy = `Ton parcours secondaire (${diplomaLabel}) est maintenant défini. Choisis le niveau universitaire qui correspond à ton ambition et ta préparation.`;
-  return renderChoiceStep(step, "universityType", options.universityType, subcopy, warning, "three");
-}
-
-function getCompatibilityInfo(score) {
-  const percent = Math.min(95, 25 + score * 18);
-  if (percent >= 75) return { percent, badge: "Très compatible", badgeClass: "compat-high" };
-  if (percent >= 50) return { percent, badge: "Compatible", badgeClass: "compat-mid" };
-  return { percent, badge: "Possible avec conditions", badgeClass: "compat-low" };
-}
-
-function renderUniversities(step) {
-  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "ton diplôme";
-  const subcopy = `Ces universités sont filtrées selon ton profil, ton ${diplomaLabel} et ta catégorie choisie. Sélectionne celles qui t'intéressent — aucune garantie d'admission.`;
-  const shell = screenShell(step, subcopy, universityWarning());
-
-  const selectionInfo = document.createElement("p");
-  selectionInfo.className = "selection-hint";
-  selectionInfo.textContent = state.selectedUniversities.length
-    ? `${state.selectedUniversities.length} université(s) sélectionnée(s)`
-    : "Clique sur une carte pour la sélectionner.";
-  shell.appendChild(selectionInfo);
-
+function buildSingleSelectGroup(key, list, columns) {
   const grid = document.createElement("div");
-  grid.className = "results-grid";
+  grid.className = `choices ${columns || ""}`;
+  list.forEach(([value, title, body]) => {
+    grid.appendChild(
+      choiceCard(title, body, state[key] === value, () => {
+        state[key] = value;
+        render();
+      }),
+    );
+  });
+  return grid;
+}
 
-  getRecommendedUniversities().forEach((uni) => {
-    const compat = getCompatibilityInfo(uni.score);
-    const isSelected = state.selectedUniversities.includes(uni.name);
-    const card = document.createElement("article");
-    card.className = "university-card" + (isSelected ? " selected" : "");
-    card.setAttribute("role", "button");
-    card.setAttribute("tabindex", "0");
-    card.innerHTML = `
-      <div class="card-header-row">
-        <div class="card-title-block">
-          <h3 class="card-title">${uni.name}</h3>
-          ${uni.abbr ? `<span class="card-abbr">${uni.abbr}</span>` : ""}
+function buildMultiSelectGroup(key, list, columns) {
+  const grid = document.createElement("div");
+  grid.className = `choices ${columns || "multi"}`;
+  list.forEach(([value, title, body]) => {
+    grid.appendChild(
+      choiceCard(title, body, state[key].includes(value), () => {
+        state[key] = toggle(state[key], value);
+        render();
+      }),
+    );
+  });
+  return grid;
+}
+
+function toggle(list, item) {
+  return list.includes(item)
+    ? list.filter((v) => v !== item)
+    : [...list, item];
+}
+function renderAccueil(step) {
+  const shell = screenShell(
+    step,
+    "Un guide informatif pour les familles en école à la maison au Québec — pour s'y retrouver dans les études secondaires et universitaires en ligne.",
+    null,
+  );
+  const info = document.createElement("div");
+  info.className = "warning-section";
+  info.innerHTML = `
+    <div class="warning-section-header">
+      <span class="warning-section-icon">⚠️</span>
+      <div>
+        <h3 class="warning-section-title">Avant de commencer</h3>
+        <p class="warning-section-sub">CAP DIPLÔME n'est pas un conseiller d'orientation, ni un organisme officiel, et ne fait aucune recommandation personnalisée. La décision finale appartient toujours à la famille.</p>
+      </div>
+    </div>
+  `;
+  shell.appendChild(info);
+  const startBtn = document.createElement("button");
+  startBtn.className = "nav-btn primary";
+  startBtn.type = "button";
+  startBtn.style.marginTop = "20px";
+  startBtn.textContent = "Commencer →";
+  startBtn.addEventListener("click", () => {
+    currentStep = getNextStep(currentStep);
+    render();
+  });
+  shell.appendChild(startBtn);
+  return shell;
+}
+
+function renderProfilEleve(step) {
+  const shell = screenShell(
+    step,
+    "Quelques informations de base pour personnaliser la suite du parcours.",
+    null,
+  );
+
+  shell.appendChild(sectionTitle("Âge de l'élève"));
+  const ageWrap = document.createElement("div");
+  ageWrap.className = "slider-box";
+  ageWrap.innerHTML = `<label><span>Âge</span><b>${state.age || "—"} ans</b></label><input type="range" min="10" max="20" value="${state.age || 15}" />`;
+  ageWrap.querySelector("input").addEventListener("input", (e) => {
+    state.age = Number(e.target.value);
+    render();
+  });
+  shell.appendChild(ageWrap);
+
+  shell.appendChild(sectionTitle("Province ou pays de résidence"));
+  shell.appendChild(buildSingleSelectGroup("pays", options.pays, "three"));
+
+  shell.appendChild(sectionTitle("Niveau scolaire actuel"));
+  shell.appendChild(buildSingleSelectGroup("niveauScolaire", options.niveauScolaire, "three"));
+
+  return shell;
+}
+
+function renderIntercalaireDES(step) {
+  const shell = screenShell(
+    step,
+    "Ce que ton DES te permet déjà, et ce qu'il te reste à compléter. Lecture seule — aucun choix à faire ici.",
+    null,
+  );
+  const info = document.createElement("div");
+  info.className = "warning-section";
+  info.innerHTML = `
+    <div class="warning-section-header">
+      <span class="warning-section-icon">ℹ️</span>
+      <div>
+        <h3 class="warning-section-title">Conversion de ton DES</h3>
+        <p class="warning-section-sub">Chaque école évalue ton dossier individuellement — ce résumé est une base de départ.</p>
+      </div>
+    </div>
+    <div class="verif-grid">
+      <div class="verif-card">
+        <span class="verif-icon">🔄</span>
+        <div class="verif-body">
+          <strong class="verif-label">Reconnaissance des acquis (PLAR)</strong>
+          <span class="verif-desc">Ton DES québécois peut être reconnu en partie par les écoles OSSD ou HSD via un processus de Prior Learning Assessment and Recognition (PLAR).</span>
         </div>
-        <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
       </div>
-      <div class="compat-bar-wrap">
-        <div class="compat-bar" style="width:${compat.percent}%" data-class="${compat.badgeClass}"></div>
+      <div class="verif-card">
+        <span class="verif-icon">📚</span>
+        <div class="verif-body">
+          <strong class="verif-label">Crédits manquants</strong>
+          <span class="verif-desc">Il te manque généralement l'équivalent d'une 12e année (OSSD) ou d'un Senior Year (HSD) — souvent entre 4 et 8 cours selon l'école et ton dossier.</span>
+        </div>
       </div>
-      <p class="card-text">${uni.text}</p>
-      <div class="card-meta-row">
-        <span class="card-fees">💰 ${uni.fees}</span>
-        <a class="card-link" href="${uni.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Admissions officielles ↗</a>
+      <div class="verif-card">
+        <span class="verif-icon">🔗</span>
+        <div class="verif-body">
+          <strong class="verif-label">Politiques officielles</strong>
+          <span class="verif-desc">Consulte la fiche de chaque école à l'écran suivant — la mention PLAR indique si un processus de reconnaissance est proposé.</span>
+        </div>
       </div>
-      <div class="tag-row">
-        <span class="tag green">${labelUniversityGroup(uni.group)}</span>
-        ${getRiskTags().map((tag) => `<span class="tag ${tag.tone}">${tag.text}</span>`).join("")}
+      <div class="verif-card">
+        <span class="verif-icon">👪</span>
+        <div class="verif-body">
+          <strong class="verif-label">Responsabilité de la famille</strong>
+          <span class="verif-desc">C'est à la famille de contacter chaque école pour confirmer les crédits reconnus — ce simulateur ne fait aucune évaluation officielle.</span>
+        </div>
       </div>
-      ${isSelected ? '<div class="selected-check">✓ Sélectionnée</div>' : ''}
-    `;
-    card.addEventListener("click", () => {
-      state.selectedUniversities = toggle(state.selectedUniversities, uni.name);
-      render();
-    });
-    card.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); card.click(); } });
-    grid.appendChild(card);
-  });
-  shell.appendChild(grid);
+    </div>
+  `;
+  shell.appendChild(info);
   return shell;
 }
 
-function getRecommendedUniversities() {
-  const selectedGroup = state.universityType;
-  const careerLabel = getCareerTitle();
-  let pool = universities.filter((uni) => uni.group === selectedGroup);
-  if (!pool.length) pool = universities.filter((uni) => compatibleCountry(uni.group));
+function renderParcoursScolaire(step) {
+  const shell = screenShell(
+    step,
+    "Ton parcours secondaire : langue d'enseignement, type de diplôme et mode d'enseignement.",
+    null,
+  );
+  shell.appendChild(sectionTitle("Langue d'enseignement souhaitée"));
+  shell.appendChild(buildSingleSelectGroup("langue", options.langue, "three"));
 
-  const scored = pool.map((uni) => ({
-    ...uni,
-    score: uni.fit.filter((fit) => state.traits.includes(fit) || fit === careerLabel).length
-      + (state.sliders.math >= 4 && uni.fit.includes("Scientifique") ? 1 : 0)
-      + (state.sliders.english >= 4 && uni.group.startsWith("usa") ? 1 : 0)
-  }));
-  return scored.sort((a, b) => b.score - a.score).slice(0, 6);
+  shell.appendChild(sectionTitle("Type de diplôme (plusieurs choix possibles)"));
+  shell.appendChild(buildMultiSelectGroup("diplomes", options.diplomes, "three"));
+
+  shell.appendChild(sectionTitle("Mode d'enseignement (plusieurs choix possibles)"));
+  shell.appendChild(buildMultiSelectGroup("modes", options.modes, "three"));
+
+  return shell;
 }
 
-function compatibleCountry(group) {
-  if (state.diploma === "ossd") return group.startsWith("canada") || group === "quebec-fr";
-  if (state.diploma === "us") return group.startsWith("usa") || group === "canada-flex";
-  return true;
+function hasContingente() {
+  return state.domaines.some((d) => ["medecine", "droit", "pharmacie"].includes(d));
+}
+
+function renderDomaineNiveau(step) {
+  const warning = hasContingente()
+    ? "⚠️ Programmes contingentés au Québec — si tu vises médecine, droit ou pharmacie, la plupart des universités québécoises exigent ou favorisent fortement le DEC. Vérifie directement les conditions d'admission auprès de chaque établissement avant de choisir ton parcours."
+    : null;
+  const shell = screenShell(
+    step,
+    "Domaine d'études et niveau universitaire visés — ces choix affinent les universités proposées plus loin.",
+    warning,
+  );
+  shell.appendChild(sectionTitle("Domaine (plusieurs choix possibles)"));
+  shell.appendChild(buildMultiSelectGroup("domaines", options.domaines, "three"));
+
+  shell.appendChild(sectionTitle("Niveau universitaire visé (plusieurs choix possibles)"));
+  const niveauGrid = buildMultiSelectGroup("niveauxVises", options.niveauxVises, "three");
+  shell.appendChild(niveauGrid);
+
+  const dontKnow = document.createElement("div");
+  dontKnow.className = "choices";
+  dontKnow.style.marginTop = "8px";
+  dontKnow.appendChild(
+    choiceCard(
+      "JE NE SAIS PAS ENCORE",
+      "Ça reste correct — les résultats resteront généraux.",
+      state.neSaitPasEncore,
+      () => {
+        state.neSaitPasEncore = !state.neSaitPasEncore;
+        if (state.neSaitPasEncore) state.niveauxVises = [];
+        render();
+      },
+    ),
+  );
+  shell.appendChild(dontKnow);
+
+  return shell;
+}
+function getFilteredSchools() {
+  let pool = [];
+  const wantOSSD = state.diplomes.includes("ossd") || state.diplomes.length === 0;
+  const wantHSD = state.diplomes.includes("hsd") || state.diplomes.length === 0;
+  if (wantOSSD) pool = pool.concat(secondarySchools.ossd.map((s) => ({ ...s, type: "ossd" })));
+  if (wantHSD) pool = pool.concat(secondarySchools.hsd.map((s) => ({ ...s, type: "hsd" })));
+
+  if (state.langue && state.langue !== "les-deux") {
+    const wanted = state.langue === "francais" ? "français" : "anglais";
+    pool = pool.filter((s) => {
+      const l = (s.langue || "").toLowerCase();
+      return l.includes(wanted) || l.includes("les deux");
+    });
+  }
+  return pool;
 }
 
 function renderSchools(step) {
-  const shell = screenShell(step, "Écoles filtrées selon ton diplôme et ton profil. Vérifie toujours les détails directement sur leur site.", null);
+  const shell = screenShell(
+    step,
+    "Écoles filtrées selon ton diplôme et ta langue d'enseignement. Vérifie toujours les détails directement sur leur site.",
+    null,
+  );
+  const pool = getFilteredSchools();
   const grid = document.createElement("div");
   grid.className = "results-grid";
-  getRecommendedSchools().forEach((school) => {
-    const card = document.createElement("article");
-    card.className = "school-card";
-    card.innerHTML = `
-      <div class="card-title-block">
-        <h3 class="card-title">${school.name}</h3>
-        ${school.abbr ? `<span class="card-abbr">${school.abbr}</span>` : ""}
-      </div>
-      <div class="school-ideal">${school.ideal}</div>
-      <div class="tag-row">
-        <span class="tag green">${school.pacing}</span>
-        <span class="tag">${school.support}</span>
-        <span class="tag gold">${school.cost}</span>
-        <span class="tag">${school.language}</span>
-        <span class="tag">${school.ap}</span>
-        <span class="tag red">${school.ncaa}</span>
-      </div>
-    `;
-    grid.appendChild(card);
+  if (!pool.length) {
+    grid.innerHTML = '<p class="summary-empty">Aucune école ne correspond à ces critères — élargis tes choix à l\'écran précédent.</p>';
+  } else {
+    grid.innerHTML = pool.map((s) => buildSchoolCard(s, s.type)).join("");
+  }
+  shell.appendChild(grid);
+  return shell;
+}
+
+function renderWantsUniversity(step) {
+  const shell = screenShell(
+    step,
+    "Ta réponse détermine si les écrans université s'affichent ensuite.",
+    null,
+  );
+  const grid = document.createElement("div");
+  grid.className = "choices";
+  options.wantsUniversity.forEach(([value, title, body]) => {
+    grid.appendChild(
+      choiceCard(title, body, state.wantsUniversity === value, () => {
+        state.wantsUniversity = value;
+        render();
+      }),
+    );
   });
   shell.appendChild(grid);
   return shell;
 }
 
-function getRecommendedSchools() {
-  const preferred = state.diploma || "ossd";
-  return schools
-    .filter((school) => school.diploma === preferred)
-    .sort((a, b) => schoolScore(b) - schoolScore(a))
-    .slice(0, 6);
+function renderTypeUniversite(step) {
+  const shell = screenShell(
+    step,
+    "Langue et pays des universités en ligne que tu souhaites explorer.",
+    null,
+  );
+  shell.appendChild(sectionTitle("Langue"));
+  shell.appendChild(buildSingleSelectGroup("univLangue", options.langue, "three"));
+
+  shell.appendChild(sectionTitle("Pays"));
+  shell.appendChild(buildSingleSelectGroup("univPays", options.univPays, "three"));
+
+  return shell;
 }
 
-function schoolScore(school) {
-  let score = 0;
-  if (state.traits.includes("Besoin d'encadrement") && school.support === "Élevé") score += 2;
-  if (state.traits.includes("Fast-track") && school.pacing.includes("Flexible")) score += 2;
-  if (state.language === "francais" && school.language.includes("Français")) score += 3;
-  if (state.career === "stem" && school.ap.includes("Disponible")) score += 2;
-  return score;
+function getFilteredUniversities() {
+  const paysMap = { canada: "canada", "etats-unis": "états-unis" };
+  return onlineUniversities.filter((u) => {
+    let okLangue = true;
+    let okPays = true;
+    if (state.univLangue && state.univLangue !== "les-deux") {
+      const wanted = state.univLangue === "francais" ? "français" : "anglais";
+      okLangue = (u.langue || "").toLowerCase().includes(wanted);
+    }
+    if (state.univPays && state.univPays !== "les-deux") {
+      okPays = (u.pays || "").toLowerCase().includes(paysMap[state.univPays]);
+    }
+    return okLangue && okPays;
+  });
 }
 
-function renderPlar(step) {
-  const shell = screenShell(step, "Ton expérience passée peut compter pour des crédits — coche ce qui s'applique pour estimer le total.", null);
-  const wrap = document.createElement("div");
-  wrap.className = "plar-grid";
-  const list = document.createElement("div");
-  list.className = "check-list";
-  [
-    ["homeschooling", "Instruction à domicile"],
-    ["projects", "Projets documentés"],
-    ["work", "Expérience de travail"],
-    ["selfLearning", "Auto-apprentissage"],
-    ["portfolios", "Portfolio ou preuves"]
-  ].forEach(([key, label]) => {
-    const row = document.createElement("label");
-    row.className = "check-card";
-    row.innerHTML = `<input type="checkbox" ${state.plar[key] ? "checked" : ""} /><strong>${label}</strong>`;
-    row.querySelector("input").addEventListener("change", (event) => {
-      state.plar[key] = event.target.checked;
+function renderUniversities(step) {
+  const shell = screenShell(
+    step,
+    "Universités en ligne filtrées selon la langue et le pays choisis. Sélectionne celles qui t'intéressent pour les ajouter au résumé.",
+    null,
+  );
+  const pool = getFilteredUniversities();
+  const hint = document.createElement("p");
+  hint.className = "selection-hint";
+  hint.textContent = state.selectedUniversities.length
+    ? `${state.selectedUniversities.length} université(s) sélectionnée(s)`
+    : "Clique sur une carte pour la sélectionner.";
+  shell.appendChild(hint);
+
+  const grid = document.createElement("div");
+  grid.className = "results-grid";
+  if (!pool.length) {
+    grid.innerHTML = '<p class="summary-empty">Aucune université ne correspond à ces critères — élargis tes filtres à l\'écran précédent.</p>';
+  } else {
+    grid.innerHTML = pool
+      .map((u) => buildUniversityCard(u, state.selectedUniversities.includes(u.id)))
+      .join("");
+  }
+  shell.appendChild(grid);
+
+  grid.querySelectorAll(".university-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      state.selectedUniversities = toggle(state.selectedUniversities, card.dataset.id);
       render();
     });
-    list.appendChild(row);
-  });
-
-  const estimate = getPlarEstimate();
-  const summary = document.createElement("article");
-  summary.className = "summary-card";
-  summary.innerHTML = `
-    <h3 class="card-title">${estimate.credits} crédits possibles</h3>
-    <p class="card-text">Économie estimée : ${estimate.savings}. Gain de temps potentiel : ${estimate.time}.</p>
-    <div class="tag-row">
-      <span class="tag red">Estimation — non officielle</span>
-      <span class="tag">Validation requise par l'école</span>
-    </div>
-  `;
-  wrap.appendChild(list);
-  wrap.appendChild(summary);
-  shell.appendChild(wrap);
-  return shell;
-}
-
-function getPlarEstimate() {
-  const count = Object.values(state.plar).filter(Boolean).length;
-  return {
-    credits: count === 0 ? "0 à 2" : `${Math.max(1, count * 2)} à ${Math.min(16, count * 4)}`,
-    savings: count < 2 ? "faible" : count < 4 ? "modérée" : "significative, à confirmer",
-    time: count < 2 ? "limitée" : count < 4 ? "quelques mois possibles" : "plusieurs mois possibles"
-  };
-}
-
-function renderRoadmap(step) {
-  const shell = screenShell(step, "Ton plan étape par étape, basé sur tes réponses. À valider avec les institutions que tu vises.", roadmapWarning());
-  const grid = document.createElement("div");
-  grid.className = "roadmap";
-  getRoadmap().forEach((item, index) => {
-    const card = document.createElement("article");
-    card.className = "roadmap-step";
-    card.innerHTML = `<b>${index + 1}</b><h3 class="card-title">${item}</h3>`;
-    grid.appendChild(card);
-  });
-  shell.appendChild(grid);
-  return shell;
-}
-
-function getRoadmap() {
-  const route = [];
-  route.push(state.diploma === "us" ? "US Diploma" : "OSSD");
-  if (state.des === "non") route.push("Plan de crédits secondaires");
-  route.push("PLAR / crédits à évaluer");
-  if (state.career === "stem" || state.traits.includes("Scientifique")) route.push("AP Calculus / sciences");
-  if (state.diploma === "us" || String(state.universityType).startsWith("usa")) route.push("SAT / Common App");
-  if (state.diploma === "ossd" && String(state.universityType).startsWith("canada")) route.push("OUAC");
-  if (state.language === "francais" || state.universityType === "quebec-fr") route.push("Équivalences Québec");
-  route.push("Universités contactées");
-  return route.slice(0, 6);
-}
-
-function renderChecklist(step) {
-  const shell = screenShell(step, "Coche ce que tu as déjà confirmé directement auprès des institutions. Rien ici n'est officiel — c'est ton aide-mémoire.", null);
-  const list = document.createElement("div");
-  list.className = "check-list";
-  [
-    "BSID vérifié",
-    "Accréditation confirmée",
-    "Université contactée",
-    "Préalables vérifiés",
-    "NCAA vérifié",
-    "Équivalences confirmées"
-  ].forEach((label) => {
-    const row = document.createElement("label");
-    row.className = "check-card";
-    row.innerHTML = `<input type="checkbox" ${state.checklist[label] ? "checked" : ""} /><strong>${label}</strong>`;
-    row.querySelector("input").addEventListener("change", (event) => {
-      state.checklist[label] = event.target.checked;
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        card.click();
+      }
     });
-    list.appendChild(row);
   });
-  shell.appendChild(list);
+
   return shell;
 }
-
 function renderSummary(step) {
-  const shell = screenShell(step, "Tout ton parcours en un coup d'œil. Imprime, partage ou note ce qui compte avant de recommencer.", null);
-
+  const shell = screenShell(
+    step,
+    "Voici ton parcours personnalisé. Imprime-le, partage-le ou envoie-le par courriel pour garder une trace.",
+    null,
+  );
   const wrap = document.createElement("div");
   wrap.className = "summary-screen";
 
   const banner = document.createElement("div");
   banner.className = "summary-banner";
   banner.innerHTML = `
-    <div class="summary-banner-icon">🎓</div>
+    <span class="summary-banner-icon">🎓</span>
     <div class="summary-banner-text">
-      <h2>Ton parcours est prêt</h2>
-      <p>Ce résumé est éducatif et suggestif. Valide chaque point directement auprès des institutions concernées.</p>
+      <h2>Ton parcours CAP DIPLÔME</h2>
+      <p>Résumé généré à titre informatif — vérifie chaque détail directement auprès des institutions.</p>
     </div>
   `;
   wrap.appendChild(banner);
@@ -758,129 +792,122 @@ function renderSummary(step) {
   const cols = document.createElement("div");
   cols.className = "summary-cols";
 
+  const niveauLabel = labelFromOptions("niveauScolaire", state.niveauScolaire);
+  const paysLabel = labelFromOptions("pays", state.pays);
+  const langueLabel = labelFromOptions("langue", state.langue);
+  const diplomesLabel = state.diplomes.map((d) => labelFromOptions("diplomes", d)).join(", ") || "—";
+  const modesLabel = state.modes.map((m) => labelFromOptions("modes", m)).join(", ") || "—";
+  const domainesLabel = state.domaines.map((d) => labelFromOptions("domaines", d)).join(", ") || "—";
+  const niveauxVisesLabel = state.neSaitPasEncore
+    ? "Je ne sais pas encore"
+    : state.niveauxVises.map((n) => labelFromOptions("niveauxVises", n)).join(", ") || "—";
+
   const profileBlock = document.createElement("div");
   profileBlock.className = "summary-block";
-  const diplomaLabel = state.diploma === "ossd" ? "OSSD" : state.diploma === "us" ? "US Diploma" : "—";
-  const langLabel = state.language === "francais" ? "Français" : state.language === "anglais" ? "Anglais" : "—";
-  const careerLabel = state.career ? (options.career.find(([v]) => v === state.career) || [null, "—"])[1] : "—";
-  const desLabel = state.des === "oui" ? "Oui" : state.des === "non" ? "Non" : "—";
-  const uniTypeLabel = state.universityType ? labelUniversityGroup(state.universityType) : "—";
   profileBlock.innerHTML = `
-    <p class="summary-block-title">👤 Profil</p>
+    <p class="summary-block-title">👤 Profil de l'élève</p>
     <div class="summary-profile-row">
-      <span class="tag">DES: <strong>${desLabel}</strong></span>
-      <span class="tag green">Diplôme: <strong>${diplomaLabel}</strong></span>
-      <span class="tag">Langue: <strong>${langLabel}</strong></span>
-      <span class="tag gold">Carrière: <strong>${careerLabel}</strong></span>
-      <span class="tag">Université: <strong>${uniTypeLabel}</strong></span>
-      ${state.traits.map(t => `<span class="tag">${t}</span>`).join("")}
+      <span class="tag">Âge : <strong>${state.age || "—"} ans</strong></span>
+      <span class="tag">Résidence : <strong>${paysLabel}</strong></span>
+      <span class="tag green">Niveau scolaire : <strong>${niveauLabel}</strong></span>
     </div>
   `;
   cols.appendChild(profileBlock);
 
-  const plarEstimate = getPlarEstimate();
-  const slidersSummary = Object.entries(state.sliders).map(([k, v]) => {
-    const labels = { motivation: "Motivation", math: "Math", english: "Anglais", availability: "Dispo", pace: "Rythme" };
-    return `<span class="tag">${labels[k]}: ${v}/5</span>`;
-  }).join("");
-  const plarBlock = document.createElement("div");
-  plarBlock.className = "summary-block";
-  plarBlock.innerHTML = `
-    <p class="summary-block-title">📊 Niveaux & PLAR</p>
-    <div class="summary-profile-row">${slidersSummary}</div>
+  const parcoursBlock = document.createElement("div");
+  parcoursBlock.className = "summary-block";
+  parcoursBlock.innerHTML = `
+    <p class="summary-block-title">📘 Parcours secondaire</p>
     <div class="summary-profile-row">
-      <span class="tag green">Crédits PLAR estimés: <strong>${plarEstimate.credits}</strong></span>
-      <span class="tag">Économie: <strong>${plarEstimate.savings}</strong></span>
-      <span class="tag">Réduction temps: <strong>${plarEstimate.time}</strong></span>
+      <span class="tag">Langue : <strong>${langueLabel}</strong></span>
+      <span class="tag green">Diplôme(s) : <strong>${diplomesLabel}</strong></span>
+      <span class="tag">Mode(s) : <strong>${modesLabel}</strong></span>
     </div>
   `;
-  cols.appendChild(plarBlock);
+  cols.appendChild(parcoursBlock);
 
-  const uniBlock = document.createElement("div");
-  uniBlock.className = "summary-block";
-  const uniContent = document.createElement("div");
-  uniContent.className = "summary-checklist-list";
-  const uniPool = getRecommendedUniversities();
-  if (state.selectedUniversities.length > 0) {
-    state.selectedUniversities.forEach(name => {
-      const uni = uniPool.find(u => u.name === name);
-      const compat = uni ? getCompatibilityInfo(uni.score) : null;
-      const row = document.createElement("div");
-      row.className = "summary-uni-item";
-      row.innerHTML = `
-        <div class="summary-uni-left">
-          <span class="summary-uni-name">${name}</span>
-          ${uni && uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
-        </div>
-        <div class="summary-uni-right">
-          ${compat ? `<span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>` : ""}
-          ${uni && uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
-        </div>
-      `;
-      uniContent.appendChild(row);
-    });
-  } else {
-    const allTop = uniPool.slice(0, 3);
-    allTop.forEach(uni => {
-      const compat = getCompatibilityInfo(uni.score);
-      const row = document.createElement("div");
-      row.className = "summary-uni-item";
-      row.innerHTML = `
-        <div class="summary-uni-left">
-          <span class="summary-uni-name">${uni.name}</span>
-          ${uni.fees ? `<span class="summary-uni-fees">💰 ${uni.fees}</span>` : ""}
-        </div>
-        <div class="summary-uni-right">
-          <span class="compat-badge ${compat.badgeClass}">${compat.badge}</span>
-          ${uni.url ? `<a class="summary-uni-link" href="${uni.url}" target="_blank" rel="noopener noreferrer">↗</a>` : ""}
-        </div>
-      `;
-      uniContent.appendChild(row);
-    });
-    const note = document.createElement("p");
-    note.className = "summary-empty";
-    note.textContent = "Aucune université sélectionnée manuellement — top 3 affiché.";
-    uniContent.appendChild(note);
-  }
-  uniBlock.innerHTML = `<p class="summary-block-title">🏛️ Universités ciblées</p>`;
-  uniBlock.appendChild(uniContent);
-  cols.appendChild(uniBlock);
+  const domaineBlock = document.createElement("div");
+  domaineBlock.className = "summary-block";
+  domaineBlock.innerHTML = `
+    <p class="summary-block-title">🎯 Domaine et niveau visés</p>
+    <div class="summary-profile-row">
+      <span class="tag gold">Domaine(s) : <strong>${domainesLabel}</strong></span>
+      <span class="tag">Niveau visé : <strong>${niveauxVisesLabel}</strong></span>
+    </div>
+    ${hasContingente() ? '<p class="summary-empty">⚠️ Domaine contingenté sélectionné — le DEC est souvent exigé ou favorisé au Québec pour médecine, droit ou pharmacie. Vérifie directement les conditions de chaque université.</p>' : ""}
+  `;
+  cols.appendChild(domaineBlock);
 
-  const roadmapBlock = document.createElement("div");
-  roadmapBlock.className = "summary-block";
-  const roadmapList = document.createElement("div");
-  roadmapList.className = "summary-roadmap-list";
-  getRoadmap().forEach((item, i) => {
-    const row = document.createElement("div");
-    row.className = "summary-roadmap-item";
-    row.innerHTML = `<span class="summary-roadmap-num">${i + 1}</span>${item}`;
-    roadmapList.appendChild(row);
-  });
-  roadmapBlock.innerHTML = `<p class="summary-block-title">🗺️ Roadmap</p>`;
-  roadmapBlock.appendChild(roadmapList);
-  cols.appendChild(roadmapBlock);
+  const schoolsPool = getFilteredSchools().slice(0, 3);
+  const schoolsBlock = document.createElement("div");
+  schoolsBlock.className = "summary-block";
+  schoolsBlock.innerHTML = `
+    <p class="summary-block-title">🏫 Écoles secondaires correspondantes</p>
+    <div class="summary-checklist-list">
+      ${
+        schoolsPool.length
+          ? schoolsPool
+              .map(
+                (s) => `
+        <div class="summary-uni-item">
+          <div class="summary-uni-left">
+            <span class="summary-uni-name">${s.name}</span>
+            <span class="summary-uni-fees">💰 ${s.prix || "Sur demande"}</span>
+          </div>
+          <div class="summary-uni-right">
+            <a class="summary-uni-link" href="${s.site}" target="_blank" rel="noopener noreferrer">↗</a>
+          </div>
+        </div>`,
+              )
+              .join("")
+          : '<p class="summary-empty">Aucune école ne correspond exactement — élargis tes critères.</p>'
+      }
+    </div>
+  `;
+  cols.appendChild(schoolsBlock);
 
-  const checklistItems = [
-    "BSID vérifié", "Accréditation confirmée", "Université contactée",
-    "Préalables vérifiés", "NCAA vérifié", "Équivalences confirmées"
-  ];
-  const checkBlock = document.createElement("div");
-  checkBlock.className = "summary-block";
-  const checkList = document.createElement("div");
-  checkList.className = "summary-checklist-list";
-  checklistItems.forEach(label => {
-    const done = Boolean(state.checklist[label]);
-    const row = document.createElement("div");
-    row.className = "summary-checklist-item " + (done ? "done" : "todo");
-    row.innerHTML = `
-      <span class="summary-check-icon ${done ? "done" : "todo"}">${done ? "✓" : "○"}</span>
-      ${label}
+  if (state.wantsUniversity !== "non") {
+    const uniPool = state.selectedUniversities.length
+      ? onlineUniversities.filter((u) => state.selectedUniversities.includes(u.id))
+      : getFilteredUniversities().slice(0, 3);
+    const uniBlock = document.createElement("div");
+    uniBlock.className = "summary-block";
+    uniBlock.innerHTML = `
+      <p class="summary-block-title">🏛️ Universités en ligne ciblées</p>
+      <div class="summary-checklist-list">
+        ${
+          uniPool.length
+            ? uniPool
+                .map(
+                  (u) => `
+        <div class="summary-uni-item">
+          <div class="summary-uni-left">
+            <span class="summary-uni-name">${u.name}</span>
+            <span class="summary-uni-fees">💰 ${u.cout || "Sur demande"}</span>
+          </div>
+          <div class="summary-uni-right">
+            <a class="summary-uni-link" href="${u.site}" target="_blank" rel="noopener noreferrer">↗</a>
+          </div>
+        </div>`,
+                )
+                .join("")
+            : '<p class="summary-empty">Aucune université ne correspond — élargis tes filtres.</p>'
+        }
+      </div>
+      ${!state.selectedUniversities.length && uniPool.length ? '<p class="summary-empty">Aucune université sélectionnée manuellement — top 3 affiché.</p>' : ""}
     `;
-    checkList.appendChild(row);
-  });
-  checkBlock.innerHTML = `<p class="summary-block-title">✅ Checklist</p>`;
-  checkBlock.appendChild(checkList);
-  cols.appendChild(checkBlock);
+    cols.appendChild(uniBlock);
+  } else {
+    const noUni = document.createElement("div");
+    noUni.className = "summary-block";
+    noUni.innerHTML = `
+      <p class="summary-block-title">🏛️ Universités</p>
+      <div class="summary-profile-row">
+        <span class="tag">Parcours secondaire uniquement — étape université non activée.</span>
+      </div>
+    `;
+    cols.appendChild(noUni);
+  }
 
   wrap.appendChild(cols);
 
@@ -900,21 +927,20 @@ function renderSummary(step) {
         ["🆔", "BSID", "Le Business / School Identification Number doit être valide et actif pour la reconnaissance du diplôme."],
         ["🏈", "NCAA", "Si un parcours sportif est envisagé, valider l'éligibilité avec le NCAA Eligibility Center avant l'inscription."],
         ["📋", "Admissions", "Les exigences d'admission changent chaque cycle. Contacter directement le bureau des admissions de chaque université ciblée."],
-        ["📚", "AP disponibles", "Confirmer quels cours AP sont réellement offerts par l'école et si les examens College Board sont accessibles."],
         ["🏠", "Politique homeschool", "Chaque université a sa propre politique envers les candidats homeschoolés ou issus d'écoles en ligne."],
-        ["🎯", "Exigences université cible", "Préalables, portfolio, lettre de motivation, tests standardisés — vérifier programme par programme."],
-        ["💲", "Coûts réels", "Les frais indiqués sont des estimations. Ajouter frais d'inscription, matériel, examens AP, hébergement et assurance."],
-        ["👁️", "Examens surveillés", "Certains programmes exigent des examens en présentiel ou sous surveillance. À confirmer avant toute inscription."],
-        ["📄", "Transcript", "La validité et la lisibilité du relevé de notes officiel doivent être confirmées par l'université cible."]
-      ].map(([icon, label, desc]) => `
+        ["💲", "Coûts réels", "Les frais indiqués sont des estimations. Ajouter frais d'inscription, matériel, examens, hébergement et assurance."],
+      ]
+        .map(
+          ([icon, label, desc]) => `
         <div class="verif-card">
           <span class="verif-icon">${icon}</span>
           <div class="verif-body">
             <strong class="verif-label">${label}</strong>
             <span class="verif-desc">${desc}</span>
           </div>
-        </div>
-      `).join("")}
+        </div>`,
+        )
+        .join("")}
     </div>
   `;
   wrap.appendChild(verifSection);
@@ -926,29 +952,11 @@ function renderSummary(step) {
       <span class="warning-section-icon">🚨</span>
       <div>
         <h3 class="warning-section-title">LIMITES ET AVERTISSEMENTS</h3>
-        <p class="warning-section-sub">Ce simulateur est un outil éducatif. Il ne remplace pas un conseiller professionnel ni les informations officielles.</p>
+        <p class="warning-section-sub">CAP DIPLÔME est un guide informatif. Il ne remplace pas un conseiller professionnel ni les informations officielles, et ne fait aucune recommandation personnalisée.</p>
       </div>
     </div>
-    <div class="limits-grid">
-      ${[
-        ["Les admissions changent régulièrement", "Les politiques, exigences et critères d'évaluation peuvent être modifiés sans préavis d'une année à l'autre."],
-        ["Chaque université évalue les dossiers différemment", "Il n'existe pas de formule universelle. Deux dossiers identiques peuvent obtenir des résultats opposés selon l'institution."],
-        ["Aucun parcours ne garantit l'admission", "Ce simulateur génère des pistes éducatives, non des garanties. L'admission reste une décision discrétionnaire de chaque université."],
-        ["Certaines écoles sont plus reconnues que d'autres", "La lisibilité d'un diplôme en ligne ou homeschool varie selon l'université cible, le programme et le pays."],
-        ["Les programmes compétitifs évaluent le profil global", "Notes, activités, lettres, tests standardisés, portfolio, entretiens — un seul critère ne suffit jamais."],
-        ["Les informations doivent être revérifiées directement", "Toutes les données de ce simulateur proviennent de sources publiques et doivent être validées auprès des institutions concernées."]
-      ].map(([title, desc]) => `
-        <div class="limit-card">
-          <span class="limit-bullet">!</span>
-          <div class="limit-body">
-            <strong class="limit-title">${title}</strong>
-            <span class="limit-desc">${desc}</span>
-          </div>
-        </div>
-      `).join("")}
-    </div>
     <div class="limits-footer">
-      Ce document est fourni à titre informatif et suggestif uniquement. CAP DIPLÔME ne garantit aucun résultat académique ou d'admission.
+      Ce document est fourni à titre informatif et suggestif uniquement. CAP DIPLÔME ne garantit aucun résultat académique ou d'admission. La décision finale appartient toujours à la famille.
     </div>
   `;
   wrap.appendChild(limitesSection);
@@ -959,9 +967,20 @@ function renderSummary(step) {
   const printBtn = document.createElement("button");
   printBtn.className = "summary-print-btn";
   printBtn.type = "button";
-  printBtn.innerHTML = "🖨️ Imprimer ce résumé";
+  printBtn.innerHTML = "🖨️ Imprimer / Enregistrer en PDF";
   printBtn.addEventListener("click", () => window.print());
   actionRow.appendChild(printBtn);
+
+  const emailBtn = document.createElement("button");
+  emailBtn.className = "summary-share-btn";
+  emailBtn.type = "button";
+  emailBtn.innerHTML = "✉️ Envoyer par courriel";
+  emailBtn.addEventListener("click", () => {
+    const subject = encodeURIComponent("Mon parcours CAP DIPLÔME");
+    const body = encodeURIComponent(buildEmailBody());
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  });
+  actionRow.appendChild(emailBtn);
 
   const shareBtn = document.createElement("button");
   shareBtn.className = "summary-share-btn";
@@ -970,29 +989,56 @@ function renderSummary(step) {
   shareBtn.addEventListener("click", () => {
     const url = encodeStateToURL();
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(() => {
-        shareBtn.innerHTML = "✓ Lien copié !";
-        shareBtn.classList.add("copied");
-        setTimeout(() => {
-          shareBtn.innerHTML = "🔗 Copier le lien de partage";
-          shareBtn.classList.remove("copied");
-        }, 2500);
-      }).catch(() => fallbackCopy(url, shareBtn));
+      navigator.clipboard
+        .writeText(url)
+        .then(() => {
+          shareBtn.innerHTML = "✓ Lien copié !";
+          shareBtn.classList.add("copied");
+          setTimeout(() => {
+            shareBtn.innerHTML = "🔗 Copier le lien de partage";
+            shareBtn.classList.remove("copied");
+          }, 2500);
+        })
+        .catch(() => fallbackCopy(url, shareBtn));
     } else {
       fallbackCopy(url, shareBtn);
     }
   });
   actionRow.appendChild(shareBtn);
 
-  const shareNote = document.createElement("p");
-  shareNote.className = "summary-share-note";
-  shareNote.textContent = "Le lien encode toutes tes réponses — ouvre-le sur n'importe quel appareil pour retrouver ton parcours.";
-  actionRow.appendChild(shareNote);
+  const resetBtn = document.createElement("button");
+  resetBtn.className = "nav-btn ghost";
+  resetBtn.type = "button";
+  resetBtn.innerHTML = "🔄 Nouvelle recherche";
+  resetBtn.addEventListener("click", () => {
+    resetState();
+    currentStep = 0;
+    render();
+  });
+  actionRow.appendChild(resetBtn);
 
   wrap.appendChild(actionRow);
 
   shell.appendChild(wrap);
   return shell;
+}
+
+function buildEmailBody() {
+  const lines = [
+    "Mon parcours CAP DIPLÔME",
+    "",
+    `Âge : ${state.age || "—"} ans`,
+    `Résidence : ${labelFromOptions("pays", state.pays)}`,
+    `Niveau scolaire : ${labelFromOptions("niveauScolaire", state.niveauScolaire)}`,
+    `Langue : ${labelFromOptions("langue", state.langue)}`,
+    `Diplôme(s) : ${state.diplomes.map((d) => labelFromOptions("diplomes", d)).join(", ") || "—"}`,
+    `Mode(s) : ${state.modes.map((m) => labelFromOptions("modes", m)).join(", ") || "—"}`,
+    `Domaine(s) : ${state.domaines.map((d) => labelFromOptions("domaines", d)).join(", ") || "—"}`,
+    `Niveau visé : ${state.neSaitPasEncore ? "Je ne sais pas encore" : state.niveauxVises.map((n) => labelFromOptions("niveauxVises", n)).join(", ") || "—"}`,
+    "",
+    "Ce résumé est informatif — vérifie chaque détail directement auprès des institutions.",
+  ];
+  return lines.join("\n");
 }
 
 function fallbackCopy(text, btn) {
@@ -1011,18 +1057,37 @@ function fallbackCopy(text, btn) {
     }, 2500);
   } catch (e) {
     btn.innerHTML = "❌ Copie manuelle requise";
-    setTimeout(() => { btn.innerHTML = "🔗 Copier le lien de partage"; }, 2500);
+    setTimeout(() => {
+      btn.innerHTML = "🔗 Copier le lien de partage";
+    }, 2500);
   }
   document.body.removeChild(ta);
 }
-
 function canContinue() {
-  // Order matches steps array: des, language, career, traits, diploma, schools(free), universityType, ...
-  const keys = ["des", "language", "career", "traits", "diploma", null, "universityType"];
-  const key = keys[currentStep];
-  if (!key) return true;
-  if (Array.isArray(state[key])) return state[key].length > 0;
-  return Boolean(state[key]);
+  switch (currentStep) {
+    case STEP_ACCUEIL:
+      return true;
+    case STEP_PROFIL:
+      return Boolean(state.age) && Boolean(state.pays) && Boolean(state.niveauScolaire);
+    case STEP_INTERCALAIRE:
+      return true;
+    case STEP_PARCOURS:
+      return Boolean(state.langue) && state.diplomes.length > 0 && state.modes.length > 0;
+    case STEP_DOMAINE:
+      return state.domaines.length > 0 && (state.niveauxVises.length > 0 || state.neSaitPasEncore);
+    case STEP_ECOLES:
+      return true;
+    case STEP_VEUT_UNIV:
+      return Boolean(state.wantsUniversity);
+    case STEP_TYPE_UNIV:
+      return Boolean(state.univLangue) && Boolean(state.univPays);
+    case STEP_LISTE_UNIV:
+      return true;
+    case STEP_RESUME:
+      return true;
+    default:
+      return true;
+  }
 }
 
 function updateInsight() {
@@ -1030,135 +1095,57 @@ function updateInsight() {
   const signals = document.getElementById("signalList");
 
   const stepMessages = [
-    // 0 — DES
-    "Ton point de départ change tout — deux chemins très différents t'attendent.",
-    // 1 — Langue
-    state.language === "francais"
-      ? "Peu d'options en français — quelques écoles offrent un accompagnement francophone."
-      : "L'anglais ouvre l'accès à la majorité des écoles et universités recommandées.",
-    // 2 — Objectif carrière
-    state.career
-      ? `Objectif ${getCareerTitle()} — les préalables et la compétitivité sont ajustés.`
-      : "Ton domaine détermine les préalables et le niveau de compétition.",
-    // 3 — Profil
-    state.traits.length
-      ? `${state.traits.length} trait${state.traits.length > 1 ? "s" : ""} sélectionné${state.traits.length > 1 ? "s" : ""} — le simulateur ajuste les recommandations.`
-      : "Sélectionne ce qui te ressemble — plusieurs réponses possibles.",
-    // 4 — Diplôme
-    state.diploma === "ossd"
-      ? "L'OSSD est reconnu partout au Canada, aux USA et à l'international."
-      : state.diploma === "us"
-      ? "Le diplôme américain est idéal pour Common App, NCAA et les universités US."
-      : "Choisis ton diplôme cible pour affiner les recommandations.",
-    // 5 — Écoles secondaires
-    "Ces écoles sont filtrées selon ton diplôme et ton profil. Consulte l'Annuaire pour plus de détails.",
-    // 6 — Type d'université
-    state.universityType
-      ? `Catégorie sélectionnée : ${labelUniversityGroup(state.universityType)}.`
-      : "Choisis la catégorie d'université qui correspond à ton ambition.",
-    // 7 — Universités
+    "Bienvenue — ce guide t'aide à comparer les options, sans jamais décider à ta place.",
+    "Ton profil personnalise tout le reste du parcours.",
+    "Cet écran est informatif — aucun choix à faire, juste à lire.",
+    "Langue, diplôme et mode d'enseignement déterminent les écoles proposées à l'écran suivant.",
+    hasContingente()
+      ? "⚠️ Domaine contingenté sélectionné — le DEC est souvent requis au Québec pour ce domaine."
+      : "Ton domaine et ton niveau visé affinent les universités proposées plus loin.",
+    "Ces écoles correspondent à ton diplôme et ta langue. Consulte l'Annuaire pour tout comparer.",
+    state.wantsUniversity === "oui"
+      ? "Parfait — les écrans université sont activés."
+      : state.wantsUniversity === "non"
+        ? "Tu passes directement au résumé final."
+        : "Ta réponse active ou désactive les écrans universités qui suivent.",
+    "Langue et pays déterminent les universités en ligne proposées.",
     state.selectedUniversities.length
-      ? `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} dans ton parcours.`
+      ? `${state.selectedUniversities.length} université(s) dans ton résumé.`
       : "Sélectionne les universités qui t'intéressent pour les ajouter au résumé.",
-    // 8 — PLAR
-    "Ton expérience passée peut réduire la durée et le coût de ton parcours.",
-    // 9 — Roadmap
-    "Ce plan est une base de départ — valide chaque étape avec les institutions.",
-    // 10 — Checklist
-    "Quelques points clés à confirmer avant de finaliser ton choix d'école.",
-    // 11 — Résumé
-    "Ton parcours complet est prêt. Imprime ou partage pour garder une trace."
+    "Ton parcours complet est prêt. Imprime, envoie par courriel ou partage le lien.",
   ];
 
-  const msg = stepMessages[currentStep] || "Le simulateur s'adapte à ton profil en temps réel.";
-  insight.textContent = msg;
+  insight.textContent = stepMessages[currentStep] || "Le simulateur s'adapte à ton profil en temps réel.";
 
   const tags = [];
+  if (state.niveauScolaire) tags.push({ text: labelFromOptions("niveauScolaire", state.niveauScolaire), tone: "blue" });
+  state.diplomes.forEach((d) => tags.push({ text: labelFromOptions("diplomes", d), tone: "green" }));
+  if (state.langue) tags.push({ text: labelFromOptions("langue", state.langue), tone: "" });
+  if (hasContingente()) tags.push({ text: "Domaine contingenté", tone: "red" });
+  if (state.wantsUniversity === "oui") tags.push({ text: "Université visée", tone: "gold" });
 
-  if (state.des === "oui") tags.push({ text: "DES obtenu ✓", tone: "green" });
-  if (state.des === "non") tags.push({ text: "Parcours secondaire complet", tone: "blue" });
-
-  if (state.diploma === "ossd") tags.push({ text: "OSSD Ontario", tone: "green" });
-  if (state.diploma === "us") tags.push({ text: "US Diploma", tone: "green" });
-
-  if (state.language === "francais") tags.push({ text: "Suivi francophone — options limitées", tone: "gold" });
-
-  if (state.career === "stem") tags.push({ text: "AP et préalables à planifier", tone: "gold" });
-  else if (state.career) tags.push({ text: getCareerTitle(), tone: "blue" });
-
-  if (state.traits.includes("Fast-track")) tags.push({ text: "Rythme accéléré", tone: "gold" });
-  if (state.traits.includes("Anxieux face aux examens")) tags.push({ text: "Évaluations progressives", tone: "blue" });
-  if (state.traits.includes("International")) tags.push({ text: "Dossier international", tone: "blue" });
-
-  if (state.universityType === "usa-top") tags.push({ text: "Dossier exceptionnel requis", tone: "red" });
-  if (state.universityType === "quebec-fr") tags.push({ text: "Vérification individuelle", tone: "red" });
-
-  const plarCount = Object.values(state.plar).filter(Boolean).length;
-  if (plarCount >= 2) tags.push({ text: `~${plarCount * 2}–${Math.min(16, plarCount * 4)} crédits PLAR estimés`, tone: "green" });
-
-  if (state.selectedUniversities.length) tags.push({ text: `${state.selectedUniversities.length} université${state.selectedUniversities.length > 1 ? "s" : ""} ciblée${state.selectedUniversities.length > 1 ? "s" : ""}`, tone: "green" });
-
-  signals.innerHTML = tags.slice(0, 5).map(t => `<div class="signal signal-${t.tone}">${t.text}</div>`).join("");
+  signals.innerHTML = tags
+    .map((t) => `<span class="tag ${t.tone}">${t.text}</span>`)
+    .join("");
 }
 
-function getRiskTags() {
-  const tags = [];
-  if (state.language === "francais" || state.universityType === "quebec-fr") tags.push({ text: "Vérification individuelle", tone: "red" });
-  if (state.career === "stem") tags.push({ text: "Préalables variables", tone: "gold" });
-  if (state.universityType === "usa-top") tags.push({ text: "Ultra compétitif", tone: "red" });
-  return tags;
+function getNextStep(from) {
+  if (from === STEP_PROFIL && state.niveauScolaire !== "des") return STEP_PARCOURS;
+  if (from === STEP_VEUT_UNIV && state.wantsUniversity === "non") return STEP_RESUME;
+  return from + 1;
 }
 
-function universityWarning() {
-  if (state.universityType === "quebec-fr") return "Conditions variables — vérification individuelle requise";
-  if (state.universityType === "usa-top") return "Admissions ultra compétitives";
-  if (state.career === "stem") return "AP recommandés, notes élevées et préalables variables";
-  return null;
-}
-
-function roadmapWarning() {
-  if (state.career === "stem") return "Ne jamais simplifier médecine, santé, génie ou programmes professionnels.";
-  if (state.language === "francais") return "DEC, préalables, année préparatoire ou évaluation individuelle peuvent être exigés.";
-  return null;
-}
-
-function labelUniversityGroup(group) {
-  const labels = {
-    "canada-flex": "Canada flexible",
-    "canada-standard": "Canada standard",
-    "canada-competitive": "Canada compétitif",
-    "quebec-fr": "Québec francophone",
-    "usa-flex": "USA flexible",
-    "usa-standard": "USA standard",
-    "usa-competitive": "USA compétitif",
-    "usa-top": "Top USA"
-  };
-  return labels[group] || group;
-}
-
-function getCareerTitle() {
-  return (options.career.find(([value]) => value === state.career) || [null, ""])[1];
-}
-
-function toggle(list, item) {
-  return list.includes(item) ? list.filter((value) => value !== item) : [...list, item];
+function getPrevStep(from) {
+  if (from === STEP_PARCOURS && state.niveauScolaire !== "des") return STEP_PROFIL;
+  if (from === STEP_RESUME && state.wantsUniversity === "non") return STEP_VEUT_UNIV;
+  if ((from === STEP_TYPE_UNIV || from === STEP_LISTE_UNIV) && state.wantsUniversity === "non")
+    return STEP_VEUT_UNIV;
+  return from - 1;
 }
 
 function encodeStateToURL() {
-  const snapshot = {
-    des: state.des,
-    language: state.language,
-    diploma: state.diploma,
-    traits: state.traits,
-    sliders: state.sliders,
-    career: state.career,
-    universityType: state.universityType,
-    selectedUniversities: state.selectedUniversities,
-    plar: state.plar,
-    checklist: state.checklist
-  };
   try {
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(snapshot))));
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(state))));
     const url = window.location.href.split("#")[0] + "#" + encoded;
     window.history.replaceState(null, "", url);
     return url;
@@ -1173,16 +1160,7 @@ function decodeStateFromURL() {
   try {
     const snapshot = JSON.parse(decodeURIComponent(escape(atob(hash))));
     if (snapshot && typeof snapshot === "object") {
-      if (snapshot.des !== undefined) state.des = snapshot.des;
-      if (snapshot.language !== undefined) state.language = snapshot.language;
-      if (snapshot.diploma !== undefined) state.diploma = snapshot.diploma;
-      if (Array.isArray(snapshot.traits)) state.traits = snapshot.traits;
-      if (snapshot.sliders && typeof snapshot.sliders === "object") state.sliders = { ...state.sliders, ...snapshot.sliders };
-      if (snapshot.career !== undefined) state.career = snapshot.career;
-      if (snapshot.universityType !== undefined) state.universityType = snapshot.universityType;
-      if (Array.isArray(snapshot.selectedUniversities)) state.selectedUniversities = snapshot.selectedUniversities;
-      if (snapshot.plar && typeof snapshot.plar === "object") state.plar = { ...state.plar, ...snapshot.plar };
-      if (snapshot.checklist && typeof snapshot.checklist === "object") state.checklist = snapshot.checklist;
+      Object.assign(state, snapshot);
       return true;
     }
   } catch (e) {}
@@ -1191,7 +1169,7 @@ function decodeStateFromURL() {
 
 document.getElementById("prevBtn").addEventListener("click", () => {
   if (currentStep > 0) {
-    currentStep -= 1;
+    currentStep = getPrevStep(currentStep);
     render();
   }
 });
@@ -1199,7 +1177,7 @@ document.getElementById("prevBtn").addEventListener("click", () => {
 document.getElementById("nextBtn").addEventListener("click", () => {
   if (!canContinue()) return;
   if (currentStep < steps.length - 1) {
-    currentStep++;
+    currentStep = getNextStep(currentStep);
     render();
   } else {
     resetState();
@@ -1208,6 +1186,7 @@ document.getElementById("nextBtn").addEventListener("click", () => {
   }
 });
 
+// ─── Boot ─────────────────────────────────────────────────────────────────
 const restoredFromURL = decodeStateFromURL();
 if (restoredFromURL) {
   currentStep = steps.length - 1;
