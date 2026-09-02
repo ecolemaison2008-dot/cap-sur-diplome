@@ -879,6 +879,40 @@ h1 {
   gap: 3px;
 }
 
+.steps-section {
+  background: white;
+  border: 1px solid #fde68a;
+  border-radius: 14px;
+  padding: 14px 18px 16px;
+}
+
+.steps-title {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #92400e;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.steps-list {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.steps-list li {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #57534e;
+}
+
+.steps-list strong {
+  color: #292524;
+}
+
 .verif-label {
   font-size: 13px;
   font-weight: 800;
@@ -1720,3 +1754,44 @@ h1 {
     padding-top: 24px;
   }
 }
+
+/* --- Encadré des cours par domaine (écran écoles) --- */
+.info-box {
+  background: #f2f6fc;
+  border: 1px solid #cfdcee;
+  border-left: 4px solid #3b6ea5;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 18px 0 6px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.info-box .cours-dom { display: inline-block; margin-top: 4px; }
+.info-box em { color: #5a6b7d; font-size: 0.86rem; }
+
+/* --- Onglet Sources officielles --- */
+.sources-list { display: grid; gap: 12px; }
+.source-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.source-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.source-tag {
+  font-size: 0.75rem;
+  background: #eef3fa;
+  color: #3b6ea5;
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.source-desc { margin: 6px 0 8px; font-size: 0.9rem; color: #4a5568; }
+.source-link { font-size: 0.85rem; color: #3b6ea5; word-break: break-all; }
+.source-date { display: block; margin-top: 6px; font-size: 0.78rem; color: #8a97a6; }
