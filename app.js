@@ -6,8 +6,9 @@
 const state = {
   // Écran 2 — Profil de l'élève
   trancheAge: null,
-  desDepuis: null,
-  niveauScolaire: null, // ... 'des' = DES obtenu (déclenche l'intercalaire)
+  niveauScolaire: null,
+  aDES: null, // 'oui' | 'non'
+  desAnnee: null, // année d'obtention du DES, si aDES === 'oui'
 
   // Écran 3 — Parcours scolaire
   langue: null, // 'francais' | 'anglais' | 'les-deux'
@@ -279,7 +280,8 @@ function showRestoredToast() {
 
 function resetState() {
   state.trancheAge = null;
-  state.desDepuis = null;
+  state.aDES = null;
+  state.desAnnee = null;
   state.niveauScolaire = null;
   state.langue = null;
   state.diplomes = [];
@@ -303,10 +305,10 @@ let currentStep = 0;
 // 8 Liste des universités (conditionnel) · 9 Résumé final
 const STEP_ACCUEIL = 0;
 const STEP_PROFIL = 1;
-const STEP_INTERCALAIRE = 2;
-const STEP_PARCOURS = 3;
-const STEP_DOMAINE = 4;
-const STEP_ECOLES = 5;
+const STEP_PARCOURS = 2;
+const STEP_DOMAINE = 3;
+const STEP_ECOLES = 4;
+const STEP_INTERCALAIRE = 5;
 const STEP_VEUT_UNIV = 6;
 const STEP_TYPE_UNIV = 7;
 const STEP_LISTE_UNIV = 8;
@@ -319,17 +321,17 @@ const secondarySchools = {
 const onlineUniversities = [{"id": "UNIV-001", "name": "Athabasca University", "pays": "Canada", "province": "Alberta", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Éducation · Santé · Sciences", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "OSSD · HSD · DES+12e année", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "~900$–1100$/cours CAD", "site": "https://athabascau.ca"}, {"id": "UNIV-002", "name": "Thompson Rivers Open University", "pays": "Canada", "province": "Colombie-Brit.", "langue": "Anglais", "type": "Publique", "programmes": "Business · Arts · Technologie · Sciences", "niveau": "Certificat · Bac", "admissionAvec": "OSSD · HSD · 12e année complétée", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "Variable", "site": "https://tru.ca/distance.html"}, {"id": "UNIV-003", "name": "TÉLUQ", "pays": "Canada", "province": "Québec", "langue": "Français", "type": "Publique", "programmes": "Administration · Informatique · Communication · Éducation", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "DEC · 21 ans+", "mode": "Asynchrone", "duree": "3-4 ans", "cout": "~1 200$/cours CAD", "site": "https://teluq.ca"}, {"id": "UNIV-004", "name": "Arizona State University Online", "pays": "États-Unis", "province": "Arizona", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Sciences · Ingénierie", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "4 ans", "cout": "~600$/crédit USD", "site": "https://asuonline.asu.edu"}, {"id": "UNIV-005", "name": "Southern New Hampshire University (SNHU)", "pays": "États-Unis", "province": "New Hampshire", "langue": "Anglais", "type": "Privée", "programmes": "Business · Informatique · Psychologie · Éducation", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "~320$/crédit USD", "site": "https://snhu.edu"}, {"id": "UNIV-006", "name": "Western Governors University (WGU)", "pays": "États-Unis", "province": "Utah", "langue": "Anglais", "type": "Non-profit", "programmes": "Business · IT · Santé · Éducation", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "~4 000$/6 mois USD", "site": "https://wgu.edu"}, {"id": "UNIV-007", "name": "University of the People (UoPeople)", "pays": "États-Unis", "province": "Californie", "langue": "Anglais", "type": "Non-profit", "programmes": "Business · Informatique · Santé publique", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Asynchrone", "duree": "Flexible", "cout": "Frais d'examen seulement", "site": "https://uopeople.edu"}, {"id": "UNIV-008", "name": "Purdue Global", "pays": "États-Unis", "province": "Indiana", "langue": "Anglais", "type": "Publique", "programmes": "Business · IT · Santé · Justice", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~375$/crédit USD", "site": "https://purdueglobal.edu"}, {"id": "UNIV-009", "name": "Penn State World Campus", "pays": "États-Unis", "province": "Pennsylvanie", "langue": "Anglais", "type": "Publique", "programmes": "Business · Informatique · Sciences · Ingénierie", "niveau": "Bac · Maîtrise", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "4 ans", "cout": "~650$/crédit USD", "site": "https://worldcampus.psu.edu"}, {"id": "UNIV-010", "name": "Liberty University Online", "pays": "États-Unis", "province": "Virginie", "langue": "Anglais", "type": "Privée", "programmes": "Business · Éducation · Santé · Théologie", "niveau": "Bac · Maîtrise · Doctorat", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~390$/crédit USD", "site": "https://liberty.edu/online"}, {"id": "UNIV-011", "name": "Open University UK", "pays": "Royaume-Uni", "province": "Angleterre", "langue": "Anglais", "type": "Publique", "programmes": "Arts · Business · Technologie · Sciences humaines", "niveau": "Certificat · Bac · Maîtrise", "admissionAvec": "12e année ou adulte", "mode": "Asynchrone", "duree": "Flexible", "cout": "~2 000–6 000 £/an", "site": "https://open.ac.uk"}, {"id": "UNIV-012", "name": "Année préparatoire UdeM", "pays": "Canada", "province": "Québec", "langue": "Français", "type": "Publique", "programmes": "Sciences · Sciences humaines · Arts et lettres", "niveau": "Pré-bac (passerelle)", "admissionAvec": "OSSD · DES+4ans · Diplôme 12e année", "mode": "Présentiel (Montréal/Laval)", "duree": "1 an", "cout": "~4 350$ CAD total", "site": "https://admission.umontreal.ca/programmes/annee-preparatoire"}, {"id": "UNIV-013", "name": "Capella University", "pays": "États-Unis", "province": "Minnesota", "langue": "Anglais", "type": "Privée", "programmes": "Business · Psychologie · IT · Santé", "niveau": "Bac · Maîtrise · Doctorat", "admissionAvec": "HSD ou équivalent", "mode": "Hybride", "duree": "Flexible", "cout": "~470$/crédit USD", "site": "https://capella.edu"}];
 const options = {
   niveauScolaire: [
-    ["sec3plus", "SEC. 3 ET PLUS", "Inclut secondaire 3, 4, 5, DES, cégep — tout niveau atteint à partir de la 3e secondaire."],
+    ["sec3-bulletin", "SEC. 3 AVEC BULLETIN OFFICIEL", "Bulletin émis par une école accréditée ou une commission scolaire."],
     ["moinssec3", "MOINS QUE SEC. 3", ""],
-    ["des", "DES OBTENU", "Affiche l'écran de conversion DES avant de continuer."],
+    ["sec3-sans-bulletin", "SEC. 3 SANS BULLETIN OFFICIEL", "Une évaluation faite par le parent-enseignant ne compte pas comme bulletin officiel."],
+  ],
+  aDES: [
+    ["oui", "OUI", ""],
+    ["non", "NON", ""],
   ],
   trancheAge: [
     ["moins21", "MOINS DE 21 ANS", ""],
     ["21plus", "21 ANS ET PLUS", "Peut ouvrir un accès direct à l'université, avec ou sans diplôme."],
-  ],
-  desDepuis: [
-    ["des-recent", "DES RÉCENT — MOINS DE 4 ANS, SANS INTERRUPTION", ""],
-    ["des-4ans", "DES DEPUIS 4 ANS OU PLUS, OU INTERRUPTION DE 4 ANS+", "Peut donner un accès direct à l'université sans CÉGEP."],
   ],
 langue: [
     ["francais", "FRANÇAIS", "Quelques options existent — le degré de français varie beaucoup selon l\u2019\u00e9cole."],
@@ -385,10 +387,10 @@ function labelFromOptions(optKey, value) {
 const steps = [
   { title: "CAP DIPLÔME", eyebrow: "Bienvenue", render: renderAccueil },
   { title: "PROFIL DE L'ÉLÈVE", eyebrow: "Étape 1", render: renderProfilEleve },
-  { title: "ÉQUIVALENCE ET CRÉDITS", eyebrow: "Information", render: renderIntercalaireDES },
   { title: "PARCOURS SCOLAIRE", eyebrow: "Étape 2", render: renderParcoursScolaire },
   { title: "DOMAINE ET NIVEAU VISÉS", eyebrow: "Étape 3", render: renderDomaineNiveau },
   { title: "ÉCOLES SECONDAIRES", eyebrow: "Résultats", render: renderSchools },
+  { title: "ÉQUIVALENCE ET CRÉDITS", eyebrow: "Information", render: renderIntercalaireDES },
   { title: "POURSUITE À L'UNIVERSITÉ ?", eyebrow: "Étape 4", render: renderWantsUniversity },
   { title: "TYPE D'UNIVERSITÉ RECHERCHÉE", eyebrow: "Étape 5", render: renderTypeUniversite },
   { title: "UNIVERSITÉS EN LIGNE", eyebrow: "Résultats", render: renderUniversities },
@@ -546,51 +548,97 @@ function renderProfilEleve(step) {
   shell.appendChild(sectionTitle("Niveau scolaire actuel"));
   shell.appendChild(buildSingleSelectGroup("niveauScolaire", options.niveauScolaire, "three"));
 
-  if (state.niveauScolaire === "des") {
-    shell.appendChild(sectionTitle("Depuis quand as-tu ton DES ?"));
-    shell.appendChild(buildSingleSelectGroup("desDepuis", options.desDepuis, ""));
+  shell.appendChild(sectionTitle("As-tu ton DES ?"));
+  shell.appendChild(buildSingleSelectGroup("aDES", options.aDES, ""));
+
+  if (state.aDES === "oui") {
+    shell.appendChild(sectionTitle("Année d'obtention du DES"));
+    const anneeWrap = document.createElement("div");
+    anneeWrap.className = "select-box";
+    const anneeCourante = 2026;
+    const anneeOptions = Array.from({ length: 17 }, (_, i) => anneeCourante - i)
+      .map((a) => `<option value="${a}" ${state.desAnnee === a ? "selected" : ""}>${a}</option>`)
+      .join("");
+    anneeWrap.innerHTML = `<label for="anneeSelect">Année</label><select id="anneeSelect"><option value="" disabled ${state.desAnnee ? "" : "selected"}>Choisir…</option>${anneeOptions}</select>`;
+    anneeWrap.querySelector("select").addEventListener("change", (e) => {
+      state.desAnnee = Number(e.target.value);
+      document.getElementById("nextBtn").disabled = !canContinue();
+      saveStateToStorage();
+    });
+    shell.appendChild(anneeWrap);
   }
 
   return shell;
 }
 
 function renderIntercalaireDES(step) {
-  const aDES = state.niveauScolaire === "des";
+  const aDES = state.aDES === "oui";
   const niveau = state.niveauScolaire;
+  const desEcart = aDES && state.desAnnee ? 2026 - state.desAnnee : null;
+  const desRecent = aDES && desEcart !== null && desEcart < 4;
+  const des4ansPlus = aDES && desEcart !== null && desEcart >= 4;
+
   const shell = screenShell(
     step,
-    "Comment un parcours québécois se traduit en crédits OSSD ou HSD — que tu aies déjà ton DES ou non. Lecture seule — aucun choix à faire ici.",
+    "Comment un parcours québécois se traduit en crédits OSSD ou HSD — selon ta situation exacte. Lecture seule — aucun choix à faire ici.",
     null,
   );
 
-  let seuilTexte;
-  if (niveau === "sec3plus") {
-    seuilTexte = "Tu as complété au moins la 3e secondaire. Concrètement : la direction de l'école doit t'accorder un minimum de 4 crédits en 11e ou 12e année avant de te recommander pour l'OSSD. Le document généralement demandé pour le prouver : ton bulletin officiel de 3e secondaire.";
+  // --- Carte(s) niveau scolaire : sec.3+bulletin / moins que sec.3 / sec.3 sans bulletin ---
+  let niveauCard = "";
+  if (niveau === "sec3-bulletin") {
+    niveauCard = `
+      <div class="verif-card">
+        <span class="verif-icon">📐</span>
+        <div class="verif-body">
+          <strong class="verif-label">Sec. 3 avec bulletin officiel — 4 crédits garantis</strong>
+          <span class="verif-desc">Ayant complété plus de trois années de secondaire, avec un document qui le prouve, la direction de l'école doit t'accorder un minimum de 4 crédits en 11e ou 12e année avant de te recommander pour l'OSSD. Un bulletin officiel est émis par une école accréditée ou une commission scolaire — une évaluation faite par le parent-enseignant ne compte pas comme bulletin officiel aux yeux de cette règle. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+        </div>
+      </div>`;
   } else if (niveau === "moinssec3") {
-    seuilTexte = "Tu n'as pas encore complété ta 3e secondaire. L'évaluation reste possible, mais l'école ne te doit pas de minimum garanti de crédits — chaque cas est étudié individuellement.";
-  } else {
-    seuilTexte = "Avec ton DES, tu dépasses largement ce seuil. Le document généralement demandé pour le prouver reste ton bulletin officiel de 3e secondaire, même si tu es rendu bien plus loin.";
+    niveauCard = `
+      <div class="verif-card">
+        <span class="verif-icon">📐</span>
+        <div class="verif-body">
+          <strong class="verif-label">Moins que sec. 3 — pas de minimum garanti</strong>
+          <span class="verif-desc">Tu n'as pas complété trois années de secondaire. L'admission se fait généralement au niveau de la 9e année, sans crédits reconnus d'avance. L'évaluation reste possible au cas par cas, mais sans le plancher de 4 crédits garanti aux élèves plus avancés.</span>
+        </div>
+      </div>`;
+  } else if (niveau === "sec3-sans-bulletin") {
+    niveauCard = `
+      <div class="verif-card">
+        <span class="verif-icon">📐</span>
+        <div class="verif-body">
+          <strong class="verif-label">Sec. 3 sans bulletin officiel — même résultat que « moins que sec. 3 »</strong>
+          <span class="verif-desc">Même si le niveau a été atteint, sans document officiel pour le prouver, l'école ne peut pas confirmer le seuil des trois années. En pratique : admission généralement en 9e année, sans crédits reconnus d'avance — comme si le niveau n'était pas encore atteint. Un bulletin émis par une école accréditée ou une commission scolaire aurait suffi ; une évaluation faite par le parent-enseignant ne compte pas. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+        </div>
+      </div>`;
   }
 
+  // --- Carte accès direct université : informatif seulement, ne bloque rien ---
   let accesDirectCard = "";
-  if (state.trancheAge === "21plus" && !aDES) {
+  let accesDirectSource = "";
+  if (des4ansPlus) {
     accesDirectCard = `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
         <div class="verif-body">
-          <strong class="verif-label">21 ans et plus, sans diplôme — l'admission « étudiant adulte »</strong>
-          <span class="verif-desc">Certaines universités québécoises admettent des candidats de 21 ans et plus <strong>sans aucun diplôme secondaire ni DEC</strong>, sur la base de l'âge et de l'expérience de vie — à condition d'avoir arrêté les études à temps plein depuis au moins 24 mois. Chaque dossier est étudié individuellement, sans garantie. <em>Exemple vérifié : Concordia, admission « Mature Entry ».</em></span>
+          <strong class="verif-label">DES depuis ${desEcart} ans — accès direct à l'université québécoise possible</strong>
+          <span class="verif-desc">Avec un DES obtenu depuis 4 ans ou plus, tu es admissible à l'Année préparatoire de l'Université de Montréal — <strong>sans passer par le CÉGEP ni par l'OSSD</strong>. Après cette année, la majorité des programmes de 1er cycle de l'UdeM te deviennent accessibles. Ceci est une information, pas une obligation : tu peux tout de même explorer les écoles OSSD et HSD ci-dessous si tu préfères une autre voie.</span>
         </div>
       </div>`;
-  } else if (aDES && state.desDepuis === "des-4ans") {
-    accesDirectCard = `
+    accesDirectSource = ' · Année préparatoire UdeM, <a href="https://admission.umontreal.ca/programmes/annee-preparatoire/" target="_blank" rel="noopener">conditions d\'admissibilité</a>';
+  }
+  if (state.trancheAge === "21plus") {
+    accesDirectCard += `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
         <div class="verif-body">
-          <strong class="verif-label">DES depuis 4 ans ou plus — accès direct à l'UdeM sans CÉGEP</strong>
-          <span class="verif-desc">Avec un DES obtenu depuis au moins 4 ans, ou une interruption d'études d'au moins 4 ans, tu es admissible à l'Année préparatoire de l'Université de Montréal — <strong>sans passer par le CÉGEP ni par l'OSSD</strong>. Après cette année, la majorité des programmes de 1er cycle de l'UdeM te deviennent accessibles.</span>
+          <strong class="verif-label">21 ans et plus — l'admission « étudiant adulte »</strong>
+          <span class="verif-desc">Certaines universités québécoises admettent des candidats de 21 ans et plus <strong>sans diplôme secondaire ni DEC</strong>, sur la base de l'âge et de l'expérience de vie — à condition d'avoir arrêté les études à temps plein depuis au moins 24 mois. <strong>Le seuil exact varie</strong> : 21 ans à Concordia, 23 ans pour la plupart des programmes de McGill (21 ans en Musique et en Gestion). Encore une fois, une information complémentaire — pas une obligation de délaisser le parcours OSSD ou HSD.</span>
         </div>
       </div>`;
+    accesDirectSource += ' · Admission « Mature Entry », <a href="https://www.concordia.ca/admissions/undergraduate/requirements/mature-entry.html" target="_blank" rel="noopener">Concordia</a> et <a href="https://www.mcgill.ca/undergraduate-admissions/apply/requirements/mature" target="_blank" rel="noopener">McGill</a> (exemples)';
   }
 
   const info = document.createElement("div");
@@ -607,6 +655,7 @@ function renderIntercalaireDES(step) {
     </div>
     <div class="verif-grid">
       ${accesDirectCard}
+      ${niveauCard}
       <div class="verif-card">
         <span class="verif-icon">📋</span>
         <div class="verif-body">
@@ -625,14 +674,11 @@ function renderIntercalaireDES(step) {
         <span class="verif-icon">📄</span>
         <div class="verif-body">
           <strong class="verif-label">2. L'octroi d'équivalences de crédits — le placement de départ</strong>
-          <span class="verif-desc">Pour tout élève qui arrive d'une école hors Ontario (donc tout élève québécois, avec ou sans DES), la direction évalue le relevé de notes et détermine le placement : crédits déjà considérés acquis, crédits restants. Une évaluation de dossier, pas un examen.</span>
-        </div>
-      </div>
-      <div class="verif-card">
-        <span class="verif-icon">📐</span>
-        <div class="verif-body">
-          <strong class="verif-label">Le seuil des 3 ans de secondaire — ton cas précis</strong>
-          <span class="verif-desc">${seuilTexte} <em>Source : Ontario Schools: Kindergarten to Grade 12, Policy and Program Requirements (2011), p. 91.</em></span>
+          <span class="verif-desc">Pour tout élève qui arrive d'une école hors Ontario (donc tout élève québécois, avec ou sans DES), la direction évalue le relevé de notes et détermine le placement : crédits déjà considérés acquis, crédits restants. Une évaluation de dossier, pas un examen.${
+            desRecent
+              ? " Avec ton DES obtenu il y a moins de 4 ans, c'est ce processus qui s'applique : tes crédits de sec. 3 sont reconnus, et le reste de ton dossier est évalué selon le système propre à l'école qui t'intéresse — vue à l'écran précédent."
+              : ""
+          }</span>
         </div>
       </div>
       <div class="verif-card">
@@ -653,25 +699,19 @@ function renderIntercalaireDES(step) {
         <span class="verif-icon">👪</span>
         <div class="verif-body">
           <strong class="verif-label">Responsabilité de la famille</strong>
-          <span class="verif-desc">C'est à la famille de contacter l'école choisie pour confirmer les crédits reconnus et les cours restants. Ce guide ne fait aucune évaluation officielle et ne remplace pas cette démarche.</span>
+          <span class="verif-desc">C'est à la famille de contacter l'école qui t'intéresse pour confirmer les crédits reconnus et les cours restants. Ce guide ne fait aucune évaluation officielle et ne remplace pas cette démarche.</span>
         </div>
       </div>
     </div>
     <div class="steps-section">
       <h4 class="steps-title">Les 3 étapes concrètes, dans l'ordre</h4>
       <ol class="steps-list">
-        <li><strong>Choisir une école</strong> à l'écran suivant, selon la langue, le diplôme et le domaine visés.</li>
-        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin de 3e secondaire est souvent la pièce clé, même si tu es rendu plus loin — c'est elle qui évalue ce qui est déjà acquis et ce qu'il reste à faire, pas ce guide.</li>
+        <li><strong>Repérer une école</strong> à l'écran précédent, selon la langue, le diplôme et le domaine visés.</li>
+        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin officiel de 3e secondaire est souvent la pièce clé, même si tu es rendu plus loin — c'est l'école qui évalue ce qui est déjà acquis et ce qu'il reste à faire, pas ce guide.</li>
         <li><strong>Compléter les cours manquants</strong> qu'elle t'indique, en demandant la revendication de crédits pour ceux où tu maîtrises déjà la matière, si l'école l'offre.</li>
       </ol>
     </div>
-    <p class="source-line">Sources : ministère de l'Éducation de l'Ontario — Note Politique/Programmes 129, <a href="https://www.ontario.ca/fr/document/education-en-ontario-directives-en-matiere-de-politiques-et-de-programmes/politiqueprogrammes-note-129" target="_blank" rel="noopener">à consulter directement ici</a> · Ontario Schools: K-12 Policy and Program Requirements (2011), <a href="http://www.edu.gov.on.ca/eng/document/policy/os/ONSchools.pdf" target="_blank" rel="noopener">document PDF officiel</a>${
-      accesDirectCard && aDES
-        ? ' · Année préparatoire UdeM, <a href="https://admission.umontreal.ca/programmes/annee-preparatoire/" target="_blank" rel="noopener">conditions d\'admissibilité</a>'
-        : accesDirectCard
-        ? ' · Admission Mature Entry, <a href="https://www.concordia.ca/admissions/undergraduate/requirements/mature-entry.html" target="_blank" rel="noopener">Concordia (exemple)</a>'
-        : ""
-    }.</p>
+    <p class="source-line">Sources : ministère de l'Éducation de l'Ontario — Note Politique/Programmes 129, <a href="https://www.ontario.ca/fr/document/education-en-ontario-directives-en-matiere-de-politiques-et-de-programmes/politiqueprogrammes-note-129" target="_blank" rel="noopener">à consulter directement ici</a> · Ontario Schools: K-12 Policy and Program Requirements (2011), <a href="http://www.edu.gov.on.ca/eng/document/policy/os/ONSchools.pdf" target="_blank" rel="noopener">document PDF officiel</a>${accesDirectSource}.</p>
   `;
   shell.appendChild(info);
   return shell;
@@ -1181,7 +1221,8 @@ function canContinue() {
       return (
         Boolean(state.trancheAge) &&
         Boolean(state.niveauScolaire) &&
-        (state.niveauScolaire !== "des" || Boolean(state.desDepuis))
+        Boolean(state.aDES) &&
+        (state.aDES !== "oui" || Boolean(state.desAnnee))
       );
     case STEP_INTERCALAIRE:
       return true;
