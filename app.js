@@ -1,5 +1,5 @@
 // ==========================================================================
-// CAP DIPLÔME — Simulateur éducatif
+// Cap sur Diplôme — Simulateur éducatif
 // Reconstruit pour suivre le Plan v4 (validé) et la Base Centrale Excel.
 // ==========================================================================
 
@@ -379,7 +379,7 @@ function labelFromOptions(optKey, value) {
 }
 
 const steps = [
-  { title: "CAP DIPLÔME", eyebrow: "Bienvenue", render: renderAccueil },
+  { title: "CAP SUR DIPLÔME", eyebrow: "Bienvenue", render: renderAccueil },
   { title: "PROFIL DE L'ÉLÈVE", eyebrow: "Étape 1", render: renderProfilEleve },
   { title: "PARCOURS SCOLAIRE", eyebrow: "Étape 2", render: renderParcoursScolaire },
   { title: "DOMAINE ET NIVEAU VISÉS", eyebrow: "Étape 3", render: renderDomaineNiveau },
@@ -511,7 +511,7 @@ function toggle(list, item) {
 function renderAccueil(step) {
   const shell = screenShell(
     step,
-    "Un guide informatif pour les familles en école à la maison au Québec — pour s'y retrouver dans les études secondaires et universitaires en ligne.",
+    "Cap sur Diplôme : un guide pour l'orientation au secondaire en ligne, pour les familles-écoles du Québec.",
     null,
   );
   const info = document.createElement("div");
@@ -521,7 +521,7 @@ function renderAccueil(step) {
       <span class="warning-section-icon">⚠️</span>
       <div>
         <h3 class="warning-section-title">Avant de commencer</h3>
-        <p class="warning-section-sub">CAP DIPLÔME n'est pas un conseiller d'orientation, ni un organisme officiel, et ne fait aucune recommandation personnalisée. La décision finale appartient toujours à la famille.</p>
+        <p class="warning-section-sub">Cap sur Diplôme n'est pas un conseiller d'orientation, ni un organisme officiel, et ne fait aucune recommandation personnalisée. La décision finale appartient toujours à la famille.</p>
       </div>
     </div>
   `;
@@ -590,7 +590,7 @@ function renderIntercalaireDES(step) {
         <span class="verif-icon">📐</span>
         <div class="verif-body">
           <strong class="verif-label">DES obtenu, moins de 4 ans — deux issues possibles</strong>
-          <span class="verif-desc">Ton DES dépasse largement le seuil des trois années de secondaire, mais l'école redemande généralement le <strong>bulletin officiel de secondaire 3</strong> pour le confirmer. <strong>Avec ce bulletin</strong> : 4 crédits garantis en plus, selon le système d'équivalence propre à l'école qui t'intéresse. <strong>Sans ce bulletin</strong> : aucune garantie, des cours supplémentaires s'ajoutent pour compenser les crédits qui ne peuvent pas être confirmés. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+          <span class="verif-desc">Les écoles secondaires ontariennes demandent le <strong>bulletin officiel de ta 3e secondaire</strong>, même si tu as déjà ton DES — c'est ce document qui te permet d'obtenir les crédits de cette année d'études. <strong>Avec ce bulletin reconnu</strong> : 4 crédits garantis, en plus de ceux attribués selon l'équivalence de ton DES par l'école que tu auras choisie. <strong>Sans ce bulletin</strong> : tu auras des cours supplémentaires à suivre pour obtenir les crédits manquants. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
         </div>
       </div>`;
   }
@@ -627,9 +627,8 @@ function renderIntercalaireDES(step) {
     <div class="warning-section-header">
       <span class="warning-section-icon">ℹ️</span>
       <div>
-        <h3 class="warning-section-title">Trois mots qu'on confond souvent — voici la différence exacte</h3>
         <p class="warning-section-sub">${aDES
-          ? "Le DES québécois équivaut à peu près à la 11e année du système ontarien — pas à la 12e. C'est pour ça qu'un DES seul ne donne pas accès direct à l'université hors Québec : il manque une année. Voici, selon la politique officielle du ministère de l'Éducation de l'Ontario, comment cette année manquante se comble."
+          ? "Le DES québécois équivaut à peu près à la 11e année du système ontarien — pas à la 12e. Normalement, il faut deux ans de CÉGEP pour compléter cette année manquante et accéder à l'université. Compléter l'OSSD est une autre façon d'obtenir cette année manquante — une alternative aux deux ans de CÉGEP, même pour certaines universités québécoises (McGill, Concordia). Voici, selon la politique officielle du ministère de l'Éducation de l'Ontario, comment cette année manquante se comble."
           : "Que tu aies fait ton secondaire à la maison, dans une école québécoise ou ailleurs, tes apprentissages ne partent pas de zéro aux yeux d'une école OSSD. Voici, selon la politique officielle du ministère de l'Éducation de l'Ontario, comment un parcours québécois se traduit en crédits."}</p>
       </div>
     </div>
@@ -912,7 +911,7 @@ function renderSummary(step) {
   banner.innerHTML = `
     <span class="summary-banner-icon">🎓</span>
     <div class="summary-banner-text">
-      <h2>Ton parcours CAP DIPLÔME</h2>
+      <h2>Ton parcours Cap sur Diplôme</h2>
       <p>Résumé généré à titre informatif — vérifie chaque détail directement auprès des institutions.</p>
     </div>
   `;
@@ -1079,11 +1078,11 @@ function renderSummary(step) {
       <span class="warning-section-icon">🚨</span>
       <div>
         <h3 class="warning-section-title">LIMITES ET AVERTISSEMENTS</h3>
-        <p class="warning-section-sub">CAP DIPLÔME est un guide informatif. Il ne remplace pas un conseiller professionnel ni les informations officielles, et ne fait aucune recommandation personnalisée.</p>
+        <p class="warning-section-sub">Cap sur Diplôme est un guide informatif. Il ne remplace pas un conseiller professionnel ni les informations officielles, et ne fait aucune recommandation personnalisée.</p>
       </div>
     </div>
     <div class="limits-footer">
-      Ce document est fourni à titre informatif et suggestif uniquement. CAP DIPLÔME ne garantit aucun résultat académique ou d'admission. La décision finale appartient toujours à la famille.
+      Ce document est fourni à titre informatif et suggestif uniquement. Cap sur Diplôme ne garantit aucun résultat académique ou d'admission. La décision finale appartient toujours à la famille.
     </div>
   `;
   wrap.appendChild(limitesSection);
@@ -1103,7 +1102,7 @@ function renderSummary(step) {
   emailBtn.type = "button";
   emailBtn.innerHTML = "✉️ Envoyer par courriel";
   emailBtn.addEventListener("click", () => {
-    const subject = encodeURIComponent("Mon parcours CAP DIPLÔME");
+    const subject = encodeURIComponent("Mon parcours Cap sur Diplôme");
     const body = encodeURIComponent(buildEmailBody());
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   });
@@ -1152,7 +1151,7 @@ function renderSummary(step) {
 
 function buildEmailBody() {
   const lines = [
-    "Mon parcours CAP DIPLÔME",
+    "Mon parcours Cap sur Diplôme",
     "",
     `Âge : ${labelFromOptions("trancheAge", state.trancheAge)}`,
     `Niveau scolaire : ${labelFromOptions("niveauScolaire", state.niveauScolaire)}`,
