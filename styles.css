@@ -882,6 +882,10 @@ h1 {
   gap: 10px;
 }
 
+.verif-grid-single {
+  grid-template-columns: 1fr;
+}
+
 .verif-card {
   display: flex;
   align-items: flex-start;

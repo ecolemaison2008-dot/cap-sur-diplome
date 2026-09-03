@@ -22,7 +22,6 @@ const state = {
   wantsUniversity: null, // 'oui' | 'non'
 
   // Écran 7 — Type d'université recherchée
-  univLangue: null,
   univPays: null,
 
   // Écran 8 — sélection manuelle
@@ -201,7 +200,20 @@ document.getElementById("annuaireBtn").addEventListener("click", () => {
   const overlay = document.getElementById("annuaireOverlay");
   overlay.classList.add("open");
   overlay.setAttribute("aria-hidden", "false");
+  document.querySelectorAll(".annuaire-tab").forEach((b) => b.classList.remove("active"));
+  const ossdTab = document.querySelector('.annuaire-tab[data-tab="ossd"]');
+  if (ossdTab) ossdTab.classList.add("active");
   renderAnnuaireTab("ossd");
+});
+
+document.getElementById("glossaireBtn").addEventListener("click", () => {
+  const overlay = document.getElementById("annuaireOverlay");
+  overlay.classList.add("open");
+  overlay.setAttribute("aria-hidden", "false");
+  document.querySelectorAll(".annuaire-tab").forEach((b) => b.classList.remove("active"));
+  const glossaireTab = document.querySelector('.annuaire-tab[data-tab="glossaire"]');
+  if (glossaireTab) glossaireTab.classList.add("active");
+  renderAnnuaireTab("glossaire");
 });
 
 document.getElementById("annuaireClose").addEventListener("click", () => {
@@ -282,7 +294,6 @@ function resetState() {
   state.niveauxVises = [];
   state.neSaitPasEncore = false;
   state.wantsUniversity = null;
-  state.univLangue = null;
   state.univPays = null;
   state.selectedUniversities = [];
   clearStorage();
@@ -381,7 +392,7 @@ const steps = [
   { title: "DOMAINE ET NIVEAU VISÉS", eyebrow: "Étape 3", render: renderDomaineNiveau },
   { title: "ÉCOLES SECONDAIRES", eyebrow: "Résultats", render: renderSchools },
   { title: "ÉQUIVALENCE ET CRÉDITS", eyebrow: "Information", render: renderIntercalaireDES },
-  { title: "POURSUITE À L'UNIVERSITÉ ?", eyebrow: "Étape 4", render: renderWantsUniversity },
+  { title: "SUITE DU PARCOURS", eyebrow: "Étape 4", render: renderWantsUniversity },
   { title: "TYPE D'UNIVERSITÉ RECHERCHÉE", eyebrow: "Étape 5", render: renderTypeUniversite },
   { title: "UNIVERSITÉS EN LIGNE", eyebrow: "Résultats", render: renderUniversities },
   { title: "RÉSUMÉ FINAL", eyebrow: "Ton parcours", render: renderSummary },
@@ -574,6 +585,7 @@ function renderIntercalaireDES(step) {
 
   // --- Ta situation précise : une seule carte, selon le choix fait à l'écran 2 ---
   let niveauCard = "";
+  let niveauSource = "";
   if (niveau === "sec3-bulletin") {
     niveauCard = `
       <div class="verif-card">
@@ -607,15 +619,18 @@ function renderIntercalaireDES(step) {
         <span class="verif-icon">📐</span>
         <div class="verif-body">
           <strong class="verif-label">Ta situation : DES obtenu depuis moins de 4 ans</strong>
-          <span class="verif-desc">Même avec ton DES, l'école demande ton bulletin officiel de secondaire 3 pour confirmer ce seuil. Avec ce bulletin : 4 crédits garantis, en plus de ceux accordés pour l'équivalence de ton DES. Sans ce bulletin : des cours supplémentaires s'ajoutent pour combler les crédits qui ne peuvent pas être confirmés. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+          <span class="verif-desc">Même avec ton DES, l'école a besoin de tes relevés de notes ou bulletins officiels antérieurs pour évaluer tes crédits — le DES seul ne suffit pas à reconnaître les crédits nécessaires. C'est la direction de l'école qui évalue ce dossier selon les lignes directrices du ministère, puis te remet un rapport des crédits reconnus et des cours restants. Par exemple, NPU demande précisément tes bulletins de secondaire 3, 4 et 5 ainsi que le relevé de notes officiel du ministère (reçu par la poste à la fin du secondaire 5). La liste exacte des documents varie d'une école à l'autre : vérifie directement avec celle qui t'intéresse. <em>Sources : réponse écrite de Northern Pre-University (NPU), 2 septembre 2026 — et le processus décrit publiquement par Canadian Virtual School, qui confirme le même mécanisme.</em></span>
         </div>
       </div>`;
+    niveauSource = " · <a href='https://canadianvirtualschool.ca/transfer-high-school-credits-to-ontario/' target='_blank' rel='noopener'>Canadian Virtual School — processus d'équivalence expliqué</a>";
   }
 
   // --- Accès direct à l'université : section séparée, informative seulement ---
   let accesDirectCards = "";
+  let accesDirectCount = 0;
   let accesDirectSource = "";
   if (niveau === "des-4ansplus") {
+    accesDirectCount++;
     accesDirectCards += `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
@@ -627,6 +642,7 @@ function renderIntercalaireDES(step) {
     accesDirectSource += ' · Année préparatoire UdeM, <a href="https://admission.umontreal.ca/programmes/annee-preparatoire/" target="_blank" rel="noopener">conditions d\'admissibilité</a>';
   }
   if (state.trancheAge === "21plus") {
+    accesDirectCount++;
     accesDirectCards += `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
@@ -648,13 +664,13 @@ function renderIntercalaireDES(step) {
       </div>
     </div>
 
-    <div class="verif-grid">
+    <div class="verif-grid verif-grid-single">
       ${niveauCard}
     </div>
 
     ${accesDirectCards ? `
     <p class="steps-title" style="margin:4px 2px 0;">Accès direct à l'université</p>
-    <div class="verif-grid">
+    <div class="verif-grid${accesDirectCount === 1 ? " verif-grid-single" : ""}">
       ${accesDirectCards}
     </div>` : ""}
 
@@ -712,7 +728,7 @@ function renderIntercalaireDES(step) {
         <li><strong>Compléter les cours manquants</strong> qu'elle t'indique, en demandant la revendication de crédits pour ceux où tu maîtrises déjà la matière, si l'école l'offre.</li>
       </ol>
     </div>
-    <p class="source-line">Sources : ministère de l'Éducation de l'Ontario — Note Politique/Programmes 129, <a href="https://www.ontario.ca/fr/document/education-en-ontario-directives-en-matiere-de-politiques-et-de-programmes/politiqueprogrammes-note-129" target="_blank" rel="noopener">à consulter directement ici</a> · Ontario Schools: K-12 Policy and Program Requirements (2011), <a href="http://www.edu.gov.on.ca/eng/document/policy/os/ONSchools.pdf" target="_blank" rel="noopener">document PDF officiel</a>${accesDirectSource}.</p>
+    <p class="source-line">Sources : ministère de l'Éducation de l'Ontario — Note Politique/Programmes 129, <a href="https://www.ontario.ca/fr/document/education-en-ontario-directives-en-matiere-de-politiques-et-de-programmes/politiqueprogrammes-note-129" target="_blank" rel="noopener">à consulter directement ici</a> · Ontario Schools: K-12 Policy and Program Requirements (2011), <a href="http://www.edu.gov.on.ca/eng/document/policy/os/ONSchools.pdf" target="_blank" rel="noopener">document PDF officiel</a>${niveauSource}${accesDirectSource}.</p>
   `;
   shell.appendChild(info);
   return shell;
@@ -797,7 +813,7 @@ function getFilteredSchools() {
 function renderSchools(step) {
   const avertissementFrancais =
     state.langue === "francais"
-      ? "À savoir : les écoles ne sont pas francophones de la même façon. École Louis Legrand et École Virtuelle Canadienne Inter-nations enseignent entièrement en français (confirmé au registre officiel de l’Ontario). NPU et Académie Préuniversitaire offrent plusieurs cours en français, l’anglais étant une matière parmi les autres. Clonlara fonctionne par projet avec une conseillère francophone (diplôme américain). D’autres n’offrent qu’un site et un accompagnement en français, les cours restant en anglais. Demande à chaque école ce qui est réellement offert en français."
+      ? "À savoir : « école francophone » ne veut pas dire que les cours sont 100 % en français. École Louis Legrand et École Virtuelle Canadienne Inter-nations enseignent entièrement en français (confirmé au registre officiel de l’Ontario). NPU offre la plupart de ses cours en français, sauf le cours de langue (ENG4U) et le cours de littératie (OLC4O), obligatoires en anglais. Clonlara fonctionne par projet avec une conseillère francophone (diplôme américain). D’autres n’offrent qu’un site et un accompagnement en français, les cours restant en anglais. Demande à chaque école ce qui est réellement offert en français."
       : null;
   const shell = screenShell(
     step,
@@ -855,12 +871,9 @@ function renderWantsUniversity(step) {
 function renderTypeUniversite(step) {
   const shell = screenShell(
     step,
-    "Langue et pays des universités en ligne que tu souhaites explorer.",
+    "Pays des universités en ligne que tu souhaites explorer.",
     null,
   );
-  shell.appendChild(sectionTitle("Langue"));
-  shell.appendChild(buildSingleSelectGroup("univLangue", options.langue, "three"));
-
   shell.appendChild(sectionTitle("Pays"));
   shell.appendChild(buildSingleSelectGroup("univPays", options.univPays, "three"));
 
@@ -872,8 +885,8 @@ function getFilteredUniversities() {
   return onlineUniversities.filter((u) => {
     let okLangue = true;
     let okPays = true;
-    if (state.univLangue && state.univLangue !== "les-deux") {
-      const wanted = state.univLangue === "francais" ? "français" : "anglais";
+    if (state.langue && state.langue !== "les-deux") {
+      const wanted = state.langue === "francais" ? "français" : "anglais";
       okLangue = (u.langue || "").toLowerCase().includes(wanted);
     }
     if (state.univPays && state.univPays !== "les-deux") {
@@ -1231,7 +1244,7 @@ function canContinue() {
     case STEP_VEUT_UNIV:
       return Boolean(state.wantsUniversity);
     case STEP_TYPE_UNIV:
-      return Boolean(state.univLangue) && Boolean(state.univPays);
+      return Boolean(state.univPays);
     case STEP_LISTE_UNIV:
       return true;
     case STEP_RESUME:
