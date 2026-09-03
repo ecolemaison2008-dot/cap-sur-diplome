@@ -227,16 +227,15 @@ h1 {
 
 .warning {
   margin-top: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--red);
-  background: #fff1f0;
-  border: 1px solid #ffdad6;
-  border-radius: 999px;
-  padding: 9px 12px;
+  display: block;
+  color: #1b5e3f;
+  background: #e9f7f1;
+  border: 1px solid #a8d8c3;
+  border-radius: 14px;
+  padding: 12px 16px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 .choices {
@@ -389,13 +388,13 @@ h1 {
 }
 
 .compat-badge.compat-mid {
-  background: #fef9c3;
-  color: #854d0e;
+  background: #dbe8f8;
+  color: var(--navy);
 }
 
 .compat-badge.compat-low {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #c7d9f2;
+  color: #082a5e;
 }
 
 .compat-bar-wrap {
@@ -417,7 +416,7 @@ h1 {
 }
 
 .compat-bar[data-class="compat-high"] { background: linear-gradient(90deg, #22c55e, #16a34a); }
-.compat-bar[data-class="compat-mid"]  { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.compat-bar[data-class="compat-mid"]  { background: linear-gradient(90deg, #6f9bd6, #3b6ea5); }
 .compat-bar[data-class="compat-low"]  { background: linear-gradient(90deg, #f87171, #ef4444); }
 
 .compat-percent {
@@ -532,8 +531,8 @@ h1 {
 }
 
 .tag.gold {
-  background: #fff6db;
-  color: #7a5300;
+  background: #dbe8f8;
+  color: var(--navy);
 }
 
 .tag.green {
@@ -542,8 +541,9 @@ h1 {
 }
 
 .tag.red {
-  background: #fff1f0;
-  color: var(--red);
+  background: #dbe8f8;
+  color: var(--navy);
+  font-weight: 800;
 }
 
 .card-title-block {
@@ -828,8 +828,8 @@ h1 {
 
 .warning-section {
   border-radius: 20px;
-  border: 2px solid #fcd34d;
-  background: #fffbeb;
+  border: 2px solid #93b5e1;
+  background: linear-gradient(160deg, #eef4fc, #dbe8f8);
   padding: 22px 24px;
   display: flex;
   flex-direction: column;
@@ -837,8 +837,8 @@ h1 {
 }
 
 .limits-section {
-  border-color: #fca5a5;
-  background: #fff5f5;
+  border-color: var(--navy);
+  background: linear-gradient(160deg, #e4ecf9, #ccdaf0);
 }
 
 .warning-section-header {
@@ -855,25 +855,25 @@ h1 {
 
 .warning-section-title {
   margin: 0 0 4px;
-  color: #92400e;
+  color: var(--navy);
   font-size: 17px;
   font-weight: 800;
   letter-spacing: 0.01em;
 }
 
 .limits-section .warning-section-title {
-  color: #991b1b;
+  color: #082a5e;
 }
 
 .warning-section-sub {
   margin: 0;
   font-size: 13px;
-  color: #a16207;
+  color: #3b5a8a;
   line-height: 1.4;
 }
 
 .limits-section .warning-section-sub {
-  color: #b91c1c;
+  color: #1c3d6e;
 }
 
 .verif-grid {
@@ -887,7 +887,7 @@ h1 {
   align-items: flex-start;
   gap: 10px;
   background: white;
-  border: 1px solid #fde68a;
+  border: 1px solid #b9cfec;
   border-radius: 14px;
   padding: 12px 14px;
 }
@@ -906,7 +906,7 @@ h1 {
 
 .steps-section {
   background: white;
-  border: 1px solid #fde68a;
+  border: 1px solid #b9cfec;
   border-radius: 14px;
   padding: 14px 18px 16px;
 }
@@ -915,7 +915,7 @@ h1 {
   margin: 0 0 10px;
   font-size: 13px;
   font-weight: 800;
-  color: #92400e;
+  color: var(--navy);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -941,12 +941,12 @@ h1 {
 .verif-label {
   font-size: 13px;
   font-weight: 800;
-  color: #78350f;
+  color: #0b2c5e;
 }
 
 .verif-desc {
   font-size: 12px;
-  color: #92400e;
+  color: #3b5a8a;
   line-height: 1.4;
 }
 
@@ -961,7 +961,7 @@ h1 {
   align-items: flex-start;
   gap: 12px;
   background: white;
-  border: 1px solid #fecaca;
+  border: 1px solid #93b5e1;
   border-radius: 14px;
   padding: 12px 14px;
 }
@@ -972,7 +972,7 @@ h1 {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #dc2626;
+  background: var(--navy);
   color: white;
   font-size: 13px;
   font-weight: 800;
@@ -989,12 +989,12 @@ h1 {
 .limit-title {
   font-size: 13px;
   font-weight: 800;
-  color: #7f1d1d;
+  color: #0b2c5e;
 }
 
 .limit-desc {
   font-size: 12px;
-  color: #991b1b;
+  color: #1c3d6e;
   line-height: 1.4;
 }
 
@@ -1002,11 +1002,11 @@ h1 {
   margin-top: 4px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: #fee2e2;
-  border: 1px solid #fecaca;
+  background: #dbe8f8;
+  border: 1px solid #93b5e1;
   font-size: 12px;
   font-weight: 700;
-  color: #7f1d1d;
+  color: #082a5e;
   line-height: 1.45;
   text-align: center;
 }
@@ -1229,17 +1229,6 @@ h1 {
   font-weight: 800;
   color: var(--navy);
   line-height: 1.3;
-}
-
-.school-tier {
-  font-size: 11px;
-  font-weight: 700;
-  color: #92400e;
-  background: #fef3c7;
-  border-radius: 10px;
-  padding: 2px 8px;
-  flex-shrink: 0;
-  margin-top: 1px;
 }
 
 .school-id {
@@ -1656,33 +1645,34 @@ h1 {
 }
 
 .signal-gold {
-  background: #fffbeb;
-  border-color: #fcd34d;
-  color: #92400e;
+  background: #eef4fc;
+  border-color: #93b5e1;
+  color: var(--navy);
 }
 
 .signal-red {
-  background: #fff5f5;
-  border-color: #fca5a5;
-  color: #991b1b;
+  background: #dbe8f8;
+  border-color: var(--navy);
+  color: #082a5e;
+  font-weight: 700;
 }
 
 .ethics-card {
   margin-top: auto;
   padding: 15px;
   border-radius: 18px;
-  background: #fffaf0;
-  border: 1px solid #ffe2a8;
+  background: #eef4fc;
+  border: 1px solid #93b5e1;
   display: grid;
   gap: 7px;
 }
 
 .ethics-card strong {
-  color: #7a5300;
+  color: var(--navy);
 }
 
 .ethics-card span {
-  color: #805b14;
+  color: #3b5a8a;
   font-size: 13px;
   line-height: 1.45;
 }
@@ -1825,11 +1815,11 @@ h1 {
 .source-line {
   margin: 12px 2px 0;
   font-size: 12px;
-  color: #a16207;
+  color: #3b5a8a;
 }
 
 .source-line a {
-  color: #92400e;
+  color: var(--navy);
   font-weight: 700;
   text-decoration: underline;
 }

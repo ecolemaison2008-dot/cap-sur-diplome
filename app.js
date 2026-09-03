@@ -45,9 +45,6 @@ function buildSchoolCard(school, type) {
   const idLabel = isOSSD
     ? `BSID ${school.bsid || "à confirmer"}`
     : school.accred || "Accréditation à confirmer";
-  const tierBadge = school.tier
-    ? `<span class="school-tier">${school.tier}</span>`
-    : "";
   const highlights = buildSchoolHighlights(school, type);
   const plarText =
     school.plar === "Oui"
@@ -58,7 +55,6 @@ function buildSchoolCard(school, type) {
       <div class="school-card-top">
         <div class="school-name-row">
           <strong class="school-name">${school.name}</strong>
-          ${tierBadge}
         </div>
         <div class="school-id">${idLabel}</div>
       </div>
@@ -175,10 +171,10 @@ const sourcesOfficielles = [{"nom": "Ministère Éducation Ontario — Écoles p
 
 function buildSources() {
   return '<div class="sources-list">' + sourcesOfficielles.map(function (x) {
-    return '<div class="source-card"><div class="source-head"><strong>' + x.nom + '</strong><span class="source-tag">' + x.type + ' \u00b7 ' + x.pays + '</span></div>' +
+    return '<div class="source-card"><div class="source-head"><strong>' + x.nom + '</strong><span class="source-tag">' + x.type + ' · ' + x.pays + '</span></div>' +
       '<p class="source-desc">' + x.desc + '</p>' +
       '<a class="source-link" href="' + x.url + '" target="_blank" rel="noopener">' + x.url + '</a>' +
-      '<span class="source-date">V\u00e9rifi\u00e9 : ' + x.date + '</span></div>';
+      '<span class="source-date">Vérifié : ' + x.date + '</span></div>';
   }).join('') + '</div>';
 }
 
@@ -320,15 +316,15 @@ const options = {
     ["moinssec3", "MOINS QUE SEC. 3", ""],
     ["sec3-bulletin", "SEC. 3 ET PLUS, AVEC BULLETIN OFFICIEL", "Bulletin émis par une école accréditée ou une commission scolaire."],
     ["sec3-sans-bulletin", "SEC. 3 ET PLUS, SANS BULLETIN OFFICIEL", "Une évaluation faite par le parent-enseignant ne compte pas comme bulletin officiel."],
-    ["des-moins4ans", "DES OBTENU, MOINS DE 4 ANS", ""],
-    ["des-4ansplus", "DES OBTENU, 4 ANS ET PLUS", "Peut ouvrir un accès direct à l'université sans CÉGEP."],
+    ["des-moins4ans", "DES obtenu depuis moins de 4 ans", ""],
+    ["des-4ansplus", "DES obtenu depuis 4 ans et plus", "Ce seuil de 4 ans vient d'une règle de l'Université de Montréal : passé ce délai, l'accès à l'université peut se faire sans CÉGEP ni OSSD."],
   ],
   trancheAge: [
     ["moins21", "MOINS DE 21 ANS", ""],
     ["21plus", "21 ANS ET PLUS", "Peut ouvrir un accès direct à l'université, avec ou sans diplôme."],
   ],
 langue: [
-    ["francais", "FRANÇAIS", "Quelques options existent — le degré de français varie beaucoup selon l\u2019\u00e9cole."],
+    ["francais", "FRANÇAIS", "Quelques options existent — le degré de français varie beaucoup selon l’école."],
     ["anglais", "ANGLAIS", "La majorité des parcours OSSD et HSD se font en anglais."],
     ["les-deux", "LES DEUX", "Élargit les résultats aux écoles francophones et anglophones."],
   ],
@@ -361,8 +357,8 @@ langue: [
     ["doctorat", "DOCTORAT", ""],
   ],
   wantsUniversity: [
-    ["oui", "OUI, JE VISE L'UNIVERSITÉ", "Explorer les universités en ligne adaptées à mon diplôme."],
-    ["non", "NON, PAS MAINTENANT", "Je me concentre sur le diplôme secondaire pour l'instant."],
+    ["oui", "Oui, je le veux", "Explorer les universités en ligne adaptées à mon diplôme."],
+    ["non", "Non, merci", "Je me concentre sur le diplôme secondaire pour l'instant."],
   ],
   univPays: [
     ["canada", "CANADA", ""],
@@ -551,19 +547,19 @@ function renderIntercalaireDES(step) {
 
   const shell = screenShell(
     step,
-    "Comment un parcours québécois se traduit en crédits OSSD ou HSD — selon ta situation exacte. Lecture seule — aucun choix à faire ici.",
+    "Comment ta situation se traduit en crédits OSSD ou HSD. Lecture seule — aucun choix à faire ici.",
     null,
   );
 
-  // --- Carte niveau scolaire : une seule, selon la valeur exacte choisie à l'écran 2 ---
+  // --- Ta situation précise : une seule carte, selon le choix fait à l'écran 2 ---
   let niveauCard = "";
   if (niveau === "sec3-bulletin") {
     niveauCard = `
       <div class="verif-card">
         <span class="verif-icon">📐</span>
         <div class="verif-body">
-          <strong class="verif-label">Sec. 3 et plus, avec bulletin officiel — 4 crédits garantis</strong>
-          <span class="verif-desc">Ayant complété plus de trois années de secondaire, avec un document qui le prouve, la direction de l'école doit t'accorder un minimum de 4 crédits en 11e ou 12e année avant de te recommander pour l'OSSD. Un bulletin officiel est émis par une école accréditée ou une commission scolaire — une évaluation faite par le parent-enseignant ne compte pas comme bulletin officiel aux yeux de cette règle. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+          <strong class="verif-label">Ta situation : secondaire 3 complété, avec bulletin officiel</strong>
+          <span class="verif-desc">Un document émis par une école accréditée ou une commission scolaire — jamais par un parent-enseignant — prouve que tu dépasses trois années de secondaire. L'école doit alors t'accorder au moins 4 crédits de 11e ou 12e année avant de te recommander pour l'OSSD. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
         </div>
       </div>`;
   } else if (niveau === "moinssec3") {
@@ -571,8 +567,8 @@ function renderIntercalaireDES(step) {
       <div class="verif-card">
         <span class="verif-icon">📐</span>
         <div class="verif-body">
-          <strong class="verif-label">Moins que sec. 3 — pas de minimum garanti</strong>
-          <span class="verif-desc">Tu n'as pas complété trois années de secondaire. L'admission se fait généralement au niveau de la 9e année, sans crédits reconnus d'avance. L'évaluation reste possible au cas par cas, mais sans le plancher de 4 crédits garanti aux élèves plus avancés.</span>
+          <strong class="verif-label">Ta situation : moins de trois années de secondaire complétées</strong>
+          <span class="verif-desc">L'école évalue ton dossier au cas par cas, sans le minimum de 4 crédits garanti à un élève plus avancé. En pratique, l'admission se fait souvent au niveau de la 9e année.</span>
         </div>
       </div>`;
   } else if (niveau === "sec3-sans-bulletin") {
@@ -580,8 +576,8 @@ function renderIntercalaireDES(step) {
       <div class="verif-card">
         <span class="verif-icon">📐</span>
         <div class="verif-body">
-          <strong class="verif-label">Sec. 3 et plus, sans bulletin officiel — même résultat que « moins que sec. 3 »</strong>
-          <span class="verif-desc">Même si le niveau a été atteint, sans document officiel pour le prouver, l'école ne peut pas confirmer le seuil des trois années. En pratique : admission généralement en 9e année, sans crédits reconnus d'avance — comme si le niveau n'était pas encore atteint. Un bulletin émis par une école accréditée ou une commission scolaire aurait suffi ; une évaluation faite par le parent-enseignant ne compte pas. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+          <strong class="verif-label">Ta situation : secondaire 3 atteint, mais sans bulletin officiel</strong>
+          <span class="verif-desc">Sans document — émis par une école accréditée ou une commission scolaire, jamais par un parent-enseignant — l'école ne peut pas confirmer que tu dépasses trois années de secondaire. En pratique, tu es traité comme si tu avais moins de trois années : admission généralement en 9e année, sans le minimum de 4 crédits garanti. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
         </div>
       </div>`;
   } else if (niveau === "des-moins4ans") {
@@ -589,33 +585,33 @@ function renderIntercalaireDES(step) {
       <div class="verif-card">
         <span class="verif-icon">📐</span>
         <div class="verif-body">
-          <strong class="verif-label">DES obtenu, moins de 4 ans — deux issues possibles</strong>
-          <span class="verif-desc">Les écoles secondaires ontariennes demandent le <strong>bulletin officiel de ta 3e secondaire</strong>, même si tu as déjà ton DES — c'est ce document qui te permet d'obtenir les crédits de cette année d'études. <strong>Avec ce bulletin reconnu</strong> : 4 crédits garantis, en plus de ceux attribués selon l'équivalence de ton DES par l'école que tu auras choisie. <strong>Sans ce bulletin</strong> : tu auras des cours supplémentaires à suivre pour obtenir les crédits manquants. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
+          <strong class="verif-label">Ta situation : DES obtenu depuis moins de 4 ans</strong>
+          <span class="verif-desc">Même avec ton DES, l'école demande ton bulletin officiel de secondaire 3 pour confirmer ce seuil. Avec ce bulletin : 4 crédits garantis, en plus de ceux accordés pour l'équivalence de ton DES. Sans ce bulletin : des cours supplémentaires s'ajoutent pour combler les crédits qui ne peuvent pas être confirmés. <em>Source : Ontario Schools: K-12 Policy and Program Requirements (2011), p. 91.</em></span>
         </div>
       </div>`;
   }
 
-  // --- Carte accès direct université : informatif seulement, ne bloque rien ---
-  let accesDirectCard = "";
+  // --- Accès direct à l'université : section séparée, informative seulement ---
+  let accesDirectCards = "";
   let accesDirectSource = "";
   if (niveau === "des-4ansplus") {
-    accesDirectCard = `
+    accesDirectCards += `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
         <div class="verif-body">
-          <strong class="verif-label">DES depuis 4 ans ou plus — accès direct à l'université québécoise possible</strong>
-          <span class="verif-desc">Avec un DES obtenu depuis 4 ans ou plus, tu es admissible à l'Année préparatoire de l'Université de Montréal — <strong>sans passer par le CÉGEP ni par l'OSSD</strong>. Après cette année, la majorité des programmes de 1er cycle de l'UdeM te deviennent accessibles. Ceci est une information, pas une obligation : tu peux tout de même explorer les écoles OSSD et HSD ci-dessous si tu préfères une autre voie.</span>
+          <strong class="verif-label">Avec ton DES depuis 4 ans et plus</strong>
+          <span class="verif-desc">Tu es admissible à l'Année préparatoire de l'Université de Montréal — sans CÉGEP ni OSSD. Une fois cette année complétée, la majorité des baccalauréats de l'UdeM te sont accessibles. Une option parmi d'autres : tu peux quand même explorer les écoles OSSD et HSD ci-dessous.</span>
         </div>
       </div>`;
-    accesDirectSource = ' · Année préparatoire UdeM, <a href="https://admission.umontreal.ca/programmes/annee-preparatoire/" target="_blank" rel="noopener">conditions d\'admissibilité</a>';
+    accesDirectSource += ' · Année préparatoire UdeM, <a href="https://admission.umontreal.ca/programmes/annee-preparatoire/" target="_blank" rel="noopener">conditions d\'admissibilité</a>';
   }
   if (state.trancheAge === "21plus") {
-    accesDirectCard += `
+    accesDirectCards += `
       <div class="verif-card">
         <span class="verif-icon">🎓</span>
         <div class="verif-body">
-          <strong class="verif-label">21 ans et plus — l'admission « étudiant adulte »</strong>
-          <span class="verif-desc">Certaines universités québécoises admettent des candidats de 21 ans et plus <strong>sans diplôme secondaire ni DEC</strong>, sur la base de l'âge et de l'expérience de vie — à condition d'avoir arrêté les études à temps plein depuis au moins 24 mois. <strong>Le seuil exact varie</strong> : 21 ans à Concordia, 23 ans pour la plupart des programmes de McGill (21 ans en Musique et en Gestion). Encore une fois, une information complémentaire — pas une obligation de délaisser le parcours OSSD ou HSD.</span>
+          <strong class="verif-label">À 21 ans et plus, une autre voie existe</strong>
+          <span class="verif-desc">Concordia et McGill admettent des candidats de 21 ans et plus sans aucun diplôme secondaire ni DEC, sur la base de l'âge et de l'expérience de vie — à condition d'avoir arrêté les études à temps plein depuis au moins 24 mois. Le seuil varie : 21 ans à Concordia, 23 ans pour la plupart des programmes de McGill (21 ans en Musique et en Gestion). Une option parmi d'autres, pas une obligation.</span>
         </div>
       </div>`;
     accesDirectSource += ' · Admission « Mature Entry », <a href="https://www.concordia.ca/admissions/undergraduate/requirements/mature-entry.html" target="_blank" rel="noopener">Concordia</a> et <a href="https://www.mcgill.ca/undergraduate-admissions/apply/requirements/mature" target="_blank" rel="noopener">McGill</a> (exemples)';
@@ -628,61 +624,72 @@ function renderIntercalaireDES(step) {
       <span class="warning-section-icon">ℹ️</span>
       <div>
         <p class="warning-section-sub">${aDES
-          ? "Le DES québécois équivaut à peu près à la 11e année du système ontarien — pas à la 12e. Normalement, il faut deux ans de CÉGEP pour compléter cette année manquante et accéder à l'université. Compléter l'OSSD est une autre façon d'obtenir cette année manquante — une alternative aux deux ans de CÉGEP, même pour certaines universités québécoises (McGill, Concordia). Voici, selon la politique officielle du ministère de l'Éducation de l'Ontario, comment cette année manquante se comble."
-          : "Que tu aies fait ton secondaire à la maison, dans une école québécoise ou ailleurs, tes apprentissages ne partent pas de zéro aux yeux d'une école OSSD. Voici, selon la politique officielle du ministère de l'Éducation de l'Ontario, comment un parcours québécois se traduit en crédits."}</p>
+          ? "Ton DES équivaut à la 11e année. Il te manque une année pour éviter le CÉGEP et accéder directement à l'université — par exemple à travers un diplôme secondaire ontarien (OSSD) ou américain (HSD)."
+          : "Peu importe où tu as fait ton secondaire — à la maison, au Québec ou ailleurs — tes apprentissages ne partent pas de zéro aux yeux d'une école OSSD. Voici comment ils se traduisent en crédits, selon la politique officielle du ministère de l'Éducation de l'Ontario."}</p>
       </div>
     </div>
+
     <div class="verif-grid">
-      ${accesDirectCard}
       ${niveauCard}
+    </div>
+
+    ${accesDirectCards ? `
+    <p class="steps-title" style="margin:4px 2px 0;">Accès direct à l'université</p>
+    <div class="verif-grid">
+      ${accesDirectCards}
+    </div>` : ""}
+
+    <p class="steps-title" style="margin:4px 2px 0;">Trois termes à ne pas confondre</p>
+    <div class="verif-grid">
       <div class="verif-card">
         <span class="verif-icon">📋</span>
         <div class="verif-body">
-          <strong class="verif-label">RDA — Reconnaissance des acquis (le nom officiel du « PLAR »)</strong>
-          <span class="verif-desc">C'est le terme parapluie utilisé par le ministère de l'Éducation de l'Ontario. Il regroupe deux volets bien distincts, expliqués ci-dessous. Quand une école dit « PLAR disponible », elle parle de la RDA au sens large.</span>
+          <strong class="verif-label">RDA — Reconnaissance des acquis</strong>
+          <span class="verif-desc">Le nom officiel du terme que les écoles appellent souvent « PLAR ». Il regroupe les deux mécanismes ci-dessous.</span>
         </div>
       </div>
       <div class="verif-card">
         <span class="verif-icon">✍️</span>
         <div class="verif-body">
-          <strong class="verif-label">1. La revendication de crédits — abréger un cours précis</strong>
-          <span class="verif-desc">Pour un cours de 10e, 11e ou 12e année précis, l'élève démontre par un examen qu'il en maîtrise déjà le contenu, et obtient le crédit sans le suivre. <strong>Maximum officiel : 4 crédits, dont 2 au plus dans une même matière.</strong> Offert seulement dans les écoles qui choisissent de le proposer.</span>
+          <strong class="verif-label">La revendication de crédits</strong>
+          <span class="verif-desc">Un examen pour obtenir le crédit d'un cours précis (10e, 11e ou 12e année) sans le suivre. Maximum 4 crédits, 2 par matière. Seulement dans les écoles qui l'offrent.</span>
         </div>
       </div>
       <div class="verif-card">
         <span class="verif-icon">📄</span>
         <div class="verif-body">
-          <strong class="verif-label">2. L'octroi d'équivalences de crédits — le placement de départ</strong>
-          <span class="verif-desc">Pour tout élève qui arrive d'une école hors Ontario (donc tout élève québécois, avec ou sans DES), la direction évalue le relevé de notes et détermine le placement : crédits déjà considérés acquis, crédits restants. Une évaluation de dossier, pas un examen.</span>
+          <strong class="verif-label">L'octroi d'équivalences de crédits</strong>
+          <span class="verif-desc">L'évaluation de ton dossier scolaire pour déterminer ton placement de départ — c'est ce qui s'applique à ta situation, décrite plus haut.</span>
         </div>
       </div>
       <div class="verif-card">
         <span class="verif-icon">🌍</span>
         <div class="verif-body">
           <strong class="verif-label">Équivalence de diplôme (WES, IQAS) — autre chose</strong>
-          <span class="verif-desc">Ceci évalue un diplôme <strong>déjà obtenu</strong> face aux standards canadiens — souvent pour l'immigration, l'emploi ou un diplôme étranger non reconnu automatiquement. Service payant, distinct du processus interne d'une école OSSD. La plupart des familles québécoises n'en ont pas besoin pour ce parcours.</span>
+          <span class="verif-desc">Un service distinct et payant qui évalue un diplôme déjà obtenu, surtout utile pour l'immigration ou l'emploi. Rarement nécessaire pour ce parcours.</span>
         </div>
       </div>
       <div class="verif-card">
         <span class="verif-icon">🇺🇸</span>
         <div class="verif-body">
           <strong class="verif-label">Pour un diplôme américain (HSD)</strong>
-          <span class="verif-desc">Les règles précises ci-dessus sont propres à l'Ontario et à l'OSSD. Les écoles américaines fixent chacune leur propre politique de transfert de crédits — vérifie directement avec l'école visée.</span>
+          <span class="verif-desc">Ces règles précises sont propres à l'Ontario. Chaque école américaine fixe sa propre politique de transfert de crédits — vérifie directement avec l'école visée.</span>
         </div>
       </div>
       <div class="verif-card">
         <span class="verif-icon">👪</span>
         <div class="verif-body">
           <strong class="verif-label">Responsabilité de la famille</strong>
-          <span class="verif-desc">C'est à la famille de contacter l'école qui t'intéresse pour confirmer les crédits reconnus et les cours restants. Ce guide ne fait aucune évaluation officielle et ne remplace pas cette démarche.</span>
+          <span class="verif-desc">C'est à la famille de confirmer les crédits reconnus directement avec l'école choisie. Ce guide informe — il n'évalue rien officiellement.</span>
         </div>
       </div>
     </div>
+
     <div class="steps-section">
       <h4 class="steps-title">Les 3 étapes concrètes, dans l'ordre</h4>
       <ol class="steps-list">
         <li><strong>Repérer une école</strong> à l'écran précédent, selon la langue, le diplôme et le domaine visés.</li>
-        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin officiel de 3e secondaire est souvent la pièce clé, même si tu es rendu plus loin — c'est l'école qui évalue ce qui est déjà acquis et ce qu'il reste à faire, pas ce guide.</li>
+        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin officiel de 3e secondaire est souvent la pièce clé, même si tu es rendu plus loin.</li>
         <li><strong>Compléter les cours manquants</strong> qu'elle t'indique, en demandant la revendication de crédits pour ceux où tu maîtrises déjà la matière, si l'école l'offre.</li>
       </ol>
     </div>
@@ -771,7 +778,7 @@ function getFilteredSchools() {
 function renderSchools(step) {
   const avertissementFrancais =
     state.langue === "francais"
-      ? "<strong>\u00c0 savoir :</strong> les \u00e9coles ne sont pas francophones de la m\u00eame fa\u00e7on. \u00c9cole Louis Legrand et \u00c9cole Virtuelle Canadienne Inter-nations enseignent enti\u00e8rement en fran\u00e7ais (confirm\u00e9 au registre officiel de l\u2019Ontario). NPU et Acad\u00e9mie Pr\u00e9universitaire offrent plusieurs cours en fran\u00e7ais, l\u2019anglais \u00e9tant une mati\u00e8re parmi les autres. Clonlara fonctionne par projet avec une conseill\u00e8re francophone (dipl\u00f4me am\u00e9ricain). D\u2019autres n\u2019offrent qu\u2019un site et un accompagnement en fran\u00e7ais, les cours restant en anglais. Demande \u00e0 chaque \u00e9cole ce qui est r\u00e9ellement offert en fran\u00e7ais."
+      ? "À savoir : les écoles ne sont pas francophones de la même façon. École Louis Legrand et École Virtuelle Canadienne Inter-nations enseignent entièrement en français (confirmé au registre officiel de l’Ontario). NPU et Académie Préuniversitaire offrent plusieurs cours en français, l’anglais étant une matière parmi les autres. Clonlara fonctionne par projet avec une conseillère francophone (diplôme américain). D’autres n’offrent qu’un site et un accompagnement en français, les cours restant en anglais. Demande à chaque école ce qui est réellement offert en français."
       : null;
   const shell = screenShell(
     step,
@@ -791,14 +798,14 @@ function renderSchools(step) {
     const vus = new Set();
     const box = document.createElement("div");
     box.className = "info-box";
-    let html = "<strong>Cours de 12e ann\u00e9e habituellement demand\u00e9s pour ton domaine</strong><br>";
+    let html = "<strong>Cours de 12e année habituellement demandés pour ton domaine</strong><br>";
     domainesChoisis.forEach((d) => {
       const [nom, codes] = coursParDomaine[d];
       if (vus.has(nom)) return;
       vus.add(nom);
       html += "<span class=\"cours-dom\">" + nom + " : " + codes + "</span><br>";
     });
-    html += "<em>Codes officiels des cours OSSD. V\u00e9rifie les pr\u00e9alables exacts sur le site de l\'universit\u00e9 vis\u00e9e \u2014 ils varient d\'un programme \u00e0 l\'autre.</em>";
+    html += "<em>Codes officiels des cours OSSD. Vérifie les préalables exacts sur le site de l\'université visée — ils varient d\'un programme à l\'autre.</em>";
     box.innerHTML = html;
     shell.appendChild(box);
   }
@@ -809,7 +816,7 @@ function renderSchools(step) {
 function renderWantsUniversity(step) {
   const shell = screenShell(
     step,
-    "Ta réponse détermine si les écrans université s'affichent ensuite.",
+    "Souhaitez-vous avoir des propositions d'universités en ligne ?",
     null,
   );
   const grid = document.createElement("div");
@@ -964,17 +971,24 @@ function renderSummary(step) {
   `;
   cols.appendChild(domaineBlock);
 
-  const schoolsPool = getFilteredSchools().slice(0, 3);
+  const filteredSchools = getFilteredSchools();
+  const allSchoolsFallback = [
+    ...secondarySchools.ossd.map((s) => ({ ...s, type: "ossd" })),
+    ...secondarySchools.hsd.map((s) => ({ ...s, type: "hsd" })),
+  ];
+  const schoolsPool = filteredSchools.length ? filteredSchools : allSchoolsFallback;
+  const schoolsFallbackNote = filteredSchools.length
+    ? ""
+    : '<p class="summary-empty">Aucune école ne correspond exactement à tes critères — voici la liste complète des écoles pour explorer toutes les options :</p>';
   const schoolsBlock = document.createElement("div");
   schoolsBlock.className = "summary-block";
   schoolsBlock.innerHTML = `
     <p class="summary-block-title">🏫 Écoles secondaires correspondantes</p>
+    ${schoolsFallbackNote}
     <div class="summary-checklist-list">
-      ${
-        schoolsPool.length
-          ? schoolsPool
-              .map(
-                (s) => `
+      ${schoolsPool
+        .map(
+          (s) => `
         <div class="summary-uni-item">
           <div class="summary-uni-left">
             <span class="summary-uni-name">${s.name}</span>
@@ -984,28 +998,32 @@ function renderSummary(step) {
             <a class="summary-uni-link" href="${s.site}" target="_blank" rel="noopener noreferrer">↗</a>
           </div>
         </div>`,
-              )
-              .join("")
-          : '<p class="summary-empty">Aucune école ne correspond exactement — élargis tes critères.</p>'
-      }
+        )
+        .join("")}
     </div>
   `;
   cols.appendChild(schoolsBlock);
 
   if (state.wantsUniversity !== "non") {
+    const filteredUnis = getFilteredUniversities();
     const uniPool = state.selectedUniversities.length
       ? onlineUniversities.filter((u) => state.selectedUniversities.includes(u.id))
-      : getFilteredUniversities().slice(0, 3);
+      : filteredUnis.length
+        ? filteredUnis
+        : onlineUniversities;
+    const uniFallbackNote =
+      !state.selectedUniversities.length && !filteredUnis.length
+        ? '<p class="summary-empty">Aucune université ne correspond exactement à tes critères — voici la liste complète pour explorer toutes les options :</p>'
+        : "";
     const uniBlock = document.createElement("div");
     uniBlock.className = "summary-block";
     uniBlock.innerHTML = `
       <p class="summary-block-title">🏛️ Universités en ligne ciblées</p>
+      ${uniFallbackNote}
       <div class="summary-checklist-list">
-        ${
-          uniPool.length
-            ? uniPool
-                .map(
-                  (u) => `
+        ${uniPool
+          .map(
+            (u) => `
         <div class="summary-uni-item">
           <div class="summary-uni-left">
             <span class="summary-uni-name">${u.name}</span>
@@ -1015,12 +1033,10 @@ function renderSummary(step) {
             <a class="summary-uni-link" href="${u.site}" target="_blank" rel="noopener noreferrer">↗</a>
           </div>
         </div>`,
-                )
-                .join("")
-            : '<p class="summary-empty">Aucune université ne correspond — élargis tes filtres.</p>'
-        }
+          )
+          .join("")}
       </div>
-      ${!state.selectedUniversities.length && uniPool.length ? '<p class="summary-empty">Aucune université sélectionnée manuellement — top 3 affiché.</p>' : ""}
+      ${!state.selectedUniversities.length && filteredUnis.length ? '<p class="summary-empty">Aucune université sélectionnée manuellement — toutes celles qui correspondent à tes critères sont affichées.</p>' : ""}
     `;
     cols.appendChild(uniBlock);
   } else {
