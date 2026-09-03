@@ -535,6 +535,27 @@ function renderProfilEleve(step) {
   shell.appendChild(sectionTitle("Âge de l'élève"));
   shell.appendChild(buildSingleSelectGroup("trancheAge", options.trancheAge, ""));
 
+  if (state.trancheAge === "21plus") {
+    const shortcut = document.createElement("div");
+    shortcut.className = "info-box";
+    shortcut.innerHTML = `
+      <strong>À 21 ans et plus, une autre voie existe :</strong> certaines universités québécoises admettent des candidats sans diplôme secondaire ni DEC, sur la base de l'âge et de l'expérience de vie (détails à l'écran suivant).
+      <br><button type="button" class="shortcut-btn" id="skipToUniBtn">Voir directement les universités en ligne →</button>
+    `;
+    shell.appendChild(shortcut);
+    setTimeout(() => {
+      const btn = document.getElementById("skipToUniBtn");
+      if (btn) {
+        btn.addEventListener("click", () => {
+          state.wantsUniversity = "oui";
+          currentStep = STEP_LISTE_UNIV;
+          saveStateToStorage();
+          render();
+        });
+      }
+    }, 0);
+  }
+
   shell.appendChild(sectionTitle("Niveau scolaire actuel"));
   shell.appendChild(buildSingleSelectGroup("niveauScolaire", options.niveauScolaire, ""));
 

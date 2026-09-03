@@ -1784,6 +1784,22 @@ h1 {
   line-height: 1.6;
 }
 .info-box .cours-dom { display: inline-block; margin-top: 4px; }
+
+.shortcut-btn {
+  margin-top: 10px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.shortcut-btn:hover {
+  background: #163a70;
+}
 .info-box em { color: #5a6b7d; font-size: 0.86rem; }
 
 /* --- Onglet Sources officielles --- */
