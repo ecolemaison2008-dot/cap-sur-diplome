@@ -644,9 +644,7 @@ function renderIntercalaireDES(step) {
     <div class="warning-section-header">
       <span class="warning-section-icon">ℹ️</span>
       <div>
-        <p class="warning-section-sub">${aDES
-          ? "Ton DES équivaut à la 11e année. Il te manque une année pour éviter le CÉGEP et accéder directement à l'université — par exemple à travers un diplôme secondaire ontarien (OSSD) ou américain (HSD)."
-          : "Peu importe où tu as fait ton secondaire — à la maison, au Québec ou ailleurs — tes apprentissages ne partent pas de zéro aux yeux d'une école OSSD. Voici comment ils se traduisent en crédits, selon la politique officielle du ministère de l'Éducation de l'Ontario."}</p>
+        <p class="warning-section-sub">Au Québec, l'accès aux universités est généralement conditionné par l'obtention d'un diplôme d'études collégiales (DEC). Néanmoins, d'autres cheminements sont possibles, à l'instar d'une 12e année menant à l'obtention d'un OSSD ou d'un HSD.</p>
       </div>
     </div>
 
