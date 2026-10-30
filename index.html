@@ -78,7 +78,7 @@
       </main>
 
       <footer class="app-footer">
-        Réalisé par Rim Sahli, Parent Éducateur au Québec — Septembre 2026 — Tous droits réservés · Pour plus d'informations, consulter le groupe Facebook <a href="https://www.facebook.com/groups/2146689045899860/" target="_blank" rel="noopener">Cap sur Diplôme – École à la Maison</a> · ecole.maison.2008@gmail.com
+        Réalisé par Rim Sahli, Parent Éducateur au Québec — Septembre 2026 — Tous droits réservés · Pour plus d'informations, consulter le groupe Facebook <a href="https://www.facebook.com/groups/2146689045899860/" target="_blank" rel="noopener">Cap sur Diplôme – École à la Maison</a> · ecole.maison.2008@gmail.com · Les visites sont comptées de façon anonyme (sans cookies ni données personnelles).
       </footer>
     </div>
 
@@ -90,5 +90,10 @@
     </template>
 
     <script src="app.js"></script>
+    <!-- v5-55 : comptage anonyme des visites (Vercel Web Analytics, sans cookies) -->
+    <script>
+      window.va = window.va || function () { (window.va.q = window.va.q || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
