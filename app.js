@@ -301,6 +301,27 @@ function resetState() {
 
 let currentStep = 0;
 
+// ─── Affichage : ordinateur ou téléphone (choix à l'accueil) ───────────
+// Stocké à part de l'état du parcours : un lien partagé ne l'impose pas à autrui.
+const VUE_KEY = "csd_vue";
+function getVue() {
+  try {
+    const v = localStorage.getItem(VUE_KEY);
+    if (v === "pc" || v === "phone") return v;
+  } catch (e) {}
+  return window.innerWidth < 700 ? "phone" : "pc";
+}
+function setVue(v) {
+  try {
+    localStorage.setItem(VUE_KEY, v);
+  } catch (e) {}
+  applyVue(v);
+}
+function applyVue(v) {
+  document.documentElement.classList.toggle("vue-phone", v === "phone");
+}
+applyVue(getVue());
+
 // Écrans (Plan v4) :
 // 0 Accueil · 1 Profil de l'élève · 2 Intercalaire DES (conditionnel)
 // 3 Parcours scolaire · 4 Domaine et niveau visés · 5 Écoles secondaires
@@ -521,6 +542,7 @@ function renderAccueil(step) {
     "Cap sur Diplôme : un guide pour l'orientation au secondaire en ligne, pour les familles-écoles du Québec.",
     null,
   );
+  shell.classList.add("compact-screen");
   const info = document.createElement("div");
   info.className = "warning-section";
   info.innerHTML = `
@@ -533,6 +555,28 @@ function renderAccueil(step) {
     </div>
   `;
   shell.appendChild(info);
+
+  shell.appendChild(sectionTitle("Choisis ton affichage"));
+  const vue = getVue();
+  const grille = document.createElement("div");
+  grille.className = "choices";
+  [
+    ["pc", "💻 VERSION ORDINATEUR", "Pour un grand écran : deux colonnes, tout visible d'un coup d'œil."],
+    ["phone", "📱 VERSION TÉLÉPHONE", "Pour un petit écran : une seule colonne, on fait défiler vers le bas."],
+  ].forEach(([val, titre, corps]) => {
+    grille.appendChild(
+      choiceCard(titre, corps, vue === val, () => {
+        setVue(val);
+        render();
+      }),
+    );
+  });
+  shell.appendChild(grille);
+  const noteVue = document.createElement("p");
+  noteVue.className = "vue-note";
+  noteVue.textContent =
+    "Une version téléphone est disponible, mais pour une meilleure visibilité, nous vous conseillons d'utiliser un ordinateur.";
+  shell.appendChild(noteVue);
   return shell;
 }
 
@@ -542,9 +586,13 @@ function renderProfilEleve(step) {
     "Quelques informations de base pour personnaliser la suite du parcours.",
     null,
   );
+  shell.classList.add("compact-screen");
 
-  shell.appendChild(sectionTitle("Âge de l'élève"));
-  shell.appendChild(buildSingleSelectGroup("trancheAge", options.trancheAge, ""));
+  const ligneAge = document.createElement("div");
+  ligneAge.className = "age-row";
+  ligneAge.appendChild(sectionTitle("Âge de l'élève"));
+  ligneAge.appendChild(buildSingleSelectGroup("trancheAge", options.trancheAge, ""));
+  shell.appendChild(ligneAge);
 
   if (state.trancheAge === "21plus") {
     const shortcut = document.createElement("div");
@@ -568,7 +616,27 @@ function renderProfilEleve(step) {
   }
 
   shell.appendChild(sectionTitle("Niveau scolaire actuel"));
-  shell.appendChild(buildSingleSelectGroup("niveauScolaire", options.niveauScolaire, ""));
+  const groupes = document.createElement("div");
+  groupes.className = "niveau-groups";
+  [
+    ["Sans DES", ["moinssec3", "sec3-bulletin", "sec3-sans-bulletin"]],
+    ["Avec DES", ["des-moins4ans", "des-4ansplus"]],
+  ].forEach(([label, valeurs]) => {
+    const col = document.createElement("div");
+    const t = document.createElement("p");
+    t.className = "niveau-group-label";
+    t.textContent = label;
+    col.appendChild(t);
+    col.appendChild(
+      buildSingleSelectGroup(
+        "niveauScolaire",
+        options.niveauScolaire.filter(([v]) => valeurs.includes(v)),
+        "niveau-col",
+      ),
+    );
+    groupes.appendChild(col);
+  });
+  shell.appendChild(groupes);
 
   return shell;
 }
@@ -740,6 +808,7 @@ function renderParcoursScolaire(step) {
     "Ton parcours secondaire : langue d'enseignement, type de diplôme et mode d'enseignement.",
     null,
   );
+  shell.classList.add("compact-screen");
   shell.appendChild(sectionTitle("Langue d'enseignement souhaitée"));
   shell.appendChild(buildSingleSelectGroup("langue", options.langue, "three"));
 
@@ -747,7 +816,7 @@ function renderParcoursScolaire(step) {
   shell.appendChild(buildMultiSelectGroup("diplomes", options.diplomes, "three"));
 
   shell.appendChild(sectionTitle("Mode d'enseignement (plusieurs choix possibles)"));
-  shell.appendChild(buildMultiSelectGroup("modes", options.modes, "three"));
+  shell.appendChild(buildMultiSelectGroup("modes", options.modes, "quatre"));
 
   return shell;
 }
@@ -767,11 +836,12 @@ function renderDomaineNiveau(step) {
     "Domaine d'études et niveau universitaire visés — ces choix affinent les universités proposées plus loin.",
     warning,
   );
+  shell.classList.add("compact-screen");
   shell.appendChild(sectionTitle("Domaine (plusieurs choix possibles)"));
-  shell.appendChild(buildMultiSelectGroup("domaines", options.domaines, "three"));
+  shell.appendChild(buildMultiSelectGroup("domaines", options.domaines, "cinq"));
 
   shell.appendChild(sectionTitle("Niveau universitaire visé (plusieurs choix possibles)"));
-  const niveauGrid = buildMultiSelectGroup("niveauxVises", options.niveauxVises, "three");
+  const niveauGrid = buildMultiSelectGroup("niveauxVises", options.niveauxVises, "cinq");
   shell.appendChild(niveauGrid);
 
   const dontKnow = document.createElement("div");
@@ -1261,12 +1331,12 @@ function updateInsight() {
   const stepMessages = [
     "Bienvenue — ce guide t'aide à comparer les options, sans jamais décider à ta place.",
     "Ton profil personnalise tout le reste du parcours.",
-    "Cet écran est informatif — aucun choix à faire, juste à lire.",
-    "Langue, diplôme et mode d'enseignement déterminent les écoles proposées à l'écran suivant.",
+    "Langue, diplôme et mode d'enseignement déterminent les écoles proposées plus loin.",
     hasContingente()
       ? "⚠️ Domaine contingenté sélectionné — le DEC est souvent requis au Québec pour ce domaine."
       : "Ton domaine et ton niveau visé affinent les universités proposées plus loin.",
     "Ces écoles correspondent à ton diplôme et ta langue. Consulte l'Annuaire pour tout comparer.",
+    "Cet écran est informatif — aucun choix à faire, juste à lire.",
     state.wantsUniversity === "oui"
       ? "Parfait — les écrans université sont activés."
       : state.wantsUniversity === "non"

@@ -1844,3 +1844,298 @@ h1 {
   text-decoration: underline;
 }
 .source-date { display: block; margin-top: 6px; font-size: 0.78rem; color: #8a97a6; }
+
+/* Écran 2 : niveaux regroupés (sans DES / avec DES) */
+.niveau-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.niveau-group-label {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4a6fa5;
+}
+
+.choices.niveau-col {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 560px) {
+  .niveau-groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Écran 2 compact : tout tient sans défilement */
+.compact-screen .screen-header {
+  margin-bottom: 6px;
+}
+
+.compact-screen .eyebrow {
+  margin-bottom: 2px;
+}
+
+.compact-screen .subcopy {
+  margin-top: 3px;
+}
+
+.compact-screen .choices {
+  gap: 7px;
+}
+
+.compact-screen .choice-card {
+  min-height: 0;
+  padding: 6px 12px;
+  gap: 1px;
+}
+
+.compact-screen .choice-card:hover {
+  transform: none;
+}
+
+.compact-screen .choice-title {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.compact-screen .choice-body {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.compact-screen > p:not(.niveau-group-label) {
+  margin: 8px 0 5px !important;
+}
+
+.compact-screen .niveau-group-label {
+  margin-bottom: 4px;
+}
+
+.compact-screen {
+  margin-top: -12px;
+}
+
+.compact-screen .eyebrow {
+  font-size: 10px;
+}
+
+.compact-screen .age-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.compact-screen .age-row > p {
+  margin: 0 !important;
+}
+
+@media (max-width: 1040px) {
+  .compact-screen .age-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compact-screen .subcopy {
+  margin-top: 2px;
+  font-size: 12.5px;
+}
+
+.compact-screen .choices.quatre {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.compact-screen .choices.cinq {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+@media (max-width: 1040px) {
+  .compact-screen .choices.quatre,
+  .compact-screen .choices.cinq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.compact-screen .screen-header {
+  margin-bottom: 8px;
+}
+
+.compact-screen .choice-card {
+  padding: 5px 12px;
+}
+
+.compact-screen .choice-card {
+  padding: 4px 12px;
+}
+
+.compact-screen > p:not(.niveau-group-label) {
+  margin: 6px 0 4px !important;
+}
+
+
+/* ==========================================================================
+   Version téléphone (choisie à l'accueil) : une colonne, la page défile
+   ========================================================================== */
+html.vue-phone body {
+  overflow: auto;
+  height: auto;
+}
+
+html.vue-phone .app-shell {
+  height: auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 12px;
+  max-width: 100%;
+  overflow: visible;
+}
+
+html.vue-phone .topbar {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+html.vue-phone .topbar-right {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+html.vue-phone .persistent-disclaimer {
+  max-width: none;
+  width: 100%;
+  font-size: 11px;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+html.vue-phone .wizard {
+  display: block;
+}
+
+html.vue-phone .insight-panel {
+  display: block;
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 18px;
+}
+
+html.vue-phone .insight-panel .mini-map {
+  margin-bottom: 10px;
+}
+
+html.vue-phone .panel {
+  display: block;
+  min-height: 0;
+  padding: 14px;
+  border-radius: 18px;
+}
+
+html.vue-phone .screen {
+  overflow: visible;
+  padding-top: 10px;
+}
+
+html.vue-phone h1 {
+  font-size: 26px;
+}
+
+html.vue-phone .choices,
+html.vue-phone .choices.three,
+html.vue-phone .choices.multi,
+html.vue-phone .choices.quatre,
+html.vue-phone .choices.cinq,
+html.vue-phone .controls-grid,
+html.vue-phone .results-grid,
+html.vue-phone .roadmap,
+html.vue-phone .plar-grid,
+html.vue-phone .summary-cols,
+html.vue-phone .verif-grid,
+html.vue-phone .limits-grid,
+html.vue-phone .niveau-groups,
+html.vue-phone .compact-screen .age-row {
+  grid-template-columns: 1fr;
+}
+
+html.vue-phone .compact-screen {
+  margin-top: 0;
+}
+
+html.vue-phone .choice-card,
+html.vue-phone .compact-screen .choice-card {
+  min-height: 0;
+  padding: 11px 14px;
+  gap: 3px;
+}
+
+html.vue-phone .choice-title,
+html.vue-phone .compact-screen .choice-title {
+  font-size: 15px;
+}
+
+html.vue-phone .choice-body,
+html.vue-phone .compact-screen .choice-body {
+  font-size: 13px;
+}
+
+html.vue-phone .nav-row {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0), var(--panel) 26%);
+  padding-top: 18px;
+}
+
+html.vue-phone .app-footer {
+  font-size: 10px;
+}
+
+/* Un téléphone en version ordinateur ne doit pas casser l'en-tête */
+@media (max-width: 700px) {
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .topbar-right {
+    flex-wrap: wrap;
+  }
+}
+
+html.vue-phone .summary-cols {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+html.vue-phone .summary-cols > *,
+html.vue-phone .panel,
+html.vue-phone .screen > * {
+  min-width: 0;
+}
+
+.compact-screen h1 {
+  font-size: clamp(20px, 2.2vw, 26px);
+}
+
+.compact-screen .screen-header {
+  margin-bottom: 4px;
+}
+
+.compact-screen .choice-body {
+  line-height: 1.22;
+}
+
+.compact-screen > p:not(.niveau-group-label) {
+  margin: 5px 0 3px !important;
+}
+
+.vue-note {
+  margin: 8px 2px 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
