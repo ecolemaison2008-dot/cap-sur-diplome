@@ -1573,42 +1573,6 @@ h1 {
   overflow-y: auto;
 }
 
-.mini-map {
-  height: 100px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #f7fafc, #eef5f0);
-  border: 1px solid var(--line);
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 14px;
-}
-
-.route-line {
-  position: absolute;
-  left: 24px;
-  right: 24px;
-  top: 48px;
-  height: 6px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--navy), var(--green), var(--gold));
-}
-
-.dot {
-  position: absolute;
-  top: 36px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: white;
-  border: 5px solid var(--green);
-  box-shadow: 0 6px 14px rgba(11,31,77,0.18);
-}
-
-.dot:nth-of-type(1) { left: 30px; }
-.dot:nth-of-type(2) { left: 34%; border-color: var(--gold); }
-.dot:nth-of-type(3) { left: 61%; border-color: var(--navy); }
-.dot:nth-of-type(4) { right: 30px; border-color: var(--green); }
-
 .insight-panel h2 {
   margin: 0 0 8px;
   color: var(--navy);
@@ -2026,10 +1990,6 @@ html.vue-phone .insight-panel {
   margin-top: 10px;
   padding: 14px;
   border-radius: 18px;
-}
-
-html.vue-phone .insight-panel .mini-map {
-  margin-bottom: 10px;
 }
 
 html.vue-phone .panel {
