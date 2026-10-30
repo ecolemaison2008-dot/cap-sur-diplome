@@ -2135,3 +2135,15 @@ html.vue-phone .screen > * {
   html:not(.vue-phone) .annuaire-btn { font-size: 12.5px; padding: 7px 13px; }
   html:not(.vue-phone) .brand small { display: block; max-width: 230px; line-height: 1.25; }
 }
+
+/* v5-54 : textes de coût plus longs (prix vérifiés) — retour à la ligne au lieu de déborder */
+.card-fees {
+  white-space: normal;
+  border-radius: 12px;
+  max-width: 100%;
+  line-height: 1.35;
+}
+.summary-uni-fees {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
