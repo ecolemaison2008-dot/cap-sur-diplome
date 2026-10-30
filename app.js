@@ -557,6 +557,11 @@ function renderAccueil(step) {
   shell.appendChild(info);
 
   shell.appendChild(sectionTitle("Choisis ton affichage"));
+  const noteVue = document.createElement("p");
+  noteVue.className = "vue-note";
+  noteVue.textContent =
+    "Une version téléphone est disponible, mais pour une meilleure visibilité, nous vous conseillons d'utiliser un ordinateur.";
+  shell.appendChild(noteVue);
   const vue = getVue();
   const grille = document.createElement("div");
   grille.className = "choices";
@@ -572,11 +577,6 @@ function renderAccueil(step) {
     );
   });
   shell.appendChild(grille);
-  const noteVue = document.createElement("p");
-  noteVue.className = "vue-note";
-  noteVue.textContent =
-    "Une version téléphone est disponible, mais pour une meilleure visibilité, nous vous conseillons d'utiliser un ordinateur.";
-  shell.appendChild(noteVue);
   return shell;
 }
 
@@ -650,6 +650,7 @@ function renderIntercalaireDES(step) {
     "Comment ta situation se traduit en crédits OSSD ou HSD. Lecture seule — aucun choix à faire ici.",
     null,
   );
+  shell.classList.add("compact-screen");
 
   // --- Ta situation précise : une seule carte, selon le choix fait à l'écran 2 ---
   let niveauCard = "";
@@ -723,8 +724,16 @@ function renderIntercalaireDES(step) {
   }
 
   const info = document.createElement("div");
-  info.className = "warning-section";
+  info.className = "warning-section intro-box";
   info.innerHTML = `
+    <div class="intro-tabs" role="tablist" aria-label="Sections de l'écran">
+      <button type="button" role="tab" class="intro-tab active" data-tab="0" aria-selected="true">Ta situation</button>
+      <button type="button" role="tab" class="intro-tab" data-tab="1" aria-selected="false">Termes à ne pas confondre</button>
+      <button type="button" role="tab" class="intro-tab" data-tab="2" aria-selected="false">Les 3 étapes</button>
+      <button type="button" role="tab" class="intro-tab" data-tab="3" aria-selected="false">À savoir</button>
+    </div>
+
+    <div class="intro-panel" data-panel="0">
     <div class="warning-section-header">
       <span class="warning-section-icon">ℹ️</span>
       <div>
@@ -742,7 +751,9 @@ function renderIntercalaireDES(step) {
       ${accesDirectCards}
     </div>` : ""}
 
-    <p class="steps-title" style="margin:4px 2px 0;">Trois termes à ne pas confondre</p>
+    </div>
+
+    <div class="intro-panel" data-panel="1" hidden>
     <div class="verif-grid">
       <div class="verif-card">
         <span class="verif-icon">📋</span>
@@ -772,6 +783,22 @@ function renderIntercalaireDES(step) {
           <span class="verif-desc">Un service distinct et payant qui évalue un diplôme déjà obtenu, surtout utile pour l'immigration ou l'emploi. Rarement nécessaire pour ce parcours.</span>
         </div>
       </div>
+    </div>
+    </div>
+
+    <div class="intro-panel" data-panel="2" hidden>
+    <div class="steps-section">
+      <h4 class="steps-title">Les 3 étapes concrètes, dans l'ordre</h4>
+      <ol class="steps-list">
+        <li><strong>Repérer une école</strong> à l'écran précédent, selon la langue, le diplôme et le domaine visés.</li>
+        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin officiel de 3e secondaire est souvent la pièce clé, mais certaines écoles demandent l'ensemble (sec. 3, 4 et 5, plus le relevé officiel du ministère reçu par la poste à la fin du secondaire). Vérifie la liste exacte auprès de l'école.</li>
+        <li><strong>Compléter les cours manquants</strong> qu'elle t'indique, en demandant la revendication de crédits pour ceux où tu maîtrises déjà la matière, si l'école l'offre.</li>
+      </ol>
+    </div>
+    </div>
+
+    <div class="intro-panel" data-panel="3" hidden>
+    <div class="verif-grid">
       <div class="verif-card">
         <span class="verif-icon">🇺🇸</span>
         <div class="verif-body">
@@ -787,17 +814,25 @@ function renderIntercalaireDES(step) {
         </div>
       </div>
     </div>
-
-    <div class="steps-section">
-      <h4 class="steps-title">Les 3 étapes concrètes, dans l'ordre</h4>
-      <ol class="steps-list">
-        <li><strong>Repérer une école</strong> à l'écran précédent, selon la langue, le diplôme et le domaine visés.</li>
-        <li><strong>Envoyer ton relevé de notes</strong> — le bulletin officiel de 3e secondaire est souvent la pièce clé, mais certaines écoles demandent l'ensemble (sec. 3, 4 et 5, plus le relevé officiel du ministère reçu par la poste à la fin du secondaire). Vérifie la liste exacte auprès de l'école.</li>
-        <li><strong>Compléter les cours manquants</strong> qu'elle t'indique, en demandant la revendication de crédits pour ceux où tu maîtrises déjà la matière, si l'école l'offre.</li>
-      </ol>
     </div>
+
     <p class="source-line">Sources : ministère de l'Éducation de l'Ontario — Note Politique/Programmes 129, <a href="https://www.ontario.ca/fr/document/education-en-ontario-directives-en-matiere-de-politiques-et-de-programmes/politiqueprogrammes-note-129" target="_blank" rel="noopener">à consulter directement ici</a> · Ontario Schools: K-12 Policy and Program Requirements (2011), <a href="http://www.edu.gov.on.ca/eng/document/policy/os/ONSchools.pdf" target="_blank" rel="noopener">document PDF officiel</a>${niveauSource}${accesDirectSource}.</p>
   `;
+  info.querySelectorAll(".intro-tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const n = btn.dataset.tab;
+      info.querySelectorAll(".intro-tab").forEach((b) => {
+        const on = b === btn;
+        b.classList.toggle("active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      info.querySelectorAll(".intro-panel").forEach((p) => {
+        p.hidden = p.dataset.panel !== n;
+      });
+      const sc = document.querySelector(".screen");
+      if (sc) sc.scrollTop = 0;
+    });
+  });
   shell.appendChild(info);
   return shell;
 }
@@ -878,6 +913,24 @@ function getFilteredSchools() {
     });
   }
   return pool;
+}
+
+function buildLimitesSection() {
+  const limitesSection = document.createElement("div");
+  limitesSection.className = "warning-section limits-section";
+  limitesSection.innerHTML = `
+    <div class="warning-section-header">
+      <span class="warning-section-icon">🚨</span>
+      <div>
+        <h3 class="warning-section-title">LIMITES ET AVERTISSEMENTS</h3>
+        <p class="warning-section-sub">Cap sur Diplôme est un guide informatif. Il ne remplace pas un conseiller professionnel ni les informations officielles, et ne fait aucune recommandation personnalisée.</p>
+      </div>
+    </div>
+    <div class="limits-footer">
+      Ce document est fourni à titre informatif et suggestif uniquement. Cap sur Diplôme ne garantit aucun résultat académique ou d'admission. La décision finale appartient toujours à la famille.
+    </div>
+  `;
+  return limitesSection;
 }
 
 function renderSchools(step) {
@@ -1180,21 +1233,7 @@ function renderSummary(step) {
   `;
   wrap.appendChild(verifSection);
 
-  const limitesSection = document.createElement("div");
-  limitesSection.className = "warning-section limits-section";
-  limitesSection.innerHTML = `
-    <div class="warning-section-header">
-      <span class="warning-section-icon">🚨</span>
-      <div>
-        <h3 class="warning-section-title">LIMITES ET AVERTISSEMENTS</h3>
-        <p class="warning-section-sub">Cap sur Diplôme est un guide informatif. Il ne remplace pas un conseiller professionnel ni les informations officielles, et ne fait aucune recommandation personnalisée.</p>
-      </div>
-    </div>
-    <div class="limits-footer">
-      Ce document est fourni à titre informatif et suggestif uniquement. Cap sur Diplôme ne garantit aucun résultat académique ou d'admission. La décision finale appartient toujours à la famille.
-    </div>
-  `;
-  wrap.appendChild(limitesSection);
+  wrap.appendChild(buildLimitesSection());
 
   const actionRow = document.createElement("div");
   actionRow.className = "summary-action-row";

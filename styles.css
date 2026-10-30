@@ -2139,3 +2139,39 @@ html.vue-phone .screen > * {
   line-height: 1.4;
   color: var(--muted);
 }
+
+/* v5-52 : marges réduites (haut/bas bleus) — version ordinateur */
+.app-shell { padding: 8px 16px; gap: 9px; }
+.panel { padding: 10px 18px; }
+.progress-wrap { margin-bottom: 6px; }
+.progress-meta { margin-bottom: 5px; }
+.screen { padding-top: 10px; }
+.nav-row { padding-top: 8px; }
+.nav-btn { min-height: 42px; }
+.app-footer { padding: 4px 12px; line-height: 1.35; }
+
+/* v5-52 : onglets de l'écran 6 */
+.intro-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.intro-tab {
+  border: 0; border-radius: 10px; padding: 7px 14px;
+  background: #eef2f8; color: var(--navy);
+  font: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+}
+.intro-tab:hover { background: #dfe7f3; }
+.intro-tab.active { background: var(--navy); color: #fff; }
+.intro-tab:focus-visible { outline: 2px solid #4a6fa5; outline-offset: 2px; }
+.intro-panel[hidden] { display: none !important; }
+.warning-section.intro-box { padding: 10px 14px; gap: 8px; }
+.intro-box .verif-card { padding: 8px 12px; }
+.intro-box .source-line { margin-top: 2px; }
+.intro-box .intro-tabs { margin-bottom: 0; }
+
+/* v5-52 : note « version téléphone » sous le titre ; bandeau « Information seulement » sur une seule ligne avec Annuaire et Glossaire */
+.vue-note { margin: 0 2px 6px; }
+@media (min-width: 1180px) {
+  html:not(.vue-phone) .topbar { flex-wrap: nowrap; }
+  html:not(.vue-phone) .topbar-right { flex-wrap: nowrap; flex: 0 1 auto; gap: 8px; }
+  html:not(.vue-phone) .persistent-disclaimer { white-space: nowrap; font-size: 12px; padding: 7px 14px; }
+  html:not(.vue-phone) .annuaire-btn { font-size: 12.5px; padding: 7px 13px; }
+  html:not(.vue-phone) .brand small { display: block; max-width: 230px; line-height: 1.25; }
+}
